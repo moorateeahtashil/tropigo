@@ -1,44 +1,34 @@
-export default function Footer() {
+import FooterColumns from '@/components/ui/FooterColumns'
+import { fetchFooterGroups, fetchLegalLinks, fetchSiteSettings } from '@/lib/server/settings'
+import Badge from '@/components/ui/Badge'
+import { getServerSupabase } from '@/supabase/server'
+
+export default async function Footer() {
+  const [groups, legal, settings] = await Promise.all([
+    fetchFooterGroups(),
+    fetchLegalLinks(),
+    fetchSiteSettings(),
+  ])
+  const footerGroups = groups.map((g) => ({ title: g.title, items: (g.items as any[]) || [] }))
+  if (legal.length) footerGroups.push({ title: 'Legal', items: legal })
+  const brand = settings?.brand_name || 'Tropigo'
+  const supabase = getServerSupabase()
+  const { data: siteBadges } = await supabase.from('badges').select('label').eq('published', true).eq('context', 'sitewide').order('position', { ascending: true })
   return (
     <footer className="bg-primary text-white mt-16">
-      <div className="px-6 md:px-12 py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-        <div>
-          <h3 className="font-semibold tracking-widest text-[11px] uppercase mb-6 text-secondary">Company</h3>
-          <ul className="space-y-3 text-white/80 text-sm">
-            <li><a className="hover:text-white" href="#">About</a></li>
-            <li><a className="hover:text-white" href="#">Our Team</a></li>
-            <li><a className="hover:text-white" href="#">Careers</a></li>
-          </ul>
+      {siteBadges && siteBadges.length > 0 && (
+        <div className="px-6 md:px-12 pt-12">
+          <div className="flex flex-wrap items-center gap-3 opacity-90">
+            {siteBadges.map((b:any, i:number)=> <Badge key={i} tone="secondary" className="!bg-white/10 !text-white">{b.label}</Badge>)}
+          </div>
         </div>
-        <div>
-          <h3 className="font-semibold tracking-widest text-[11px] uppercase mb-6 text-secondary">Explore</h3>
-          <ul className="space-y-3 text-white/80 text-sm">
-            <li><a className="hover:text-white" href="#">Villas</a></li>
-            <li><a className="hover:text-white" href="#">Experiences</a></li>
-            <li><a className="hover:text-white" href="#">Regions</a></li>
-          </ul>
-        </div>
-        <div>
-          <h3 className="font-semibold tracking-widest text-[11px] uppercase mb-6 text-secondary">Support</h3>
-          <ul className="space-y-3 text-white/80 text-sm">
-            <li><a className="hover:text-white" href="#">Help Center</a></li>
-            <li><a className="hover:text-white" href="#">Contact</a></li>
-            <li><a className="hover:text-white" href="#">Booking Terms</a></li>
-          </ul>
-        </div>
-        <div>
-          <h3 className="font-semibold tracking-widest text-[11px] uppercase mb-6 text-secondary">Legal</h3>
-          <ul className="space-y-3 text-white/80 text-sm">
-            <li><a className="hover:text-white" href="#">Privacy</a></li>
-            <li><a className="hover:text-white" href="#">Cookies</a></li>
-            <li><a className="hover:text-white" href="#">Terms</a></li>
-          </ul>
-        </div>
+      )}
+      <div className="px-6 md:px-12 py-16">
+        <FooterColumns groups={footerGroups} />
       </div>
       <div className="px-6 md:px-12 pb-10 text-center text-[10px] text-white/60 uppercase tracking-widest">
-        © {new Date().getFullYear()} Tropigo. Curated Tropical Excellence.
+        © {new Date().getFullYear()} {brand}. Curated Tropical Excellence.
       </div>
     </footer>
   )
 }
-
