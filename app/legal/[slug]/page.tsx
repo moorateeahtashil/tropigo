@@ -13,7 +13,7 @@ export default async function LegalPage({ params }: { params: { slug: string } }
         <Section>
           <div className="max-w-3xl mx-auto bg-white rounded-2xl border border-outline-variant/10 p-6">
             <h1 className="font-headline text-3xl text-primary mb-2">{data?.title || 'Legal'}</h1>
-            <div className="prose prose-slate max-w-none" dangerouslySetInnerHTML={{ __html: (data?.content || '').replace(/\n/g,'<br/>') }} />
+            <div className="whitespace-pre-line text-on-surface-variant">{data?.content || ''}</div>
           </div>
         </Section>
       </main>
@@ -21,4 +21,3 @@ export default async function LegalPage({ params }: { params: { slug: string } }
     </div>
   )
 }
-

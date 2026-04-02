@@ -11,15 +11,19 @@ const items = [
   { href: '/admin/activities', label: 'Activities', icon: '🏄' },
   { href: '/admin/tours', label: 'Tours', icon: '🛶' },
   { href: '/admin/availability', label: 'Availability', icon: '📅' },
+  { href: '/admin/bookings', label: 'Bookings', icon: '🧾' },
+  { href: '/admin/enquiries', label: 'Enquiries', icon: '📨' },
+  { href: '/admin/customers', label: 'Customers', icon: '👥' },
   { href: '/admin/testimonials', label: 'Testimonials', icon: '💬' },
   { href: '/admin/faqs', label: 'FAQs', icon: '❓' },
   { href: '/admin/legal', label: 'Legal', icon: '⚖️' },
+  { href: '/admin/static-pages', label: 'Static Pages', icon: '📄' },
   { href: '/admin/promos', label: 'Promos', icon: '🏷️' },
   { href: '/admin/coupons', label: 'Coupons', icon: '🎟️' },
   { href: '/admin/contact', label: 'Contact', icon: '☎️' },
   { href: '/admin/settings', label: 'Settings', icon: '⚙️' },
-  { href: '/admin/bookings', label: 'Bookings', icon: '🧾' },
   { href: '/admin/users', label: 'Users', icon: '👤' },
+  { href: '/admin/blog', label: 'Blog', icon: '📰' },
 ]
 
 export default function Sidebar() {

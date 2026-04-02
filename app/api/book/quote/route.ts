@@ -5,7 +5,9 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}))
   const { tourId, slotId, quantity, pickupId, couponCode } = body || {}
   if (!tourId || !slotId || !quantity) return NextResponse.json({ error: 'Missing params' }, { status: 400 })
-  const supabase = getServerSupabase()
+  const auth = req.headers.get('authorization') || ''
+  const token = auth.toLowerCase().startsWith('bearer ')? auth.slice(7).trim(): undefined
+  const supabase = getServerSupabase(token)
   const { data, error } = await supabase.rpc('book_quote', {
     p_tour_id: tourId,
     p_slot_id: slotId,
@@ -16,4 +18,3 @@ export async function POST(req: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ quote: data })
 }
-

@@ -5,7 +5,9 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}))
   const { tourId, slotId, quantity, pickupId, couponCode, customerEmail, customerName, customerPhone, pickupLocation } = body || {}
   if (!tourId || !slotId || !quantity || !customerEmail || !customerName) return NextResponse.json({ error: 'Missing params' }, { status: 400 })
-  const supabase = getServerSupabase()
+  const auth = req.headers.get('authorization') || ''
+  const token = auth.toLowerCase().startsWith('bearer ')? auth.slice(7).trim(): undefined
+  const supabase = getServerSupabase(token)
   const idempotencyKey = `${tourId}:${slotId}:${customerEmail}:${quantity}`
   const { data, error } = await supabase.rpc('book_reserve', {
     p_tour_id: tourId,
@@ -29,4 +31,3 @@ export async function POST(req: NextRequest) {
   }
   return NextResponse.json({ result: data })
 }
-

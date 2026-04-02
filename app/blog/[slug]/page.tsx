@@ -21,7 +21,7 @@ export default async function BlogPost({ params }: { params: { slug: string } })
               // eslint-disable-next-line @next/next/no-img-element
               <img src={post.cover_image_url} alt={post.title} className="w-full rounded-2xl border border-outline-variant/10 mb-6" />
             )}
-            <div className="prose prose-slate max-w-none" dangerouslySetInnerHTML={{ __html: (post?.content || '').replace(/\n/g,'<br/>') }} />
+            <div className="whitespace-pre-line text-on-surface-variant">{post?.content || ''}</div>
             {related && related.length > 0 && (
               <div className="mt-10">
                 <div className="text-[11px] uppercase tracking-widest text-outline mb-2">Related</div>
@@ -39,4 +39,3 @@ export default async function BlogPost({ params }: { params: { slug: string } })
     </div>
   )
 }
-
