@@ -8,7 +8,7 @@ export default function Header() {
   return (
     <nav className="fixed top-0 w-full z-50 bg-[#fbf9f4]/90 backdrop-blur-md border-b border-outline-variant/20">
       <div className="flex justify-between items-center px-6 md:px-8 py-4 w-full">
-        <Link href="/" className="font-[var(--font-headline)] text-xl font-bold tracking-[0.2em] text-[#001e40]">
+        <Link href="/" className="font-headline text-xl font-bold tracking-[0.2em] text-[#001e40]">
           TROPIGO
         </Link>
         <div className="hidden md:flex gap-8 items-center">
@@ -50,4 +50,3 @@ function MobileLink({ href, children }: { href: string; children: React.ReactNod
     </Link>
   )
 }
-

@@ -18,7 +18,7 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent" />
           <div className="relative z-10 px-6 md:px-12 max-w-4xl">
             <span className="tracking-[0.4em] uppercase text-[10px] text-secondary font-bold mb-4 block">Curated Travel</span>
-            <h1 className="[font-variation-settings:normal] font-[var(--font-headline)] text-5xl lg:text-7xl text-white mb-6 leading-[1.1]">
+            <h1 className="font-headline text-5xl lg:text-7xl text-white mb-6 leading-[1.1]">
               Unseen Mauritius, Direct Access
             </h1>
             <p className="text-white/85 text-base md:text-lg max-w-xl mb-8">
@@ -61,4 +61,3 @@ export default function HomePage() {
     </div>
   )
 }
-

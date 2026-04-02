@@ -17,7 +17,8 @@ services:
       CHOKIDAR_USEPOLLING: "true"
     volumes:
       - ./:/app
-      - /app/node_modules
+      - node_modules:/app/node_modules
+    command: sh -lc "pnpm install && pnpm dev -p 3000"
 
   web-prod:
     build:
@@ -34,4 +35,3 @@ services:
 volumes:
   # Named volume for node_modules to avoid overwriting by bind mount in dev
   node_modules:
-

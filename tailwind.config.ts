@@ -10,6 +10,11 @@ const config: Config = {
   darkMode: 'class',
   theme: {
     extend: {
+      fontFamily: {
+        headline: ['EB Garamond', 'ui-serif', 'Georgia', 'Cambria', 'Times New Roman', 'Times', 'serif'],
+        body: ['Sora', 'ui-sans-serif', 'system-ui', 'Segoe UI', 'Helvetica', 'Arial', 'Noto Sans', 'sans-serif'],
+        label: ['Sora', 'ui-sans-serif', 'system-ui', 'Segoe UI', 'Helvetica', 'Arial', 'Noto Sans', 'sans-serif']
+      },
       colors: {
         'on-primary-fixed': '#001b3c',
         'on-error-container': '#93000a',
@@ -71,4 +76,3 @@ const config: Config = {
 }
 
 export default config
-
