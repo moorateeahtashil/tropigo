@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Fonts via next/font in layout */
+
+/* Utility classes from reference */
+.glass-panel {
+  background: rgba(251, 249, 244, 0.85);
+  backdrop-filter: blur(12px);
+}
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Selection color aligning with secondary */
+::selection {
+  background-color: rgba(121, 246, 245, 0.3);
+}
+

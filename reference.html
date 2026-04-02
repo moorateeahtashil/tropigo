@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Luxe Mauritius | Expedited Booking</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700;800&amp;family=Sora:wght@300;400;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-primary-fixed": "#001b3c",
+                        "on-error-container": "#93000a",
+                        "background": "#fbf9f4",
+                        "surface": "#fbf9f4",
+                        "surface-container": "#f0eee9",
+                        "primary-fixed-dim": "#a7c8ff",
+                        "primary-container": "#003366",
+                        "on-tertiary-container": "#fe6e60",
+                        "on-background": "#1b1c19",
+                        "surface-tint": "#3a5f94",
+                        "outline-variant": "#c3c6d1",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#30312e",
+                        "inverse-primary": "#a7c8ff",
+                        "surface-bright": "#fbf9f4",
+                        "on-primary-container": "#799dd6",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#dbdad5",
+                        "primary-fixed": "#d5e3ff",
+                        "tertiary-fixed-dim": "#ffb4aa",
+                        "surface-variant": "#e4e2dd",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#ffdad5",
+                        "on-tertiary-fixed": "#410001",
+                        "on-secondary-fixed-variant": "#004f4f",
+                        "on-secondary": "#ffffff",
+                        "tertiary-container": "#6e0105",
+                        "surface-container-low": "#f5f3ee",
+                        "tertiary": "#460002",
+                        "secondary-fixed": "#79f6f5",
+                        "on-tertiary-fixed-variant": "#8b1a16",
+                        "inverse-on-surface": "#f2f1ec",
+                        "on-secondary-fixed": "#002020",
+                        "on-error": "#ffffff",
+                        "primary": "#001e40",
+                        "on-surface-variant": "#43474f",
+                        "secondary-container": "#79f6f5",
+                        "secondary-fixed-dim": "#59d9d9",
+                        "error": "#ba1a1a",
+                        "outline": "#737780",
+                        "secondary": "#006a6a",
+                        "on-primary-fixed-variant": "#1f477b",
+                        "surface-container-high": "#eae8e3",
+                        "on-surface": "#1b1c19",
+                        "on-secondary-container": "#007070",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-highest": "#e4e2dd"
+                    },
+                    fontFamily: {
+                        "headline": ["Eb Garamond"],
+                        "body": ["Sora"],
+                        "label": ["Sora"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(251, 249, 244, 0.85);
+            backdrop-filter: blur(12px);
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        @media (min-width: 1024px) {
+            .main-layout {
+                display: grid;
+                grid-template-columns: 350px 1fr;
+            }
+            .sidebar-sticky {
+                position: sticky;
+                top: 0;
+                height: 100vh;
+            }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-secondary/30">
+<nav class="fixed top-0 w-full z-50 bg-[#fbf9f4]/90 backdrop-blur-md border-b border-outline-variant/20">
+<div class="flex justify-between items-center px-8 py-4 w-full">
+<a class="font-headline text-xl font-bold tracking-[0.2em] text-[#001e40]" href="#">LUXE MAURITIUS</a>
+<div class="hidden md:flex gap-8 items-center">
+<a class="font-label text-xs tracking-widest uppercase text-primary hover:text-secondary transition-colors" href="#">Villas</a>
+<a class="font-label text-xs tracking-widest uppercase text-primary hover:text-secondary transition-colors" href="#">Experiences</a>
+<a class="font-label text-xs tracking-widest uppercase text-primary hover:text-secondary transition-colors" href="#">Journal</a>
+<button class="bg-primary text-on-primary px-6 py-2 rounded-full font-label text-[10px] tracking-widest uppercase hover:bg-primary/90 transition-all">Sign In</button>
+</div>
+</div>
+</nav>
+<div class="main-layout min-h-screen pt-16">
+<aside class="sidebar-sticky z-40 bg-surface-container-low border-r border-outline-variant/30 hidden lg:flex flex-col p-8 overflow-y-auto">
+<div class="mt-8">
+<span class="font-label text-secondary uppercase tracking-[0.3em] text-[10px] font-bold">Reserve Excellence</span>
+<h2 class="font-headline text-3xl text-primary mt-2 mb-8">Plan Your Stay</h2>
+<div class="space-y-6">
+<div class="space-y-2">
+<label class="font-label text-[10px] uppercase tracking-wider text-on-surface-variant font-bold">Where to?</label>
+<div class="relative">
+<select class="w-full bg-white border border-outline-variant rounded-xl px-4 py-3 text-sm focus:ring-secondary focus:border-secondary appearance-none">
+<option>All Destinations</option>
+<option>Le Morne Brabant</option>
+<option>Grand Baie</option>
+<option>Belle Mare</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+<div class="space-y-2">
+<label class="font-label text-[10px] uppercase tracking-wider text-on-surface-variant font-bold">Experience Type</label>
+<div class="relative">
+<select class="w-full bg-white border border-outline-variant rounded-xl px-4 py-3 text-sm focus:ring-secondary focus:border-secondary appearance-none">
+<option>Deep Sea Fishing</option>
+<option>Private Yacht</option>
+<option>Helicopter Tour</option>
+<option>Gastronomy</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+<div class="space-y-2">
+<label class="font-label text-[10px] uppercase tracking-wider text-on-surface-variant font-bold">Travel Dates</label>
+<div class="relative">
+<input class="w-full bg-white border border-outline-variant rounded-xl px-4 py-3 text-sm focus:ring-secondary focus:border-secondary" type="date"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="font-label text-[10px] uppercase tracking-wider text-on-surface-variant font-bold">Guests</label>
+<div class="relative">
+<select class="w-full bg-white border border-outline-variant rounded-xl px-4 py-3 text-sm focus:ring-secondary focus:border-secondary appearance-none">
+<option>2 Adults</option>
+<option>4 Adults</option>
+<option>Family Suite</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+<button class="w-full bg-primary text-white py-4 rounded-xl font-label text-sm tracking-widest uppercase hover:bg-on-primary-fixed transition-all flex items-center justify-center gap-2 mt-4">
+<span class="material-symbols-outlined text-xl">search</span>
+                    Check Availability
+                </button>
+</div>
+<div class="mt-12 p-6 bg-primary/5 rounded-2xl border border-primary/10">
+<p class="text-[11px] text-primary/60 uppercase tracking-widest font-bold mb-4">Live Support</p>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">concierge</span>
+</div>
+<div>
+<p class="text-xs font-bold text-primary">Chat with Concierge</p>
+<p class="text-[10px] text-on-surface-variant">Response time: &lt; 2 mins</p>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<main class="w-full overflow-hidden">
+<section class="relative h-[614px] lg:h-[716px] flex items-center overflow-hidden">
+<img alt="Mauritius Sunset" class="absolute inset-0 w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEU3d2CtcGm_Dv19YYsr8PBrjDGU1NcLL_s7wFT1-cjvrMzxqJAfOjvNf4FpTf6qp4nt5FUU9Km26bp8nXUCy21bSD1ZTl33tfLbI8_ChQoqShHt4F__60j4NGDON56G-MCDWS00fuxQP1bXR1vMlvF3fuStg0W0ClrppYNYiJa6lBuIZVlF_uDzH0qL8R_uW9TMpp9KTgDf3IRT7X9UtP-YMm8CgmSSJ7ki6zP7PjNENioek_JcZWr4kcMoYx94MWchXxi4G2jFI"/>
+<div class="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent"></div>
+<div class="relative z-10 px-12 max-w-4xl">
+<span class="font-label tracking-[0.4em] uppercase text-[10px] text-secondary font-bold mb-4 block">Expedited Premium Travel</span>
+<h1 class="font-headline text-5xl lg:text-7xl text-white mb-6 leading-[1.1]">Direct Access to <br/>Unseen Mauritius</h1>
+<p class="text-white/80 text-lg max-w-xl mb-8 font-light">Efficiently browse the island's most exclusive villas and curated experiences, verified by our on-site experts.</p>
+<div class="flex gap-4">
+<button class="bg-secondary text-on-secondary px-8 py-3 rounded-full font-label text-xs tracking-widest uppercase">Quick Explorer</button>
+<button class="border border-white/30 backdrop-blur-sm text-white px-8 py-3 rounded-full font-label text-xs tracking-widest uppercase hover:bg-white/10 transition-colors">View Map</button>
+</div>
+</div>
+</section>
+<section class="bg-white py-8 border-b border-outline-variant/10">
+<div class="px-12 grid grid-cols-2 lg:grid-cols-4 gap-8">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">verified_user</span>
+<span class="text-[11px] font-bold uppercase tracking-wider text-primary">Top 1% Global Villas</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">bolt</span>
+<span class="text-[11px] font-bold uppercase tracking-wider text-primary">Instant Confirmation</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">support_agent</span>
+<span class="text-[11px] font-bold uppercase tracking-wider text-primary">24/7 Priority Support</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">payments</span>
+<span class="text-[11px] font-bold uppercase tracking-wider text-primary">Best Rate Guaranteed</span>
+</div>
+</div>
+</section>
+<section class="py-16 px-12 bg-surface">
+<div class="flex justify-between items-end mb-10">
+<div>
+<h2 class="font-headline text-4xl text-primary">Top Regions</h2>
+<p class="text-on-surface-variant text-sm mt-2">Curated selections for immediate booking.</p>
+</div>
+<a class="text-secondary text-[11px] font-bold uppercase tracking-widest border-b border-secondary" href="#">All Destinations</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="group relative rounded-2xl overflow-hidden aspect-[4/3]">
+<img alt="Le Morne" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdOxasMRrCG-0CZZuWYfZddwwyQvhB-sQgKs3BpJi8zUWiDDZOuW1BmzeV8YoUpQyxOCYbNYvEPz6inivfg0a7Cz3qvs3GiCyUxJhDhjyVpgQkdcE6NH3a9BhYWScVR5j7SQzNQbFYm_hUqbc0L6hSym3tC3IH9iJ8ttPAjS0TbmE75ql1fBwcCa0fF7NCSVvWLPkYSsCTIa-0MZGJa4e0U6vN9URNH9DoIqG6BYaAqX3ImnQkg-qwQV9drJlFfVxPKPahX4M9jQc"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 text-white">
+<h3 class="font-headline text-2xl">Le Morne</h3>
+<p class="text-[10px] text-white/70 uppercase tracking-widest mt-1">12 Available Villas</p>
+</div>
+</div>
+<div class="group relative rounded-2xl overflow-hidden aspect-[4/3]">
+<img alt="Belle Mare" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCf0NfsYewCSoi08HAzrxYOLJuLRyVAevDojxXwmZhG04-_3yN2Mt1c8m3o-1gzDx1ioZuGa-s1igWmKwgXiEQ1vD5qvnPjuj6I2xw7NX0Ga16-jlmoKypp6UqxfpvY47-zwIfBJHBu2kt0q_PUD7k1uy1d4xMUVOn8PMpkgOjhsN8sI6XBDlIH9Xm-CvOXv4UJhKt74BceKq44yJ5KVF5pfruFdniKdGvqGo29-jnFh3IqN2TzS2PTrC_tEUsILTJP9Q0vkQTVc30"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 text-white">
+<h3 class="font-headline text-2xl">Belle Mare</h3>
+<p class="text-[10px] text-white/70 uppercase tracking-widest mt-1">8 Available Villas</p>
+</div>
+</div>
+<div class="group relative rounded-2xl overflow-hidden aspect-[4/3]">
+<img alt="Grand Baie" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDq8KqgOtN0-s1TgR5QT9izMuBtYRkWJUHnfC_npa8rd7rGtopbPmLQCT0OtaNlziRbR0iKGOhT9RuvPFLWnKw9uI4g5e8Z3LwW_ddYIARHqGzOYNdM0gSu5q8FUhcXqrbmq9vns9Yg_588JBjkMVJwz-8Cn-THXd0ZNHVdY3TfVL1FViEa2xpKGEOc9dEt1_tjS9vt9omF9BCC4Fbm96nVdLCnU6ZH3bKyG7JpR04IOFZcDmZ1dcAh6BQ4Tmxbg4VR74yVN_qP7ec"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 text-white">
+<h3 class="font-headline text-2xl">Grand Baie</h3>
+<p class="text-[10px] text-white/70 uppercase tracking-widest mt-1">15 Available Villas</p>
+</div>
+</div>
+</div>
+</section>
+<section class="py-16 px-12 bg-white">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+<div class="space-y-4">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">key</span>
+</div>
+<h4 class="font-headline text-2xl text-primary">The Hidden Collection</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">Exclusive access to over 40 private estates not listed on any other public platforms.</p>
+</div>
+<div class="space-y-4">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">explore</span>
+</div>
+<h4 class="font-headline text-2xl text-primary">Island Insiders</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">Direct connections with local artists and private access to the island's secret coves.</p>
+</div>
+<div class="space-y-4">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">eco</span>
+</div>
+<h4 class="font-headline text-2xl text-primary">Impact Conscious</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">15% of every booking goes directly to our local coral reef restoration initiatives.</p>
+</div>
+</div>
+</section>
+<section class="py-16 px-12 bg-surface-container-low">
+<div class="flex justify-between items-center mb-8">
+<h2 class="font-headline text-3xl text-primary">Popular Experiences</h2>
+<div class="flex gap-2">
+<button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center hover:bg-white transition-colors">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center hover:bg-white transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="flex gap-6 overflow-x-auto no-scrollbar pb-4 snap-x">
+<div class="min-w-[320px] bg-white rounded-2xl p-4 snap-start border border-outline-variant/20 hover:shadow-lg transition-shadow">
+<img alt="Yacht" class="w-full h-48 object-cover rounded-xl mb-4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMOjN0rfjmAbKt-J2EG7Tgnc7Ua-_Sa4ffwI37CT4YU4Bvd6IaCXnQ2FtLKD9O3jOCj9iLdRI_tz-j3YxgdRkrWTdqzoVHO-lGffEbDnQySWFEM-a5B0jANIWtpFnaUuBoSUC3XifpOMSLj26CGqBbNoqDDt5U2H3Bi5zYLEuA6cCkuuwt6BYAuWaQi30k0zDhXWbUaxAHz51pE1KWw5O6A5l9fudoyCinf81R3KUMSxsou4RrLtNAkgfnlqRC2-X4fNMnpj68P3A"/>
+<h4 class="font-bold text-primary text-lg">Sunset Yacht Charter</h4>
+<p class="text-xs text-on-surface-variant mt-1">4 Hours · Private Journey</p>
+<div class="mt-4 flex justify-between items-center">
+<span class="text-secondary font-bold text-sm">From $850</span>
+<button class="text-primary text-[10px] font-bold uppercase tracking-widest flex items-center gap-1">Quick View <span class="material-symbols-outlined text-[14px]">arrow_forward</span></button>
+</div>
+</div>
+<div class="min-w-[320px] bg-white rounded-2xl p-4 snap-start border border-outline-variant/20 hover:shadow-lg transition-shadow">
+<img alt="Helicopter" class="w-full h-48 object-cover rounded-xl mb-4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAt_UO0Zr0OAcP6PwcVIPhAe-EoQqmFAe2d47IDYmCzeaNjF3VqPAdUfgUfHjsPLUAPpbv5pKRL3JqpR52uNo-vzUHJo3z2W_jqIibWSHWMwv6-YMHjT5nR_sFB013ecKoHHKSZVbo6IfLQY1g3gKtdJk3j_c8Rxm19G7_2DiZ5NZi8P1Y9q17cfQQNEVM7ISDHX_4V7MtlmI4_TSNwdxZTgKvdv3yLMG-ASvaL32trU5gdm88tAKcisWQ3MKHMBBSPN5TnGJM8hpg"/>
+<h4 class="font-bold text-primary text-lg">Helicopter Tour</h4>
+<p class="text-xs text-on-surface-variant mt-1">45 Mins · Aerial View</p>
+<div class="mt-4 flex justify-between items-center">
+<span class="text-secondary font-bold text-sm">From $420</span>
+<button class="text-primary text-[10px] font-bold uppercase tracking-widest flex items-center gap-1">Quick View <span class="material-symbols-outlined text-[14px]">arrow_forward</span></button>
+</div>
+</div>
+<div class="min-w-[320px] bg-white rounded-2xl p-4 snap-start border border-outline-variant/20 hover:shadow-lg transition-shadow">
+<img alt="Dining" class="w-full h-48 object-cover rounded-xl mb-4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCj-POb_-dJ5ZWOjeC1nU0SrWkBurgA2M5GBTyGSiXNFMPngilq9HARTfGOKf29bP3i7TjAyJxIcUix9jixFCyNVmipPFTqPQyvyeJGrnBlZFsjYn2uT9PyqaLU4pCJkl8mJAahTJc8m7OtXq84Wu4AAtALjw-vXsDmwjusy7lZG1HjW1Y6jE19S34dXOturex1D2u7EBmsksw8HhCoTRpfOSldt7R0e5m30l5bKyZrkRYHpLFVJbnGw57ZiRafHY8sll2i4XdUMoE"/>
+<h4 class="font-bold text-primary text-lg">Starlight Beach Dining</h4>
+<p class="text-xs text-on-surface-variant mt-1">Bespoke · Gastronomy</p>
+<div class="mt-4 flex justify-between items-center">
+<span class="text-secondary font-bold text-sm">From $350</span>
+<button class="text-primary text-[10px] font-bold uppercase tracking-widest flex items-center gap-1">Quick View <span class="material-symbols-outlined text-[14px]">arrow_forward</span></button>
+</div>
+</div>
+</div>
+</section>
+<footer class="bg-primary text-white py-16 px-12">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+<div>
+<h2 class="font-headline text-3xl mb-6">LUXE MAURITIUS</h2>
+<p class="text-white/60 text-sm max-w-xs mb-8">Premium island escapes, curated for efficiency and absolute luxury.</p>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-white/50 hover:text-white cursor-pointer transition-colors">public</span>
+<span class="material-symbols-outlined text-white/50 hover:text-white cursor-pointer transition-colors">camera</span>
+<span class="material-symbols-outlined text-white/50 hover:text-white cursor-pointer transition-colors">mail</span>
+</div>
+</div>
+<div>
+<p class="font-bold text-[11px] uppercase tracking-widest mb-6 text-secondary">Quick Links</p>
+<ul class="space-y-3 text-sm text-white/70">
+<li><a class="hover:text-white transition-colors" href="#">Villas Directory</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Experience Map</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Sustainability</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Press Kit</a></li>
+</ul>
+</div>
+<div>
+<p class="font-bold text-[11px] uppercase tracking-widest mb-6 text-secondary">Support</p>
+<ul class="space-y-3 text-sm text-white/70">
+<li><a class="hover:text-white transition-colors" href="#">Help Center</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Contact Concierge</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Booking Terms</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Privacy Policy</a></li>
+</ul>
+</div>
+</div>
+<div class="mt-16 pt-8 border-t border-white/10 text-center text-[10px] text-white/40 uppercase tracking-widest">
+                © 2024 Luxe Mauritius. Curated Tropical Excellence.
+            </div>
+</footer>
+</main>
+</div>
+<div class="lg:hidden fixed bottom-0 left-0 w-full p-4 bg-white border-t border-outline-variant z-50">
+<button class="w-full bg-primary text-white py-4 rounded-full font-label text-sm tracking-widest uppercase flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">calendar_month</span>
+        Book Your Stay
+    </button>
+</div>
+
+</body></html>

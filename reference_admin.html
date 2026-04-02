@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "error-container": "#ffdad6",
+              "error": "#ba1a1a",
+              "surface": "#fbf9f4",
+              "on-tertiary-fixed-variant": "#8b1a16",
+              "inverse-on-surface": "#f2f1ec",
+              "surface-variant": "#e4e2dd",
+              "on-primary": "#ffffff",
+              "secondary-fixed-dim": "#59d9d9",
+              "primary-fixed": "#d5e3ff",
+              "secondary-container": "#79f6f5",
+              "surface-bright": "#fbf9f4",
+              "on-tertiary": "#ffffff",
+              "outline-variant": "#c3c6d1",
+              "surface-tint": "#3a5f94",
+              "on-surface-variant": "#43474f",
+              "surface-container-highest": "#e4e2dd",
+              "surface-container": "#f0eee9",
+              "primary-fixed-dim": "#a7c8ff",
+              "background": "#fbf9f4",
+              "on-primary-fixed": "#001b3c",
+              "surface-container-lowest": "#ffffff",
+              "tertiary": "#460002",
+              "on-tertiary-fixed": "#410001",
+              "secondary": "#006a6a",
+              "surface-container-high": "#eae8e3",
+              "on-tertiary-container": "#fe6e60",
+              "on-secondary": "#ffffff",
+              "on-error-container": "#93000a",
+              "on-secondary-container": "#007070",
+              "surface-container-low": "#f5f3ee",
+              "secondary-fixed": "#79f6f5",
+              "tertiary-container": "#6e0105",
+              "primary": "#001e40",
+              "outline": "#737780",
+              "tertiary-fixed-dim": "#ffb4aa",
+              "tertiary-fixed": "#ffdad5",
+              "primary-container": "#003366",
+              "on-error": "#ffffff",
+              "inverse-surface": "#30312e",
+              "on-secondary-fixed": "#002020",
+              "on-primary-container": "#799dd6",
+              "on-primary-fixed-variant": "#1f477b",
+              "on-surface": "#1b1c19",
+              "surface-dim": "#dbdad5",
+              "on-background": "#1b1c19",
+              "inverse-primary": "#a7c8ff",
+              "on-secondary-fixed-variant": "#004f4f"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #fbf9f4;
+            color: #1b1c19;
+        }
+    </style>
+</head>
+<body class="bg-surface selection:bg-secondary-container">
+<div class="flex h-screen overflow-hidden">
+<!-- SideNavBar - JSON Mapping: SideNavBar Component -->
+<aside class="h-screen w-64 border-r border-[#001e40]/10 bg-[#fbf9f4] flex flex-col p-4 space-y-2 shrink-0">
+<div class="mb-8 px-2">
+<h1 class="font-headline font-bold text-[#001e40] text-xl">Mauritius Admin</h1>
+<p class="font-label font-medium text-xs tracking-tight text-[#001e40]/70 uppercase">Premium SaaS Portal</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2.5 text-[#001e40]/70 hover:bg-[#001e40]/5 rounded-xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label font-medium text-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-[#001e40]/70 hover:bg-[#001e40]/5 rounded-xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="font-label font-medium text-sm">Bookings</span>
+</a>
+<!-- Active Item: Inventory/Taxonomy mapping -->
+<a class="flex items-center gap-3 px-3 py-2.5 bg-[#006a6a] text-white rounded-xl shadow-lg shadow-[#006a6a]/20 transition-all" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bed</span>
+<span class="font-label font-medium text-sm">Inventory</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-[#001e40]/70 hover:bg-[#001e40]/5 rounded-xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined">insights</span>
+<span class="font-label font-medium text-sm">Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-[#001e40]/70 hover:bg-[#001e40]/5 rounded-xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label font-medium text-sm">Customers</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-[#001e40]/70 hover:bg-[#001e40]/5 rounded-xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label font-medium text-sm">Settings</span>
+</a>
+</nav>
+<div class="pt-4 border-t border-[#001e40]/5 space-y-1">
+<button class="w-full flex items-center justify-center gap-2 bg-primary text-on-primary py-3 rounded-xl font-label font-bold text-sm shadow-md hover:opacity-90 transition-all mb-4">
+<span class="material-symbols-outlined text-sm">add</span>
+                    New Listing
+                </button>
+<a class="flex items-center gap-3 px-3 py-2 text-[#001e40]/70 hover:bg-[#001e40]/5 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-label font-medium text-sm">Support</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-[#001e40]/70 hover:bg-[#001e40]/5 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label font-medium text-sm">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto flex flex-col">
+<!-- Header/TopBar -->
+<header class="h-20 bg-surface-container-low flex items-center justify-between px-8 shrink-0">
+<div class="flex flex-col">
+<h2 class="font-headline text-2xl font-bold text-primary">Content Management</h2>
+<p class="text-xs text-outline font-label tracking-widest uppercase">Taxonomy &amp; Site Architecture</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden lg:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-lg">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-lowest border-none rounded-xl text-sm focus:ring-2 focus:ring-secondary w-64 shadow-sm placeholder:text-outline/50" placeholder="Search taxonomies..." type="text"/>
+</div>
+<div class="flex items-center gap-3 pl-4 border-l border-outline-variant/30">
+<div class="text-right hidden sm:block">
+<p class="text-sm font-bold text-primary">Admin User Profile</p>
+<p class="text-[10px] text-secondary font-bold tracking-tighter uppercase">Super Administrator</p>
+</div>
+<img class="w-10 h-10 rounded-full object-cover border-2 border-surface-container-high shadow-sm" data-alt="close-up portrait of professional male administrator in his 40s with a clean and sharp aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3nk2ST1u1oNcFgsuKzIUUIu-yhVu136p5xcrHhWNCvSd7ld9ndAuw7IEnVUWeTGOEbrRqHN4jgz8psh_bCIrJKFVg1X2MBj-EQTj20Ogs31MqW8tpucRn9pG46A0ZbDAKgp2paDpjg4r6ZFvgKHs9mrTgeR9ccn-CWz9uQkYOV2Pgr3nmBW6D2NLSBWpej34zOzvdDD1jzxR36VkEv3PINHuDDRtCe6UValsqnxTHpm-EoQmg8sDDzs_ORcNLSv9CXHVLMYhJioI"/>
+</div>
+</div>
+</header>
+<!-- Dashboard Content -->
+<div class="p-8 grid grid-cols-12 gap-8 max-w-[1600px] w-full mx-auto">
+<!-- Taxonomy Table Section (Primary Content) -->
+<div class="col-span-12 xl:col-span-8 space-y-6">
+<div class="flex items-center justify-between bg-surface-container-low p-6 rounded-2xl">
+<div class="flex gap-4">
+<button class="px-4 py-2 bg-surface-container-lowest text-primary font-bold text-sm rounded-lg shadow-sm border border-outline-variant/20">All Categories</button>
+<button class="px-4 py-2 text-outline font-medium text-sm rounded-lg hover:bg-surface-container-high transition-colors">Activities</button>
+<button class="px-4 py-2 text-outline font-medium text-sm rounded-lg hover:bg-surface-container-high transition-colors">Destinations</button>
+<button class="px-4 py-2 text-outline font-medium text-sm rounded-lg hover:bg-surface-container-high transition-colors">Regions</button>
+</div>
+<button class="flex items-center gap-2 bg-secondary text-on-secondary px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-secondary/20 hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-lg">add_circle</span>
+                            Add New
+                        </button>
+</div>
+<!-- Data Table -->
+<div class="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-sm border border-outline-variant/10">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low">
+<th class="px-6 py-4 font-label text-xs font-extrabold uppercase tracking-widest text-outline">Name</th>
+<th class="px-6 py-4 font-label text-xs font-extrabold uppercase tracking-widest text-outline">Type</th>
+<th class="px-6 py-4 font-label text-xs font-extrabold uppercase tracking-widest text-outline">Items Count</th>
+<th class="px-6 py-4 font-label text-xs font-extrabold uppercase tracking-widest text-outline text-center">Status</th>
+<th class="px-6 py-4 font-label text-xs font-extrabold uppercase tracking-widest text-outline text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="group hover:bg-surface-container-low/50 transition-colors">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">kayaking</span>
+</div>
+<div>
+<p class="font-bold text-primary">Water Sports</p>
+<p class="text-xs text-outline">slug: /water-sports</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-surface-container-high text-on-surface-variant rounded-full text-xs font-bold uppercase tracking-tighter">Activities</span>
+</td>
+<td class="px-6 py-5 font-medium text-sm">42 Items</td>
+<td class="px-6 py-5 text-center">
+<span class="inline-flex items-center gap-1 px-3 py-1 bg-secondary-container/30 text-secondary rounded-full text-[10px] font-black uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+                                            Active
+                                        </span>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-2 text-outline hover:text-error transition-colors"><span class="material-symbols-outlined text-lg">delete</span></button>
+</div>
+</td>
+</tr>
+<tr class="group hover:bg-surface-container-low/50 transition-colors">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-tertiary-fixed flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined">map</span>
+</div>
+<div>
+<p class="font-bold text-primary">Grand Baie</p>
+<p class="text-xs text-outline">slug: /north-grand-baie</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-surface-container-high text-on-surface-variant rounded-full text-xs font-bold uppercase tracking-tighter">Destinations</span>
+</td>
+<td class="px-6 py-5 font-medium text-sm">118 Items</td>
+<td class="px-6 py-5 text-center">
+<span class="inline-flex items-center gap-1 px-3 py-1 bg-secondary-container/30 text-secondary rounded-full text-[10px] font-black uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                                            Active
+                                        </span>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-2 text-outline hover:text-error transition-colors"><span class="material-symbols-outlined text-lg">delete</span></button>
+</div>
+</td>
+</tr>
+<tr class="group hover:bg-surface-container-low/50 transition-colors">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-outline-variant/20 flex items-center justify-center text-outline">
+<span class="material-symbols-outlined">mountain_flag</span>
+</div>
+<div>
+<p class="font-bold text-primary">Black River Gorges</p>
+<p class="text-xs text-outline">slug: /black-river-gorges</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-surface-container-high text-on-surface-variant rounded-full text-xs font-bold uppercase tracking-tighter">Regions</span>
+</td>
+<td class="px-6 py-5 font-medium text-sm">12 Items</td>
+<td class="px-6 py-5 text-center">
+<span class="inline-flex items-center gap-1 px-3 py-1 bg-error-container/30 text-error rounded-full text-[10px] font-black uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                                            Inactive
+                                        </span>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-2 text-outline hover:text-error transition-colors"><span class="material-symbols-outlined text-lg">delete</span></button>
+</div>
+</td>
+</tr>
+<tr class="group hover:bg-surface-container-low/50 transition-colors">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">restaurant</span>
+</div>
+<div>
+<p class="font-bold text-primary">Local Gastronomy</p>
+<p class="text-xs text-outline">slug: /local-food</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 bg-surface-container-high text-on-surface-variant rounded-full text-xs font-bold uppercase tracking-tighter">Activities</span>
+</td>
+<td class="px-6 py-5 font-medium text-sm">65 Items</td>
+<td class="px-6 py-5 text-center">
+<span class="inline-flex items-center gap-1 px-3 py-1 bg-secondary-container/30 text-secondary rounded-full text-[10px] font-black uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                                            Active
+                                        </span>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-2 text-outline hover:text-error transition-colors"><span class="material-symbols-outlined text-lg">delete</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="p-4 bg-surface-container-low border-t border-outline-variant/10 flex items-center justify-between">
+<p class="text-xs font-label text-outline">Showing 4 of 28 taxonomies</p>
+<div class="flex gap-1">
+<button class="p-2 rounded-lg bg-surface-container-lowest border border-outline-variant/20 hover:bg-white"><span class="material-symbols-outlined text-sm">chevron_left</span></button>
+<button class="px-3 py-1 rounded-lg bg-primary text-on-primary text-xs font-bold">1</button>
+<button class="px-3 py-1 rounded-lg hover:bg-surface-container-high text-xs font-bold">2</button>
+<button class="px-3 py-1 rounded-lg hover:bg-surface-container-high text-xs font-bold">3</button>
+<button class="p-2 rounded-lg bg-surface-container-lowest border border-outline-variant/20 hover:bg-white"><span class="material-symbols-outlined text-sm">chevron_right</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- CMS Panel (Side Section) -->
+<aside class="col-span-12 xl:col-span-4 space-y-8">
+<div class="bg-primary text-white p-8 rounded-[2rem] shadow-xl relative overflow-hidden group">
+<div class="relative z-10">
+<h3 class="font-headline text-xl font-bold mb-2">Global Content Status</h3>
+<p class="text-white/70 text-sm mb-6 leading-relaxed">System-wide content health and pending editorial reviews.</p>
+<div class="space-y-4">
+<div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 flex items-center justify-between border border-white/10">
+<span class="text-xs font-bold uppercase tracking-widest opacity-80">SEO Indexing</span>
+<span class="text-xs font-black py-1 px-3 bg-secondary rounded-full">98% Health</span>
+</div>
+<div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 flex items-center justify-between border border-white/10">
+<span class="text-xs font-bold uppercase tracking-widest opacity-80">Media Cache</span>
+<span class="text-xs font-black py-1 px-3 bg-white/20 rounded-full">Cleared</span>
+</div>
+</div>
+</div>
+<div class="absolute -right-10 -bottom-10 w-48 h-48 bg-secondary/20 rounded-full blur-3xl group-hover:scale-110 transition-transform"></div>
+</div>
+<div class="bg-surface-container-low p-8 rounded-[2rem] space-y-6">
+<div class="flex items-center justify-between mb-2">
+<h3 class="font-headline text-lg font-bold text-primary">CMS Manager</h3>
+<span class="material-symbols-outlined text-secondary">auto_stories</span>
+</div>
+<div class="space-y-3">
+<button class="w-full flex items-center justify-between p-4 bg-surface-container-lowest hover:bg-white rounded-2xl shadow-sm border border-outline-variant/10 transition-all group">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-lg">gavel</span>
+</div>
+<div class="text-left">
+<p class="font-bold text-sm text-primary">Legal Pages</p>
+<p class="text-[10px] text-outline font-medium">Privacy, Terms, Cookies</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:translate-x-1 transition-transform">arrow_forward_ios</span>
+</button>
+<button class="w-full flex items-center justify-between p-4 bg-surface-container-lowest hover:bg-white rounded-2xl shadow-sm border border-outline-variant/10 transition-all group">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-lg">quiz</span>
+</div>
+<div class="text-left">
+<p class="font-bold text-sm text-primary">FAQ Manager</p>
+<p class="text-[10px] text-outline font-medium">Manage Categories &amp; Q&amp;A</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:translate-x-1 transition-transform">arrow_forward_ios</span>
+</button>
+<button class="w-full flex items-center justify-between p-4 bg-surface-container-lowest hover:bg-white rounded-2xl shadow-sm border border-outline-variant/10 transition-all group">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-lg">ad_units</span>
+</div>
+<div class="text-left">
+<p class="font-bold text-sm text-primary">Homepage Banners</p>
+<p class="text-[10px] text-outline font-medium">Seasonal Hero Visuals</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:translate-x-1 transition-transform">arrow_forward_ios</span>
+</button>
+</div>
+<div class="pt-4 mt-6 border-t border-outline-variant/20">
+<h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-outline mb-4">Recent Site Updates</h4>
+<div class="space-y-4">
+<div class="flex gap-3">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary mt-1.5 shrink-0"></div>
+<p class="text-xs text-primary leading-tight"><span class="font-bold">Privacy Policy</span> updated by Admin 2 hours ago.</p>
+</div>
+<div class="flex gap-3">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary mt-1.5 shrink-0"></div>
+<p class="text-xs text-primary leading-tight"><span class="font-bold">Summer Promotion</span> banner scheduled for Dec 1st.</p>
+</div>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</main>
+</div>
+<!-- Floating Concierge (Signature Component) -->
+<button class="fixed bottom-8 right-8 z-[60] flex items-center gap-3 bg-secondary text-on-secondary px-6 py-4 rounded-full shadow-2xl hover:scale-105 transition-transform backdrop-blur-xl bg-opacity-90 group">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">support_agent</span>
+<span class="font-label font-extrabold text-sm uppercase tracking-widest hidden sm:inline">Concierge Help</span>
+</button>
+</body></html>

@@ -1,311 +1,196 @@
 # AGENTS.md
 
-## Project mission
+## Mission
 
-Build a premium, conversion-focused Mauritius tourism website and booking platform based on the approved PRD.
+Build a small-company, production-ready Mauritius tourism website and booking platform from the PRD, but keep the implementation lean.
 
-Primary launch goal:
-- ship a production-ready booking website fast
-- prioritize the booking funnel, SEO, mobile UX, admin manageability, and operational reliability
-- deliver launch scope first, then phase 2 enhancements
+Primary goal:
+- ship the booking funnel first
+- keep the stack simple and low-cost
+- use the provided HTML reference as the visual guide for UI feel, spacing, typography, section rhythm, and component style
+- launch a clean Phase 1 first, then add extras later
 
-Treat this repository as a greenfield implementation unless the existing code clearly indicates otherwise.
-
-## Codex operating rules
+## How Codex should work in this repo
 
 - Read this file before making changes.
-- For any task estimated to touch more than 3 files, or any task that changes data models, payments, auth, CMS, booking logic, or deployment, first create or update `PLANS.md`.
-- In `PLANS.md`, write:
+- Keep changes small and reviewable.
+- For any task that changes schema, auth, payments, booking rules, or deployment, create or update `PLANS.md` first.
+- In `PLANS.md`, include:
   - goal
   - assumptions
-  - affected files
+  - files to change
   - risks
-  - step-by-step implementation plan
+  - implementation steps
   - verification checklist
-- Do not start large implementation work until `PLANS.md` is written.
-- Keep diffs small and reviewable.
-- Prefer completing one vertical slice fully rather than scattering partial implementations.
-- Never silently change the stack, deployment target, schema direction, or payment approach.
-- Ask for approval before introducing a new paid third-party service that is not already listed in this file.
-- Do not add mock features that are presented as production-complete.
-- Do not ship placeholder security, fake payment success flows, or fake availability logic as final code.
+- Do not silently expand the stack.
+- Do not add paid services unless they are clearly approved here or requested by the repo owner.
+- Do not fake payment success, fake availability, or placeholder security as if it were production-complete.
 
-## Product scope priority
+## Visual reference rule
 
-Implement in this order unless explicitly told otherwise.
+The repo may include one or more HTML files used as a design reference.
 
-### Phase 1 launch scope
-1. Marketing website shell
-2. Homepage
-3. Tours listing and filtering
-4. Tour detail page
-5. Booking widget and availability rules
-6. Cart
-7. Checkout
-8. Payment integration
-9. Order confirmation emails
-10. Basic user accounts
-11. CMS/admin for tours, prices, dates, pages
-12. Contact, FAQ, WhatsApp, legal pages
-13. SEO, analytics, monitoring, backups, QA, deployment
+Before implementing UI:
+1. inspect the HTML reference file(s) first
+2. extract the visual system:
+   - fonts
+   - spacing scale
+   - border radius
+   - button styles
+   - card styles
+   - section spacing
+   - layout rhythm
+   - header/footer patterns
+   - color palette
+3. reproduce the same overall feel in the app without blindly copying messy markup
+4. prefer clean Next.js + Tailwind components
+5. if the reference uses a custom font:
+   - use the same font only if it is already provided or easily available
+   - otherwise choose the closest free alternative and document the substitution
+6. keep visual consistency with the reference across all public pages
 
-### Phase 2 scope
-- loyalty wallet and tiers
-- chatbot and recommendation assistant
-- advanced multilingual content workflows
-- richer review moderation
-- advanced promotions
-- extra commerce products beyond tours unless already prioritized
+If a reference HTML file is present, treat it as the main source of truth for the look and feel.
 
-When in doubt, optimize for launch scope first.
+## Keep the stack intentionally small
 
-## Required architecture
-
-Use a modular monolith.
+Use a single app unless there is a real need for more.
 
 ### Required stack
 - Next.js (App Router)
 - TypeScript
 - Tailwind CSS
-- shadcn/ui
-- Node.js runtime where needed for server actions, route handlers, webhooks, and workers
-- PostgreSQL
-- Prisma ORM
-- Payload CMS backed by PostgreSQL
-- Auth.js for authentication
-- Stripe-compatible card flow if selected by the business, plus adapters for PayPal and local Mauritius payment methods
-- Resend or Postmark for transactional email
-- Google Places API for pickup location autocomplete
-- GA4, Google Tag Manager, Google Search Console
-- Sentry for error tracking
+- shadcn/ui only when it speeds up implementation
+- Supabase for:
+  - PostgreSQL database
+  - auth
+  - storage if uploads are needed
+- Resend for transactional email if email is required
+- PayPal or Stripe only when payment work starts and the provider is confirmed
 
-### Deployment target
-- Frontend/app on Vercel
-- PostgreSQL, background jobs, and webhooks on Railway
-- Media assets storage
+### Explicitly avoid for the first build
+- monorepo unless complexity truly justifies it
+- separate worker app unless background jobs become necessary
+- Payload CMS
+- custom design system package
+- S3 or R2 unless later approved
+- extra infra services for problems that do not exist yet
 
-Do not replace this stack without approval.
+## Free or low-cost defaults
 
-## Engineering principles
+Use the cheapest reasonable option first.
 
-- Prefer server-rendered or hybrid-rendered pages for SEO-critical routes.
-- Keep public pages fast and cache-friendly.
-- Keep business logic out of UI components.
-- Put booking, pricing, payment, and loyalty calculations in dedicated domain modules.
-- Use typed interfaces everywhere.
-- Validate all external input on the server.
-- Use progressive enhancement for forms and key user journeys.
-- Favor simple, explicit code over framework cleverness.
-- Avoid premature microservices.
-- Avoid over-abstracting until a second real use case exists.
+- Deploy app: Vercel free tier
+- Database/Auth/Storage: Supabase free tier
+- Images/assets:
+  - start with local assets in `/public` when possible
+  - if admin uploads are required, use Supabase Storage free tier
+  - Cloudinary free tier is acceptable if image tooling becomes necessary
+- Email: Resend free tier
+- Analytics: GA4
+- Error tracking:
+  - start with built-in logs
+  - add Sentry only if errors become hard to track
+- Maps/autocomplete:
+  - do not add Google Places on day one unless the feature is actively being built
+  - a validated text field is acceptable for MVP if pickup autocomplete is not yet required
 
-## Definition of done
+## Suggested app structure
 
-A task is not done unless all relevant items below are satisfied:
-- code builds locally
-- lint passes
-- tests added or updated where logic changed
-- happy path verified
-- failure path verified
-- loading and empty states handled
-- errors are user-safe and developer-actionable
-- analytics events added for key conversion actions where relevant
-- docs updated if setup or behavior changed
+Use a simple single-app layout:
 
-## Repository layout
+- `app/` - routes and pages
+- `components/` - reusable UI components
+- `lib/` - helpers, config, utilities
+- `lib/server/` - server-only code
+- `features/` - domain modules like tours, booking, checkout, account
+- `supabase/` - client and server setup
+- `styles/` - global styles
+- `docs/` - notes and setup guides
+- `public/` - static assets and reference assets
+- `PLANS.md` - plan for larger changes
 
-Use this layout unless a strong reason emerges not to.
+If the repo already has a different structure, stay consistent unless there is a strong reason to refactor.
 
-- `apps/web` - Next.js customer-facing app
-- `apps/worker` - background jobs, webhooks, retry handlers
-- `packages/ui` - shared UI components
-- `packages/config` - eslint, tsconfig, shared config
-- `packages/domain` - core business logic
-- `packages/db` - Prisma schema, migrations, DB utilities
-- `packages/cms` - Payload config, collections, admin helpers
-- `docs/` - architecture notes, setup guides, runbooks
-- `docs/adr/` - architecture decision records
-- `PLANS.md` - execution plan for large tasks
+## Launch scope priority
 
-If starting from a single-app repository, keep the same separation logically using top-level folders.
+Build in this order unless told otherwise:
 
-## Core domain model
+1. layout shell using the HTML reference style
+2. homepage
+3. tours listing
+4. tour detail page
+5. booking widget
+6. cart
+7. checkout
+8. payment integration
+9. booking confirmation
+10. simple admin/auth
+11. contact, FAQ, legal pages
+12. SEO and deployment polish
 
-Maintain these core entities unless the project owner approves changes:
-- User
-- Account
-- Session
-- Tour
-- TourVariant or TicketType if needed
-- Destination
-- ActivityCategory
-- Region
-- TourImage
-- AvailabilitySlot
-- PickupOption
-- Coupon
-- Booking
-- BookingItem
-- Payment
-- Refund
-- Wishlist
-- Review
-- Testimonial
-- StaticPage
-- BlogPost
-- FAQ
-- LoyaltyWallet
-- LoyaltyTransaction
-- AuditLog
+## Defer these unless explicitly requested
 
-Any schema change affecting bookings, payments, or availability must include migration notes and test coverage.
-
-## UX rules
-
-- Mobile-first by default.
-- Booking CTA must remain obvious on tour detail pages.
-- Important information must be visible before checkout:
-  - price
-  - inclusions/exclusions
-  - duration
-  - pickup info
-  - availability
-  - cancellation/refund notes
-- Do not make users create an account before checkout.
-- Preserve trust throughout the funnel:
-  - secure payment messaging
-  - contact options
-  - WhatsApp access
-  - clear totals
-  - no hidden fees
-- Forms must have clear validation and accessible labels.
-- Support English first. Structure code so French can be added cleanly.
-
-## SEO rules
-
-All public content pages must support:
-- clean URLs
-- unique title and meta description
-- canonical tags where relevant
-- Open Graph metadata
-- structured data where relevant
-- XML sitemap support
-- robots rules
-- indexable text content, not text embedded only in images
-
-Priority SEO routes:
-- homepage
-- destination pages
-- activity pages
-- tour detail pages
-- blog/article pages
-- legal pages
+- loyalty program
+- chatbot
+- advanced multilingual tooling
+- advanced recommendation engine
+- overly complex review systems
+- extra commerce products beyond tours
 
 ## Booking rules
 
-Treat booking as a high-integrity domain.
+Treat booking as critical logic.
 
-- Validate availability on the server.
-- Validate price on the server.
-- Never trust client-calculated totals.
-- Preserve a clear booking reference for each successful booking.
-- Store booking status transitions explicitly.
-- Support inquiry fallback when a tour cannot be instantly booked.
-- Log payment provider events and webhook outcomes.
-- Implement idempotency for payment confirmation and webhook processing.
-- Prevent duplicate booking creation on retries or refreshes.
+- validate price on the server
+- validate availability on the server
+- never trust client totals
+- create a clear booking reference
+- store booking status explicitly
+- support enquiry fallback when instant booking is not possible
+- prevent duplicate bookings on refresh or retry
+- do not mark bookings as paid until the provider confirms payment
 
-## Payment rules
+## Auth and admin rules
 
-- Use a provider abstraction layer.
-- Keep provider-specific code isolated.
-- Never store raw card details in our database.
-- Verify payment status server-side before marking a booking as paid.
-- Webhook handlers must be idempotent.
-- Failed payments must not create paid bookings.
-- Success pages must reflect actual payment state, not optimistic client state.
+Keep admin simple.
 
-## Auth and security rules
+- use Supabase Auth
+- protect admin routes
+- support at least:
+  - tours
+  - pricing
+  - availability
+  - featured homepage content
+  - FAQs
+  - testimonials
+  - legal pages
+- prefer a lightweight custom admin section inside the same app over a separate CMS product
 
-- Use secure server-side session handling.
-- Hash passwords with modern defaults through the auth library.
-- Protect admin routes and mutation endpoints.
-- Apply role-based access control for admin and operations users.
-- Add rate limiting for sensitive endpoints where practical.
-- Add reCAPTCHA or equivalent on public spam-prone forms.
-- Do not log secrets, card data, or sensitive personal details.
-- Use environment variables for all secrets and provider keys.
-- Keep a clear `.env.example` file.
+## SEO and performance rules
 
-## CMS and admin rules
+- prefer server rendering for public SEO pages
+- keep pages text-rich and indexable
+- use clean URLs
+- provide title/meta/canonical/Open Graph
+- generate sitemap
+- use responsive images
+- keep client-side JavaScript light
+- prioritize mobile performance
 
-The admin/CMS must allow non-technical staff to manage:
-- tours
-- prices
-- availability
-- pickup details
-- homepage featured content
-- destinations
-- FAQs
-- testimonials
-- legal pages
-- blog or guide content
-- coupons
+## Definition of done
 
-Prefer config-driven collections and reusable field groups.
-Document any manual admin workflow in `docs/`.
-
-## Performance rules
-
-- Optimize for Core Web Vitals.
-- Use responsive images and lazy loading.
-- Avoid shipping oversized client bundles.
-- Prefer server components unless interactivity is required.
-- Defer non-critical scripts.
-- Audit large dependencies before adding them.
-
-## Accessibility rules
-
-- Use semantic HTML first.
-- Ensure keyboard access for nav, filters, dialogs, carousels, and forms.
-- Maintain visible focus states.
-- Provide alt text strategy for tour imagery.
-- Ensure color contrast is sufficient.
-- Avoid inaccessible custom controls when native elements work.
-
-## Observability and operations
-
-Before production, ensure:
-- Sentry installed
-- analytics events wired
-- uptime monitoring configured
-- backups documented
-- rollback procedure documented
-- failed job retry strategy documented
-- webhook replay strategy documented
-
-Put operational runbooks in `docs/runbooks/`.
-
-## Testing strategy
-
-### Minimum required
-- unit tests for pricing, booking, coupon, and loyalty calculations
-- integration tests for booking creation, checkout, and payment confirmation
-- end-to-end tests for:
-  - browsing to booking
-  - booking to checkout
-  - successful payment
-  - failed payment
-  - contact form submission
-  - login and password reset
-
-### Preferred tools
-- Vitest for unit/integration tests
-- Playwright for end-to-end tests
+A task is not done unless:
+- the code builds
+- the page or feature works in the browser
+- loading, empty, and error states are handled
+- the main happy path is tested manually
+- risky logic has tests where reasonable
+- docs are updated if setup changed
+- the result still matches the reference UI direction
 
 ## Commands
 
-If bootstrapping the repo, use `pnpm`.
+Use `pnpm` unless the repo already uses something else.
 
 Expected commands:
 - `pnpm install`
@@ -313,99 +198,37 @@ Expected commands:
 - `pnpm build`
 - `pnpm lint`
 - `pnpm test`
-- `pnpm test:e2e`
-- `pnpm prisma migrate dev`
-- `pnpm prisma generate`
 
-If commands differ after scaffolding, update this file immediately.
+If the actual repo commands differ, update this file.
 
-## Code style
+## Important note about AGENTS.md
 
-- Use strict TypeScript.
-- Avoid `any` unless unavoidable and justified with a comment.
-- Prefer small pure functions for business logic.
-- Keep React components focused on rendering and interaction.
-- Name files consistently and predictably.
-- Prefer explicit return types on exported functions.
-- Add concise comments only where intent is not obvious from the code.
-- Do not add decorative comments or banner comments.
+`AGENTS.md` is not an executable script.
+Codex reads it automatically when you run Codex inside this repository.
 
-## Data and content seeding
+Use it like this from the repo root:
 
-Provide realistic seed data for:
-- tours
-- destinations
-- categories
-- availability
-- reviews
-- FAQ
-- homepage sections
+```bash
+codex
+```
 
-Seed data must look like plausible Mauritius tourism content, but clearly be seed content and easy to replace.
+Optional quick-start scaffold in a new repo:
 
-## Git and change management
+```bash
+/init
+```
 
-- Make one logical change per commit.
-- Keep commit messages clear and imperative.
-- Update docs in the same change when behavior or setup changes.
-- For risky changes, include a short rollback note in the PR description or plan.
-- If you discover a repeated instruction gap, update `AGENTS.md`.
-
-## Review checklist for Codex
-
-Before submitting work, verify:
-- no broken imports
-- no dead routes
-- no orphaned components
-- no secrets committed
-- no fake production logic
-- no inaccessible key flow
-- no server/client trust boundary violations
-- no unhandled async errors
-- no missing empty/loading/error states
-- no payment or booking state inconsistencies
-
-## When blocked
-
-If a requirement is ambiguous:
-1. choose the safest interpretation that preserves launch scope
-2. document the assumption in `PLANS.md` or the changed file
-3. proceed without blocking unless the ambiguity affects money movement, legal policy, or irreversible schema design
-
-If the ambiguity affects payments, compliance, pricing, or deletion of live data, stop and ask for approval.
-
-## First tasks Codex should execute in a greenfield repo
-
-1. Scaffold the workspace with `pnpm`.
-2. Create the Next.js app and shared packages.
-3. Set up Tailwind, shadcn/ui, ESLint, Prettier if used, and TypeScript strict mode.
-4. Set up Prisma and PostgreSQL.
-5. Add Payload CMS.
-6. Add Auth.js.
-7. Create the initial schema and migrations.
-8. Build the public layout and homepage.
-9. Build tours listing and tour detail pages.
-10. Build the booking flow end to end.
-11. Add payment adapters.
-12. Add email notifications.
-13. Add admin workflows.
-14. Add tests, observability, SEO, and deployment config.
-
-## Non-goals for initial implementation
-
-- native mobile app
-- microservices
-- event-driven distributed architecture
-- overly advanced AI chatbot logic
-- speculative personalization systems
-- unnecessary vendor lock-in abstractions
-- custom design system package before launch needs justify it
+Then ask Codex to work, for example:
+- "Read AGENTS.md and summarize the project rules."
+- "Inspect the HTML reference file and build the homepage in the same style."
+- "Create PLANS.md and scaffold the lean stack described in AGENTS.md."
 
 ## Keep this file current
 
-Whenever implementation reality changes:
-- update commands
-- update paths
-- update deployment notes
-- update testing expectations
-- add new guardrails if recurring mistakes appear
+Whenever the project decisions change, update:
+- stack choices
+- commands
+- deployment choices
+- storage choice
+- payment provider choice
+- reference UI instructions
