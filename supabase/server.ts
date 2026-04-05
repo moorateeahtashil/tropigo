@@ -12,8 +12,8 @@ export function getServerSupabase(accessToken?: string) {
     auth: {
       persistSession: false,
       autoRefreshToken: false,
+      detectSessionInUrl: false,
     },
     global: { headers },
   })
 }
-
