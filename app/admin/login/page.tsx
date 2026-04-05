@@ -19,7 +19,6 @@ export default function AdminLoginPage() {
     setStep(null)
     try {
       setStep('Signing in…')
-      // signInWithPassword already returns the user — no need for a separate getUser() call
       const { data, error: authError } = await supabase.auth.signInWithPassword({ email, password })
       if (authError) { setError(authError.message); setLoading(false); setStep(null); return }
 
@@ -46,98 +45,129 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-dvh bg-zinc-950 flex">
-      {/* Left decorative panel */}
-      <div className="hidden lg:flex w-[420px] shrink-0 flex-col justify-between bg-gradient-to-br from-sky-600 via-sky-500 to-indigo-600 p-10 relative overflow-hidden">
-        {/* Background pattern */}
-        <div className="absolute inset-0 opacity-10">
+    <div className="admin-login-root">
+      {/* Left panel */}
+      <div className="admin-login-panel">
+        {/* Subtle dot grid background */}
+        <div className="admin-login-panel-bg" aria-hidden>
           <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="1"/>
+              <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse">
+                <circle cx="1.5" cy="1.5" r="1" fill="currentColor" />
               </pattern>
             </defs>
-            <rect width="100%" height="100%" fill="url(#grid)" />
+            <rect width="100%" height="100%" fill="url(#dots)" style={{ color: 'var(--a-border)' }} />
           </svg>
+          {/* Amber glow */}
+          <div style={{
+            position: 'absolute',
+            bottom: '-80px',
+            left: '-80px',
+            width: '320px',
+            height: '320px',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(240,160,48,0.12) 0%, transparent 70%)',
+            pointerEvents: 'none',
+          }} />
         </div>
 
-        {/* Top brand */}
-        <div className="relative">
-          <div className="flex items-center gap-3">
-            <span className="w-9 h-9 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
-              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1M4.22 4.22l.71.71m13.65 13.65.71.71M3 12H4m16 0h1M4.22 19.78l.71-.71M18.36 5.64l.71-.71" />
-              </svg>
-            </span>
-            <span className="text-white font-bold text-xl tracking-wide">Tropigo</span>
+        {/* Brand */}
+        <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div className="admin-brand-mark" style={{ width: 36, height: 36, borderRadius: 10 }}>
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 3v1m0 16v1M4.22 4.22l.71.71m13.65 13.65.71.71M3 12H4m16 0h1M4.22 19.78l.71-.71M18.36 5.64l.71-.71" />
+            </svg>
+          </div>
+          <div>
+            <p style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--a-text)', letterSpacing: '-0.01em' }}>Tropigo</p>
+            <p style={{ fontSize: '0.625rem', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--a-text-faint)' }}>Admin Portal</p>
           </div>
         </div>
 
         {/* Middle copy */}
-        <div className="relative space-y-4">
-          <h1 className="text-white text-3xl font-bold leading-snug">
+        <div style={{ position: 'relative' }}>
+          <h1 style={{ fontSize: '1.625rem', fontWeight: 700, color: 'var(--a-text)', lineHeight: 1.25, letterSpacing: '-0.02em', marginBottom: 12 }}>
             Manage your<br />island experiences
           </h1>
-          <p className="text-sky-100/80 text-sm leading-relaxed">
+          <p style={{ fontSize: '0.875rem', color: 'var(--a-text-muted)', lineHeight: 1.6, marginBottom: 28 }}>
             Full control over tours, bookings, content and customers — all from one place.
           </p>
 
-          {/* Stats strip */}
-          <div className="grid grid-cols-3 gap-3 pt-4">
+          {/* Stats */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
             {[
-              { value: '5', label: 'Live tours' },
-              { value: '4', label: 'Destinations' },
-              { value: '∞', label: 'Experiences' },
+              { value: '5',  label: 'Live tours'    },
+              { value: '4',  label: 'Destinations'  },
+              { value: '∞',  label: 'Experiences'   },
             ].map((s) => (
-              <div key={s.label} className="bg-white/10 backdrop-blur rounded-xl p-3 text-center">
-                <p className="text-white font-bold text-xl">{s.value}</p>
-                <p className="text-sky-100/70 text-[11px] mt-0.5">{s.label}</p>
+              <div key={s.label} style={{
+                background: 'var(--a-surface-raised)',
+                border: '1px solid var(--a-border)',
+                borderRadius: 10,
+                padding: '12px 10px',
+                textAlign: 'center',
+              }}>
+                <p style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--a-text)', lineHeight: 1 }}>{s.value}</p>
+                <p style={{ fontSize: '0.6875rem', color: 'var(--a-text-faint)', marginTop: 4 }}>{s.label}</p>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Bottom note */}
-        <p className="relative text-sky-100/50 text-xs">
-          © {new Date().getFullYear()} Tropigo · Admin Portal
+        {/* Footer */}
+        <p style={{ position: 'relative', fontSize: '0.75rem', color: 'var(--a-text-faint)' }}>
+          © {new Date().getFullYear()} Tropigo
         </p>
       </div>
 
-      {/* Right login panel */}
-      <div className="flex-1 flex items-center justify-center p-6">
-        <div className="w-full max-w-sm space-y-8">
+      {/* Form column */}
+      <div className="admin-login-form-col">
+        <div className="admin-login-card">
           {/* Mobile brand */}
-          <div className="lg:hidden flex items-center gap-2.5">
-            <span className="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center">
-              <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1M4.22 4.22l.71.71m13.65 13.65.71.71M3 12H4m16 0h1M4.22 19.78l.71-.71M18.36 5.64l.71-.71" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 32 }} className="lg-hide-brand">
+            <div className="admin-brand-mark" style={{ width: 32, height: 32 }}>
+              <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 3v1m0 16v1M4.22 4.22l.71.71m13.65 13.65.71.71M3 12H4m16 0h1M4.22 19.78l.71-.71M18.36 5.64l.71-.71" />
               </svg>
-            </span>
-            <span className="text-white font-bold text-lg">Tropigo Admin</span>
+            </div>
+            <span style={{ fontSize: '0.9375rem', fontWeight: 700, color: 'var(--a-text)' }}>Tropigo Admin</span>
           </div>
 
           {/* Heading */}
-          <div>
-            <h2 className="text-white text-2xl font-bold">Welcome back</h2>
-            <p className="text-zinc-500 text-sm mt-1">Sign in to your admin account</p>
+          <div style={{ marginBottom: 28 }}>
+            <h2 style={{ fontSize: '1.375rem', fontWeight: 700, color: 'var(--a-text)', letterSpacing: '-0.02em', marginBottom: 6 }}>
+              Welcome back
+            </h2>
+            <p style={{ fontSize: '0.875rem', color: 'var(--a-text-muted)' }}>
+              Sign in to your admin account
+            </p>
           </div>
 
-          {/* Form */}
-          <form onSubmit={login} className="space-y-4">
-            {error && (
-              <div className="flex items-start gap-2.5 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-400">
-                <svg className="w-4 h-4 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                {error}
-              </div>
-            )}
+          {/* Error */}
+          {error && (
+            <div style={{
+              display: 'flex', alignItems: 'flex-start', gap: 10,
+              padding: '12px 14px',
+              borderRadius: 8,
+              background: 'var(--a-error-bg)',
+              border: '1px solid rgba(248,113,113,0.2)',
+              marginBottom: 20,
+            }}>
+              <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--a-error)', flexShrink: 0, marginTop: 1 }}>
+                <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span style={{ fontSize: '0.8125rem', color: 'var(--a-error)', lineHeight: 1.5 }}>{error}</span>
+            </div>
+          )}
 
-            <div className="space-y-1.5">
-              <label className="block text-xs font-medium text-zinc-400">Email address</label>
-              <div className="relative">
-                <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+          {/* Form */}
+          <form onSubmit={login} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {/* Email */}
+            <div className="admin-field">
+              <span className="admin-label">Email address</span>
+              <div style={{ position: 'relative' }}>
+                <svg style={{ position: 'absolute', left: 11, top: '50%', transform: 'translateY(-50%)', color: 'var(--a-text-faint)', width: 14, height: 14 }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
                 <input
                   value={email}
@@ -145,17 +175,19 @@ export default function AdminLoginPage() {
                   type="email"
                   placeholder="admin@tropigo.com"
                   autoComplete="email"
-                  className="w-full bg-zinc-900 border border-zinc-800 hover:border-zinc-700 focus:border-sky-500/60 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-sky-500/20 transition-colors"
                   required
+                  className="admin-input"
+                  style={{ paddingLeft: 34 }}
                 />
               </div>
             </div>
 
-            <div className="space-y-1.5">
-              <label className="block text-xs font-medium text-zinc-400">Password</label>
-              <div className="relative">
-                <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            {/* Password */}
+            <div className="admin-field">
+              <span className="admin-label">Password</span>
+              <div style={{ position: 'relative' }}>
+                <svg style={{ position: 'absolute', left: 11, top: '50%', transform: 'translateY(-50%)', color: 'var(--a-text-faint)', width: 14, height: 14 }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
                 <input
                   value={password}
@@ -163,61 +195,73 @@ export default function AdminLoginPage() {
                   type={showPw ? 'text' : 'password'}
                   placeholder="••••••••"
                   autoComplete="current-password"
-                  className="w-full bg-zinc-900 border border-zinc-800 hover:border-zinc-700 focus:border-sky-500/60 rounded-xl pl-10 pr-10 py-2.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-sky-500/20 transition-colors"
                   required
+                  className="admin-input"
+                  style={{ paddingLeft: 34, paddingRight: 38 }}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPw((v) => !v)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-600 hover:text-zinc-400 transition-colors"
                   tabIndex={-1}
+                  style={{
+                    position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
+                    background: 'none', border: 'none', cursor: 'pointer',
+                    color: 'var(--a-text-faint)', padding: 2,
+                  }}
                 >
                   {showPw ? (
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
                     </svg>
                   ) : (
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                     </svg>
                   )}
                 </button>
               </div>
             </div>
 
+            {/* Submit */}
             <button
               type="submit"
               disabled={loading}
-              className="relative w-full overflow-hidden bg-sky-500 hover:bg-sky-400 active:bg-sky-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold text-sm py-2.5 rounded-xl transition-colors flex items-center justify-center gap-2"
+              className="admin-btn admin-btn-primary"
+              style={{ width: '100%', justifyContent: 'center', padding: '10px 16px', marginTop: 4 }}
             >
               {loading ? (
                 <>
-                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                  <svg width="14" height="14" style={{ animation: 'spin 1s linear infinite' }} fill="none" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" style={{ opacity: 0.25 }} />
+                    <path fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" style={{ opacity: 0.75 }} />
                   </svg>
                   {step ?? 'Signing in…'}
                 </>
               ) : (
                 <>
                   Sign in to dashboard
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
                 </>
               )}
             </button>
           </form>
 
-          <p className="text-center text-xs text-zinc-600">
+          <p style={{ textAlign: 'center', fontSize: '0.75rem', color: 'var(--a-text-faint)', marginTop: 24 }}>
             Guest account?{' '}
-            <a href="/account/login" className="text-zinc-500 hover:text-zinc-300 transition-colors underline underline-offset-2">
+            <a href="/account/login" style={{ color: 'var(--a-text-muted)', textDecoration: 'underline', textUnderlineOffset: 3 }}>
               Sign in here
             </a>
           </p>
         </div>
       </div>
+
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @media (min-width: 1024px) { .lg-hide-brand { display: none !important; } }
+      `}</style>
     </div>
   )
 }

@@ -1,12 +1,12 @@
-export function Card({ children }: { children: React.ReactNode }) {
-  return <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/10 shadow-sm">{children}</div>
+export function Card({ children, className }: { children: React.ReactNode; className?: string }) {
+  return <div className={`admin-card${className ? ' ' + className : ''}`}>{children}</div>
 }
 
 export function CardHeader({ children }: { children: React.ReactNode }) {
-  return <div className="px-5 py-4 border-b border-outline-variant/10">{children}</div>
+  return <div className="admin-card-header">{children}</div>
 }
 
 export function CardBody({ children }: { children: React.ReactNode }) {
-  return <div className="p-5">{children}</div>
+  return <div className="admin-card-body">{children}</div>
 }
 

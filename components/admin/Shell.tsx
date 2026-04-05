@@ -9,11 +9,11 @@ export default function AdminShell({
   children: React.ReactNode
 }) {
   return (
-    <div className="min-h-dvh bg-zinc-950 text-zinc-100 flex">
+    <div className="admin-root">
       <Sidebar />
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="admin-main-col">
         <Topbar title={title} />
-        <main className="flex-1 p-5 md:p-7 max-w-[1600px] w-full mx-auto">
+        <main className="admin-content">
           {children}
         </main>
       </div>

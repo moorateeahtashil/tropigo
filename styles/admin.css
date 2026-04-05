@@ -1,0 +1,778 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Tropigo Admin — Design System
+   All admin UI tokens and component base styles live here.
+   Import this once in styles/globals.css.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* ── 1. Design tokens ────────────────────────────────────────────────────── */
+:root {
+  /* Background layers */
+  --a-bg:              #0e0d0b;   /* page background          */
+  --a-surface:         #171613;   /* card / sidebar           */
+  --a-surface-raised:  #1f1e1a;   /* elevated elements        */
+  --a-surface-hover:   #252320;   /* hover states             */
+
+  /* Borders */
+  --a-border:          #2a2825;   /* default border           */
+  --a-border-subtle:   #1f1e1b;   /* very subtle divider      */
+
+  /* Typography */
+  --a-text:            #eae5dc;   /* primary text             */
+  --a-text-muted:      #857d74;   /* secondary / labels       */
+  --a-text-faint:      #524e48;   /* placeholder / disabled   */
+
+  /* Accent — warm amber */
+  --a-accent:          #f0a030;
+  --a-accent-hover:    #e08a18;
+  --a-accent-muted:    rgba(240, 160, 48, 0.10);
+  --a-accent-muted-hover: rgba(240, 160, 48, 0.16);
+  --a-accent-text:     #0e0d0b;   /* text on amber bg         */
+
+  /* Status */
+  --a-success:         #34d399;
+  --a-success-bg:      rgba(52, 211, 153, 0.08);
+  --a-warning:         #fbbf24;
+  --a-warning-bg:      rgba(251, 191, 36, 0.08);
+  --a-error:           #f87171;
+  --a-error-bg:        rgba(248, 113, 113, 0.08);
+
+  /* Layout */
+  --a-sidebar-w:       220px;
+  --a-topbar-h:        52px;
+  --a-radius-sm:       6px;
+  --a-radius:          8px;
+  --a-radius-lg:       12px;
+  --a-radius-xl:       16px;
+}
+
+/* ── 2. Base reset for admin area ────────────────────────────────────────── */
+.admin-root {
+  background:  var(--a-bg);
+  color:       var(--a-text);
+  font-family: var(--font-body, 'Sora', ui-sans-serif, system-ui, sans-serif);
+  font-size:   14px;
+  line-height: 1.55;
+  min-height:  100dvh;
+  display:     flex;
+}
+
+/* ── 3. Sidebar ──────────────────────────────────────────────────────────── */
+.admin-sidebar {
+  width:         var(--a-sidebar-w);
+  flex-shrink:   0;
+  background:    var(--a-surface);
+  border-right:  1px solid var(--a-border);
+  display:       flex;
+  flex-direction: column;
+  height:        100dvh;
+  position:      sticky;
+  top:           0;
+  overflow-y:    auto;
+  scrollbar-width: none;
+}
+.admin-sidebar::-webkit-scrollbar { display: none; }
+
+.admin-brand {
+  padding:       18px 16px 16px;
+  border-bottom: 1px solid var(--a-border);
+  display:       flex;
+  align-items:   center;
+  gap:           10px;
+}
+
+.admin-brand-mark {
+  width:           32px;
+  height:          32px;
+  border-radius:   var(--a-radius);
+  background:      var(--a-accent);
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  flex-shrink:     0;
+  color:           var(--a-accent-text);
+}
+
+.admin-brand-text {
+  font-size:   0.875rem;
+  font-weight: 700;
+  color:       var(--a-text);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+.admin-brand-sub {
+  font-size:      0.625rem;
+  font-weight:    600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color:          var(--a-text-faint);
+  margin-top:     2px;
+}
+
+.admin-nav {
+  flex:    1;
+  padding: 12px 10px;
+}
+
+.admin-nav-section {
+  margin-bottom: 20px;
+}
+
+.admin-nav-label {
+  font-size:      0.625rem;
+  font-weight:    700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color:          var(--a-text-faint);
+  padding:        0 8px;
+  margin-bottom:  4px;
+  display:        block;
+}
+
+.admin-nav-link {
+  display:        flex;
+  align-items:    center;
+  gap:            9px;
+  padding:        7px 8px;
+  border-radius:  var(--a-radius-sm);
+  font-size:      0.8125rem;
+  font-weight:    500;
+  color:          var(--a-text-muted);
+  text-decoration: none;
+  transition:     background 0.12s, color 0.12s;
+  position:       relative;
+  margin-bottom:  1px;
+}
+.admin-nav-link:hover {
+  background: var(--a-surface-raised);
+  color:      var(--a-text);
+}
+.admin-nav-link.active {
+  background: var(--a-accent-muted);
+  color:      var(--a-accent);
+}
+.admin-nav-link .nav-icon {
+  width:      15px;
+  height:     15px;
+  flex-shrink: 0;
+  opacity:    0.6;
+  transition: opacity 0.12s;
+}
+.admin-nav-link:hover .nav-icon { opacity: 0.85; }
+.admin-nav-link.active .nav-icon { opacity: 1; color: var(--a-accent); }
+
+.admin-nav-dot {
+  width:         5px;
+  height:        5px;
+  border-radius: 50%;
+  background:    var(--a-accent);
+  margin-left:   auto;
+  flex-shrink:   0;
+}
+
+.admin-signout {
+  padding:    10px;
+  border-top: 1px solid var(--a-border);
+}
+.admin-signout-btn {
+  display:       flex;
+  align-items:   center;
+  gap:           9px;
+  width:         100%;
+  padding:       7px 8px;
+  border-radius: var(--a-radius-sm);
+  font-size:     0.8125rem;
+  font-weight:   500;
+  color:         var(--a-text-faint);
+  background:    transparent;
+  border:        none;
+  cursor:        pointer;
+  transition:    background 0.12s, color 0.12s;
+}
+.admin-signout-btn:hover {
+  background: var(--a-error-bg);
+  color:      var(--a-error);
+}
+
+/* ── 4. Topbar ───────────────────────────────────────────────────────────── */
+.admin-topbar {
+  height:        var(--a-topbar-h);
+  background:    var(--a-surface);
+  border-bottom: 1px solid var(--a-border);
+  display:       flex;
+  align-items:   center;
+  justify-content: space-between;
+  padding:       0 20px;
+  flex-shrink:   0;
+  position:      sticky;
+  top:           0;
+  z-index:       10;
+}
+
+.admin-breadcrumb {
+  display:     flex;
+  align-items: center;
+  gap:         6px;
+  font-size:   0.8125rem;
+  min-width:   0;
+}
+.admin-breadcrumb a {
+  color:           var(--a-text-faint);
+  text-decoration: none;
+  transition:      color 0.12s;
+}
+.admin-breadcrumb a:hover { color: var(--a-text-muted); }
+.admin-breadcrumb-sep {
+  color:     var(--a-text-faint);
+  flex-shrink: 0;
+}
+.admin-breadcrumb-current {
+  font-weight: 600;
+  color:       var(--a-text);
+  white-space: nowrap;
+  overflow:    hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-topbar-actions {
+  display:     flex;
+  align-items: center;
+  gap:         8px;
+  flex-shrink: 0;
+}
+
+.admin-search {
+  position: relative;
+  display:  none;
+}
+@media (min-width: 1024px) {
+  .admin-search { display: block; }
+}
+.admin-search-icon {
+  position:  absolute;
+  left:      10px;
+  top:       50%;
+  transform: translateY(-50%);
+  color:     var(--a-text-faint);
+  width:     13px;
+  height:    13px;
+}
+.admin-search input {
+  background:    var(--a-surface-raised);
+  border:        1px solid var(--a-border);
+  border-radius: var(--a-radius);
+  padding:       6px 12px 6px 30px;
+  font-size:     0.8125rem;
+  color:         var(--a-text);
+  width:         180px;
+  outline:       none;
+  transition:    border-color 0.12s, width 0.2s;
+  font-family:   inherit;
+}
+.admin-search input::placeholder { color: var(--a-text-faint); }
+.admin-search input:focus {
+  border-color: var(--a-accent);
+  width:        220px;
+}
+
+.admin-topbar-divider {
+  width:      1px;
+  height:     20px;
+  background: var(--a-border);
+  margin:     0 2px;
+}
+
+.admin-icon-btn {
+  width:         32px;
+  height:        32px;
+  border-radius: var(--a-radius-sm);
+  display:       flex;
+  align-items:   center;
+  justify-content: center;
+  background:    transparent;
+  border:        none;
+  cursor:        pointer;
+  color:         var(--a-text-faint);
+  transition:    background 0.12s, color 0.12s;
+}
+.admin-icon-btn:hover {
+  background: var(--a-surface-raised);
+  color:      var(--a-text-muted);
+}
+
+.admin-avatar {
+  width:           30px;
+  height:          30px;
+  border-radius:   50%;
+  background:      var(--a-accent-muted);
+  border:          1px solid var(--a-accent);
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  font-size:       0.6875rem;
+  font-weight:     700;
+  color:           var(--a-accent);
+  flex-shrink:     0;
+}
+
+.admin-user-info { display: none; }
+@media (min-width: 640px) {
+  .admin-user-info {
+    display:     flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+}
+.admin-user-email {
+  font-size:   0.75rem;
+  font-weight: 600;
+  color:       var(--a-text);
+  line-height: 1.1;
+  max-width:   160px;
+  overflow:    hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.admin-user-role {
+  font-size:   0.625rem;
+  font-weight: 600;
+  color:       var(--a-accent);
+  margin-top:  2px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.admin-view-site {
+  display:         none;
+  align-items:     center;
+  gap:             5px;
+  padding:         5px 11px;
+  border-radius:   var(--a-radius-sm);
+  border:          1px solid var(--a-border);
+  font-size:       0.75rem;
+  font-weight:     500;
+  color:           var(--a-text-faint);
+  text-decoration: none;
+  transition:      border-color 0.12s, color 0.12s, background 0.12s;
+}
+@media (min-width: 768px) { .admin-view-site { display: flex; } }
+.admin-view-site:hover {
+  border-color: var(--a-border-subtle);
+  background:   var(--a-surface-raised);
+  color:        var(--a-text-muted);
+}
+
+/* ── 5. Main content wrapper ─────────────────────────────────────────────── */
+.admin-main-col {
+  flex:           1;
+  display:        flex;
+  flex-direction: column;
+  min-width:      0;
+  overflow-x:     hidden;
+}
+
+.admin-content {
+  flex:       1;
+  padding:    24px 28px;
+  max-width:  1600px;
+  width:      100%;
+  margin:     0 auto;
+}
+@media (max-width: 768px) {
+  .admin-content { padding: 18px 16px; }
+}
+
+/* ── 6. Page header ──────────────────────────────────────────────────────── */
+.admin-page-header {
+  display:       flex;
+  align-items:   flex-end;
+  justify-content: space-between;
+  gap:           16px;
+  margin-bottom: 24px;
+}
+
+.admin-page-title {
+  font-size:      1.375rem;
+  font-weight:    700;
+  color:          var(--a-text);
+  letter-spacing: -0.02em;
+  line-height:    1.2;
+}
+
+.admin-page-subtitle {
+  font-size:  0.8125rem;
+  color:      var(--a-text-muted);
+  margin-top: 4px;
+}
+
+.admin-page-actions {
+  display:     flex;
+  align-items: center;
+  gap:         8px;
+  flex-shrink: 0;
+}
+
+/* ── 7. Section ──────────────────────────────────────────────────────────── */
+.admin-section {
+  margin-bottom: 32px;
+}
+
+.admin-section-header {
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  margin-bottom:   12px;
+}
+
+.admin-section-title {
+  font-size:   0.9375rem;
+  font-weight: 600;
+  color:       var(--a-text);
+}
+
+/* ── 8. Card ─────────────────────────────────────────────────────────────── */
+.admin-card {
+  background:    var(--a-surface);
+  border:        1px solid var(--a-border);
+  border-radius: var(--a-radius-lg);
+  overflow:      hidden;
+}
+
+.admin-card-header {
+  padding:       14px 18px;
+  border-bottom: 1px solid var(--a-border);
+}
+
+.admin-card-body {
+  padding: 18px;
+}
+
+/* Stat card variant */
+.admin-stat-card {
+  background:    var(--a-surface);
+  border:        1px solid var(--a-border);
+  border-radius: var(--a-radius-lg);
+  padding:       20px;
+}
+.admin-stat-label {
+  font-size:      0.6875rem;
+  font-weight:    700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color:          var(--a-text-faint);
+  margin-bottom:  10px;
+}
+.admin-stat-value {
+  font-size:      1.75rem;
+  font-weight:    700;
+  color:          var(--a-text);
+  letter-spacing: -0.02em;
+  line-height:    1;
+}
+.admin-stat-sub {
+  font-size:  0.75rem;
+  color:      var(--a-text-muted);
+  margin-top: 6px;
+}
+
+/* ── 9. Table ────────────────────────────────────────────────────────────── */
+.admin-table-wrap {
+  background:    var(--a-surface);
+  border:        1px solid var(--a-border);
+  border-radius: var(--a-radius-lg);
+  overflow:      hidden;
+}
+
+.admin-table {
+  width:           100%;
+  border-collapse: collapse;
+}
+
+.admin-table thead th {
+  padding:        10px 16px;
+  font-size:      0.6875rem;
+  font-weight:    700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color:          var(--a-text-faint);
+  border-bottom:  1px solid var(--a-border);
+  text-align:     left;
+  background:     var(--a-surface);
+  white-space:    nowrap;
+}
+
+.admin-table tbody tr {
+  transition: background 0.1s;
+}
+.admin-table tbody tr:hover td {
+  background: var(--a-surface-hover);
+}
+
+.admin-table tbody td {
+  padding:      12px 16px;
+  font-size:    0.8375rem;
+  color:        var(--a-text-muted);
+  border-bottom: 1px solid var(--a-border-subtle);
+  vertical-align: middle;
+}
+.admin-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ── 10. Buttons ─────────────────────────────────────────────────────────── */
+.admin-btn {
+  display:       inline-flex;
+  align-items:   center;
+  gap:           6px;
+  padding:       7px 14px;
+  border-radius: var(--a-radius);
+  font-size:     0.8125rem;
+  font-weight:   600;
+  cursor:        pointer;
+  border:        none;
+  transition:    background 0.12s, color 0.12s, border-color 0.12s;
+  font-family:   inherit;
+  line-height:   1.2;
+  white-space:   nowrap;
+  text-decoration: none;
+}
+.admin-btn:disabled {
+  opacity: 0.45;
+  cursor:  not-allowed;
+}
+
+.admin-btn-primary {
+  background: var(--a-accent);
+  color:      var(--a-accent-text);
+}
+.admin-btn-primary:hover:not(:disabled) { background: var(--a-accent-hover); }
+
+.admin-btn-outline {
+  background:   transparent;
+  border:       1px solid var(--a-border);
+  color:        var(--a-text-muted);
+}
+.admin-btn-outline:hover:not(:disabled) {
+  border-color: var(--a-text-faint);
+  color:        var(--a-text);
+  background:   var(--a-surface-raised);
+}
+
+.admin-btn-ghost {
+  background: transparent;
+  color:      var(--a-text-muted);
+}
+.admin-btn-ghost:hover:not(:disabled) {
+  background: var(--a-surface-raised);
+  color:      var(--a-text);
+}
+
+.admin-btn-danger {
+  background: var(--a-error-bg);
+  color:      var(--a-error);
+  border:     1px solid transparent;
+}
+.admin-btn-danger:hover:not(:disabled) {
+  background: rgba(248, 113, 113, 0.15);
+}
+
+/* ── 11. Form elements ───────────────────────────────────────────────────── */
+.admin-field {
+  display:       flex;
+  flex-direction: column;
+  gap:           6px;
+}
+
+.admin-label {
+  font-size:      0.6875rem;
+  font-weight:    700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color:          var(--a-text-muted);
+}
+
+.admin-input,
+.admin-textarea,
+.admin-select {
+  width:         100%;
+  background:    var(--a-surface-raised);
+  border:        1px solid var(--a-border);
+  border-radius: var(--a-radius);
+  padding:       8px 12px;
+  font-size:     0.875rem;
+  color:         var(--a-text);
+  outline:       none;
+  transition:    border-color 0.12s, box-shadow 0.12s;
+  font-family:   inherit;
+  line-height:   1.4;
+}
+.admin-input::placeholder,
+.admin-textarea::placeholder { color: var(--a-text-faint); }
+
+.admin-input:focus,
+.admin-textarea:focus,
+.admin-select:focus {
+  border-color: var(--a-accent);
+  box-shadow:   0 0 0 3px var(--a-accent-muted);
+}
+
+.admin-textarea {
+  min-height: 100px;
+  resize:     vertical;
+}
+
+.admin-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23524e48' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:   no-repeat;
+  background-position: right 12px center;
+  padding-right:       34px;
+}
+
+/* Toggle / Switch */
+.admin-switch {
+  width:            44px;
+  height:           24px;
+  border-radius:    99px;
+  border:           none;
+  cursor:           pointer;
+  transition:       background 0.15s;
+  position:         relative;
+  background:       var(--a-border);
+  flex-shrink:      0;
+}
+.admin-switch[aria-pressed="true"] { background: var(--a-accent); }
+.admin-switch-knob {
+  position:      absolute;
+  top:           3px;
+  left:          3px;
+  width:         18px;
+  height:        18px;
+  border-radius: 50%;
+  background:    var(--a-text);
+  transition:    transform 0.15s;
+}
+.admin-switch[aria-pressed="true"] .admin-switch-knob {
+  transform: translateX(20px);
+}
+
+/* ── 12. Tabs ────────────────────────────────────────────────────────────── */
+.admin-tabs {
+  display:       flex;
+  gap:           2px;
+  background:    var(--a-surface-raised);
+  border:        1px solid var(--a-border);
+  border-radius: var(--a-radius);
+  padding:       3px;
+}
+
+.admin-tab {
+  padding:       6px 14px;
+  border-radius: var(--a-radius-sm);
+  font-size:     0.8125rem;
+  font-weight:   500;
+  color:         var(--a-text-muted);
+  background:    transparent;
+  border:        none;
+  cursor:        pointer;
+  transition:    background 0.12s, color 0.12s;
+  font-family:   inherit;
+}
+.admin-tab:hover:not(.active) { color: var(--a-text); }
+.admin-tab.active {
+  background: var(--a-surface);
+  color:      var(--a-text);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* ── 13. Filter bar ──────────────────────────────────────────────────────── */
+.admin-filter-bar {
+  display:       flex;
+  flex-wrap:     wrap;
+  align-items:   center;
+  gap:           10px;
+  padding:       12px 16px;
+  background:    var(--a-surface);
+  border:        1px solid var(--a-border);
+  border-radius: var(--a-radius-lg);
+  margin-bottom: 16px;
+}
+
+/* ── 14. Badge / Pill ────────────────────────────────────────────────────── */
+.admin-badge {
+  display:       inline-flex;
+  align-items:   center;
+  gap:           4px;
+  padding:       2px 8px;
+  border-radius: 99px;
+  font-size:     0.6875rem;
+  font-weight:   600;
+}
+.admin-badge-success { background: var(--a-success-bg); color: var(--a-success); }
+.admin-badge-warning { background: var(--a-warning-bg); color: var(--a-warning); }
+.admin-badge-error   { background: var(--a-error-bg);   color: var(--a-error);   }
+.admin-badge-neutral { background: var(--a-surface-raised); color: var(--a-text-muted); }
+.admin-badge-accent  { background: var(--a-accent-muted); color: var(--a-accent); }
+
+/* ── 15. Empty state ─────────────────────────────────────────────────────── */
+.admin-empty {
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  justify-content: center;
+  padding:         48px 24px;
+  color:           var(--a-text-faint);
+  text-align:      center;
+  gap:             8px;
+}
+.admin-empty-icon { opacity: 0.3; margin-bottom: 4px; }
+.admin-empty-title { font-size: 0.9375rem; font-weight: 600; color: var(--a-text-muted); }
+.admin-empty-text  { font-size: 0.8125rem; }
+
+/* ── 16. Login page ──────────────────────────────────────────────────────── */
+.admin-login-root {
+  background:      var(--a-bg);
+  min-height:      100dvh;
+  display:         flex;
+  font-family:     var(--font-body, 'Sora', ui-sans-serif, system-ui, sans-serif);
+}
+
+.admin-login-panel {
+  display:         none;
+  width:           380px;
+  flex-shrink:     0;
+  background:      var(--a-surface);
+  border-right:    1px solid var(--a-border);
+  flex-direction:  column;
+  justify-content: space-between;
+  padding:         40px 36px;
+  position:        relative;
+  overflow:        hidden;
+}
+@media (min-width: 1024px) { .admin-login-panel { display: flex; } }
+
+.admin-login-panel-bg {
+  position:   absolute;
+  inset:      0;
+  pointer-events: none;
+  overflow:   hidden;
+}
+
+.admin-login-form-col {
+  flex:            1;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  padding:         24px;
+}
+
+.admin-login-card {
+  width:     100%;
+  max-width: 360px;
+}
+
+/* ── 17. Scrollbar ───────────────────────────────────────────────────────── */
+.admin-root *::-webkit-scrollbar         { width: 6px; height: 6px; }
+.admin-root *::-webkit-scrollbar-track   { background: transparent; }
+.admin-root *::-webkit-scrollbar-thumb   { background: var(--a-border); border-radius: 99px; }
+.admin-root *::-webkit-scrollbar-thumb:hover { background: var(--a-text-faint); }

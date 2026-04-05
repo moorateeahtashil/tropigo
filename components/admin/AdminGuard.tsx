@@ -34,13 +34,14 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
 
   if (status === 'loading') {
     return (
-      <div className="min-h-dvh bg-zinc-950 flex items-center justify-center">
-        <div className="flex items-center gap-3 text-zinc-500 text-sm">
-          <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+      <div style={{ minHeight: '100dvh', background: 'var(--a-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: 'var(--a-text-faint)', fontSize: '0.875rem', fontFamily: 'var(--font-body, Sora, sans-serif)' }}>
+          <svg width="16" height="16" style={{ animation: 'spin 1s linear infinite' }} fill="none" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" style={{ opacity: 0.25 }} />
+            <path fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" style={{ opacity: 0.75 }} />
           </svg>
           Checking access…
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </div>
       </div>
     )

@@ -1,10 +1,10 @@
 export default function Section({ title, children, actions }: { title?: string; children: React.ReactNode; actions?: React.ReactNode }) {
   return (
-    <section className="space-y-3 mb-8">
+    <section className="admin-section">
       {(title || actions) && (
-        <div className="flex items-center justify-between">
-          {title && <h3 className="font-headline text-lg text-primary">{title}</h3>}
-          {actions && <div className="flex items-center gap-2">{actions}</div>}
+        <div className="admin-section-header">
+          {title && <h3 className="admin-section-title">{title}</h3>}
+          {actions && <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>{actions}</div>}
         </div>
       )}
       {children}

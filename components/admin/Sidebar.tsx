@@ -4,10 +4,9 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { getSupabaseClient } from '@/supabase/client'
 
-// ── Icons ────────────────────────────────────────────────────────────────────
-function Icon({ d, className = 'w-4 h-4' }: { d: string; className?: string }) {
+function Icon({ d, className = 'nav-icon' }: { d: string; className?: string }) {
   return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round">
       <path d={d} />
     </svg>
   )
@@ -57,37 +56,37 @@ const groups = [
   {
     label: 'Operations',
     items: [
-      { href: '/admin/bookings',   label: 'Bookings',   icon: 'bookings'   },
-      { href: '/admin/enquiries',  label: 'Enquiries',  icon: 'enquiries'  },
-      { href: '/admin/customers',  label: 'Customers',  icon: 'customers'  },
+      { href: '/admin/bookings',  label: 'Bookings',  icon: 'bookings'  },
+      { href: '/admin/enquiries', label: 'Enquiries', icon: 'enquiries' },
+      { href: '/admin/customers', label: 'Customers', icon: 'customers' },
     ],
   },
   {
     label: 'Content',
     items: [
-      { href: '/admin/homepage',     label: 'Homepage',    icon: 'homepage'  },
-      { href: '/admin/blog',         label: 'Blog',        icon: 'blog'      },
-      { href: '/admin/static-pages', label: 'Pages',       icon: 'pages'     },
-      { href: '/admin/navigation',   label: 'Navigation',  icon: 'navigation'},
-      { href: '/admin/footer',       label: 'Footer',      icon: 'footer'    },
+      { href: '/admin/homepage',     label: 'Homepage',   icon: 'homepage'   },
+      { href: '/admin/blog',         label: 'Blog',       icon: 'blog'       },
+      { href: '/admin/static-pages', label: 'Pages',      icon: 'pages'      },
+      { href: '/admin/navigation',   label: 'Navigation', icon: 'navigation' },
+      { href: '/admin/footer',       label: 'Footer',     icon: 'footer'     },
     ],
   },
   {
     label: 'Marketing',
     items: [
-      { href: '/admin/promos',       label: 'Promotions',   icon: 'promos'      },
-      { href: '/admin/coupons',      label: 'Coupons',      icon: 'coupons'     },
-      { href: '/admin/testimonials', label: 'Testimonials', icon: 'testimonials'},
+      { href: '/admin/promos',       label: 'Promotions',   icon: 'promos'       },
+      { href: '/admin/coupons',      label: 'Coupons',      icon: 'coupons'      },
+      { href: '/admin/testimonials', label: 'Testimonials', icon: 'testimonials' },
     ],
   },
   {
     label: 'Configure',
     items: [
-      { href: '/admin/faqs',     label: 'FAQs',     icon: 'faqs'    },
-      { href: '/admin/legal',    label: 'Legal',    icon: 'legal'   },
-      { href: '/admin/contact',  label: 'Contact',  icon: 'contact' },
-      { href: '/admin/settings', label: 'Settings', icon: 'settings'},
-      { href: '/admin/users',    label: 'Users',    icon: 'users'   },
+      { href: '/admin/faqs',     label: 'FAQs',     icon: 'faqs'     },
+      { href: '/admin/legal',    label: 'Legal',    icon: 'legal'    },
+      { href: '/admin/contact',  label: 'Contact',  icon: 'contact'  },
+      { href: '/admin/settings', label: 'Settings', icon: 'settings' },
+      { href: '/admin/users',    label: 'Users',    icon: 'users'    },
     ],
   },
 ]
@@ -107,62 +106,48 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className="hidden md:flex h-dvh w-60 bg-zinc-950 flex-col shrink-0 sticky top-0 overflow-y-auto">
+    <aside className="admin-sidebar hidden md:flex">
       {/* Brand */}
-      <div className="px-5 py-5 border-b border-zinc-800">
-        <div className="flex items-center gap-2.5">
-          <span className="w-7 h-7 rounded-lg bg-sky-500 flex items-center justify-center shrink-0">
-            <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1M4.22 4.22l.71.71m13.65 13.65.71.71M3 12H4m16 0h1M4.22 19.78l.71-.71M18.36 5.64l.71-.71" />
-            </svg>
-          </span>
-          <div>
-            <p className="text-white font-bold text-sm leading-none">Tropigo</p>
-            <p className="text-zinc-500 text-[10px] font-medium tracking-widest uppercase mt-0.5">Admin</p>
-          </div>
+      <div className="admin-brand">
+        <div className="admin-brand-mark">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 3v1m0 16v1M4.22 4.22l.71.71m13.65 13.65.71.71M3 12H4m16 0h1M4.22 19.78l.71-.71M18.36 5.64l.71-.71" />
+          </svg>
+        </div>
+        <div>
+          <p className="admin-brand-text">Tropigo</p>
+          <p className="admin-brand-sub">Admin</p>
         </div>
       </div>
 
-      {/* Nav */}
-      <nav className="flex-1 px-3 py-4 space-y-5">
+      {/* Navigation */}
+      <nav className="admin-nav">
         {groups.map((group) => (
-          <div key={group.label}>
-            <p className="px-2 mb-1.5 text-[10px] font-semibold tracking-widest uppercase text-zinc-600">
-              {group.label}
-            </p>
-            <div className="space-y-0.5">
-              {group.items.map((item) => {
-                const active = isActive(item.href, item.exact)
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={
-                      'flex items-center gap-2.5 px-2.5 py-2 rounded-lg transition-all text-sm ' +
-                      (active
-                        ? 'bg-sky-500/15 text-sky-400'
-                        : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/70')
-                    }
-                  >
-                    <Icon d={icons[item.icon]} className={'w-4 h-4 shrink-0 ' + (active ? 'text-sky-400' : 'text-zinc-500')} />
-                    <span className="font-medium">{item.label}</span>
-                    {active && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-sky-400 shrink-0" />}
-                  </Link>
-                )
-              })}
-            </div>
+          <div key={group.label} className="admin-nav-section">
+            <span className="admin-nav-label">{group.label}</span>
+            {group.items.map((item) => {
+              const active = isActive(item.href, item.exact)
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`admin-nav-link${active ? ' active' : ''}`}
+                >
+                  <Icon d={icons[item.icon]} />
+                  <span>{item.label}</span>
+                  {active && <span className="admin-nav-dot" />}
+                </Link>
+              )
+            })}
           </div>
         ))}
       </nav>
 
       {/* Sign out */}
-      <div className="px-3 py-4 border-t border-zinc-800">
-        <button
-          onClick={signOut}
-          className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm text-zinc-500 hover:text-red-400 hover:bg-zinc-800/70 transition-all"
-        >
-          <Icon d={icons.signout} className="w-4 h-4 shrink-0" />
-          <span className="font-medium">Sign out</span>
+      <div className="admin-signout">
+        <button onClick={signOut} className="admin-signout-btn">
+          <Icon d={icons.signout} />
+          <span>Sign out</span>
         </button>
       </div>
     </aside>

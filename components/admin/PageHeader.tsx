@@ -8,12 +8,12 @@ export default function PageHeader({
   actions?: React.ReactNode
 }) {
   return (
-    <div className="flex items-end justify-between mb-4">
+    <div className="admin-page-header">
       <div>
-        <h1 className="font-headline text-2xl font-bold text-primary">{title}</h1>
-        {subtitle && <p className="text-sm text-outline mt-1">{subtitle}</p>}
+        <h1 className="admin-page-title">{title}</h1>
+        {subtitle && <p className="admin-page-subtitle">{subtitle}</p>}
       </div>
-      {actions && <div className="flex items-center gap-2">{actions}</div>}
+      {actions && <div className="admin-page-actions">{actions}</div>}
     </div>
   )
 }
