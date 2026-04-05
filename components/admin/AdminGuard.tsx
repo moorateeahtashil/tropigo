@@ -8,26 +8,29 @@ import AdminShell from '@/components/admin/Shell'
 export default function AdminGuard({ children }: { children: React.ReactNode }) {
   const supabase = getSupabaseClient()
   const pathname = usePathname()
+  const isLoginPage = pathname === '/admin/login'
   const [status, setStatus] = useState<'loading' | 'authed' | 'denied'>('loading')
 
-  // Login page: render with no shell, no auth check
-  if (pathname === '/admin/login') {
-    return <>{children}</>
-  }
-
+  // All hooks must be called before any conditional return
   useEffect(() => {
+    if (isLoginPage) return
     ;(async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { window.location.href = '/admin/login'; return }
-      const { data } = await supabase.from('profiles').select('is_admin').eq('id', user.id).maybeSingle()
-      if (data?.is_admin) {
+      // getSession() reads from localStorage — no network request, no conflict
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) { window.location.replace('/admin/login'); return }
+
+      const isAdmin = session.user.app_metadata?.is_admin === true || session.user.app_metadata?.is_admin === 'true'
+      if (isAdmin) {
         setStatus('authed')
       } else {
         await supabase.auth.signOut()
-        window.location.href = '/admin/login'
+        window.location.replace('/admin/login')
       }
     })()
-  }, [])
+  }, [isLoginPage])
+
+  // Login page: render with no shell, no auth check
+  if (isLoginPage) return <>{children}</>
 
   if (status === 'loading') {
     return (

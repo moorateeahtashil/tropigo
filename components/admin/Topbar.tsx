@@ -41,9 +41,9 @@ export default function Topbar({ title }: { title?: string }) {
   const [initials, setInitials] = useState('A')
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) return
-      const e = user.email || ''
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      const e = session?.user?.email || ''
+      if (!e) return
       setEmail(e)
       setInitials(e.charAt(0).toUpperCase())
     })

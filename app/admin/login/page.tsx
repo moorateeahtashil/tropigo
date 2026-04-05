@@ -10,29 +10,38 @@ export default function AdminLoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [showPw, setShowPw] = useState(false)
+  const [step, setStep] = useState<string | null>(null)
 
   async function login(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError(null)
+    setStep(null)
     try {
-      const { error: authError } = await supabase.auth.signInWithPassword({ email, password })
-      if (authError) { setError(authError.message); setLoading(false); return }
+      setStep('Signing in…')
+      // signInWithPassword already returns the user — no need for a separate getUser() call
+      const { data, error: authError } = await supabase.auth.signInWithPassword({ email, password })
+      if (authError) { setError(authError.message); setLoading(false); setStep(null); return }
 
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { setError('Authentication failed.'); setLoading(false); return }
+      const user = data.user
+      if (!user) { setError('Could not retrieve user after login.'); setLoading(false); setStep(null); return }
 
-      const { data: profile } = await supabase.from('profiles').select('is_admin').eq('id', user.id).maybeSingle()
-      if (!profile?.is_admin) {
+      setStep('Checking permissions…')
+      const isAdmin = user.app_metadata?.is_admin === true || user.app_metadata?.is_admin === 'true'
+      if (!isAdmin) {
         await supabase.auth.signOut()
-        setError('Access denied — admin accounts only.')
+        setError(`Access denied — admin accounts only. (app_metadata.is_admin = ${JSON.stringify(user.app_metadata?.is_admin ?? 'not set')})`)
         setLoading(false)
+        setStep(null)
         return
       }
-      window.location.href = '/admin'
+
+      setStep('Redirecting…')
+      window.location.replace('/admin')
     } catch (err: any) {
       setError(err?.message || 'Something went wrong.')
       setLoading(false)
+      setStep(null)
     }
   }
 
@@ -188,7 +197,7 @@ export default function AdminLoginPage() {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
                   </svg>
-                  Signing in…
+                  {step ?? 'Signing in…'}
                 </>
               ) : (
                 <>

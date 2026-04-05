@@ -1,22 +1,10 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-export function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl
-
-  if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
-    // Supabase v2 stores the session in a cookie named sb-<project-ref>-auth-token
-    // We check for any cookie that starts with 'sb-' and ends with '-auth-token'
-    const hasSession = [...req.cookies.getAll()].some(
-      (c) => c.name.startsWith('sb-') && c.name.endsWith('-auth-token') && c.value
-    )
-    if (!hasSession) {
-      const url = req.nextUrl.clone()
-      url.pathname = '/admin/login'
-      return NextResponse.redirect(url)
-    }
-  }
-
+export function middleware(_req: NextRequest) {
+  // Auth is handled client-side by AdminGuard via Supabase localStorage session.
+  // Middleware cannot read localStorage, so we let all requests through and rely
+  // on AdminGuard to redirect unauthenticated users to /admin/login.
   return NextResponse.next()
 }
 

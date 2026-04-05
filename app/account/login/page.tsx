@@ -22,12 +22,7 @@ export default function LoginPage() {
 
       // Check if admin to redirect to the right place
       const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
-        const { data: profile } = await supabase.from('profiles').select('is_admin').eq('id', user.id).maybeSingle()
-        window.location.href = profile?.is_admin ? '/admin' : '/account/orders'
-      } else {
-        window.location.href = '/account/orders'
-      }
+      window.location.href = user?.app_metadata?.is_admin === true ? '/admin' : '/account/orders'
     } catch (err: any) {
       setError(err?.message || 'Something went wrong. Please try again.')
       setLoading(false)
