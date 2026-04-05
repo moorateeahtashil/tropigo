@@ -37,3 +37,14 @@ export async function fetchLegalLinks() {
   return (data || []).map((p) => ({ label: p.title, href: `/legal/${p.slug}` }))
 }
 
+export async function fetchSiteBadges() {
+  const supabase = getServerSupabase()
+  const { data } = await supabase
+    .from('badges')
+    .select('label')
+    .eq('published', true)
+    .eq('context', 'sitewide')
+    .order('position', { ascending: true })
+  return data || []
+}
+

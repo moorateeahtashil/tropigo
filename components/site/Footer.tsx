@@ -1,25 +1,25 @@
 import FooterColumns from '@/components/ui/FooterColumns'
-import { fetchFooterGroups, fetchLegalLinks, fetchSiteSettings } from '@/lib/server/settings'
+import { fetchFooterGroups, fetchLegalLinks, fetchSiteSettings, fetchSiteBadges } from '@/lib/server/settings'
 import Badge from '@/components/ui/Badge'
-import { getServerSupabase } from '@/supabase/server'
 
 export default async function Footer() {
-  const [groups, legal, settings] = await Promise.all([
+  const [groups, legal, settings, siteBadges] = await Promise.all([
     fetchFooterGroups(),
     fetchLegalLinks(),
     fetchSiteSettings(),
+    fetchSiteBadges(),
   ])
   const footerGroups = groups.map((g) => ({ title: g.title, items: (g.items as any[]) || [] }))
   if (legal.length) footerGroups.push({ title: 'Legal', items: legal })
   const brand = settings?.brand_name || 'Tropigo'
-  const supabase = getServerSupabase()
-  const { data: siteBadges } = await supabase.from('badges').select('label').eq('published', true).eq('context', 'sitewide').order('position', { ascending: true })
   return (
     <footer className="bg-primary text-white mt-16">
-      {siteBadges && siteBadges.length > 0 && (
+      {siteBadges.length > 0 && (
         <div className="px-6 md:px-12 pt-12">
           <div className="flex flex-wrap items-center gap-3 opacity-90">
-            {siteBadges.map((b:any, i:number)=> <Badge key={i} tone="secondary" className="!bg-white/10 !text-white">{b.label}</Badge>)}
+            {siteBadges.map((b: any, i: number) => (
+              <Badge key={i} tone="secondary" className="!bg-white/10 !text-white">{b.label}</Badge>
+            ))}
           </div>
         </div>
       )}

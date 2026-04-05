@@ -7,65 +7,32 @@
 -- =============================================================================
 
 -- -------------------------
--- Auth users
--- -------------------------
-insert into auth.users (
-  id, instance_id, aud, role,
-  email, encrypted_password, email_confirmed_at,
-  raw_app_meta_data, raw_user_meta_data,
-  created_at, updated_at
-) values
-(
-  '00000000-0000-0000-0000-000000000001',
-  '00000000-0000-0000-0000-000000000000',
-  'authenticated', 'authenticated',
-  'admin@tropigo.com',
-  extensions.crypt('Admin1234!', extensions.gen_salt('bf')),
-  now(),
-  '{"provider":"email","providers":["email"],"role":"admin","is_admin":true}'::jsonb,
-  '{"full_name":"Tropigo Admin"}'::jsonb,
-  now(), now()
-),
-(
-  '00000000-0000-0000-0000-000000000002',
-  '00000000-0000-0000-0000-000000000000',
-  'authenticated', 'authenticated',
-  'user@tropigo.com',
-  extensions.crypt('User1234!', extensions.gen_salt('bf')),
-  now(),
-  '{"provider":"email","providers":["email"]}'::jsonb,
-  '{"full_name":"Sophie Laurent"}'::jsonb,
-  now(), now()
-)
-on conflict (id) do nothing;
-
-insert into auth.identities (
-  id, user_id, provider_id, provider, identity_data,
-  last_sign_in_at, created_at, updated_at
-) values
-(
-  '00000000-0000-0000-0000-000000000001',
-  '00000000-0000-0000-0000-000000000001',
-  'admin@tropigo.com', 'email',
-  '{"sub":"00000000-0000-0000-0000-000000000001","email":"admin@tropigo.com"}'::jsonb,
-  now(), now(), now()
-),
-(
-  '00000000-0000-0000-0000-000000000002',
-  '00000000-0000-0000-0000-000000000002',
-  'user@tropigo.com', 'email',
-  '{"sub":"00000000-0000-0000-0000-000000000002","email":"user@tropigo.com"}'::jsonb,
-  now(), now(), now()
-)
-on conflict (id) do nothing;
-
--- -------------------------
 -- Profiles
+-- Create users first via Supabase Dashboard → Authentication → Users:
+--   admin@tropigo.com / Admin1234!  (tick "Auto Confirm")
+--   user@tropigo.com  / User1234!   (tick "Auto Confirm")
+-- Then run this seed — it patches the profiles by email lookup.
 -- -------------------------
-insert into public.profiles (id, full_name, phone, country, is_admin) values
-('00000000-0000-0000-0000-000000000001', 'Tropigo Admin', '+230 5000 0001', 'MU', true),
-('00000000-0000-0000-0000-000000000002', 'Sophie Laurent',  '+33 6 12 34 56 78', 'FR', false)
-on conflict (id) do nothing;
+do $$
+declare
+  v_admin_id uuid;
+  v_user_id  uuid;
+begin
+  select id into v_admin_id from auth.users where email = 'admin@tropigo.com' limit 1;
+  select id into v_user_id  from auth.users where email = 'user@tropigo.com'  limit 1;
+
+  if v_admin_id is not null then
+    insert into public.profiles (id, full_name, phone, country, is_admin)
+    values (v_admin_id, 'Tropigo Admin', '+230 5000 0001', 'MU', true)
+    on conflict (id) do update set is_admin = true, full_name = 'Tropigo Admin';
+  end if;
+
+  if v_user_id is not null then
+    insert into public.profiles (id, full_name, phone, country, is_admin)
+    values (v_user_id, 'Sophie Laurent', '+33 6 12 34 56 78', 'FR', false)
+    on conflict (id) do nothing;
+  end if;
+end $$;
 
 -- -------------------------
 -- Site settings
@@ -653,31 +620,43 @@ insert into public.enquiries (name, email, phone, message, tour_id, status) valu
 on conflict do nothing;
 
 -- -------------------------
--- Sample booking for test user
+-- Sample booking for test user (created only if user@tropigo.com exists)
 -- -------------------------
-insert into public.bookings (
-  id, user_id, booking_ref, status, payment_status, currency,
-  subtotal_amount, discount_amount, total_amount,
-  customer_email, customer_name, customer_phone,
-  idempotency_key, source, payment_provider, payment_intent_id, paid_at
-) values (
-  'b0000001-0000-0000-0000-000000000001',
-  '00000000-0000-0000-0000-000000000002',
-  'TG-20260404-SEED01',
-  'confirmed', 'paid', 'MUR',
-  18000, 1800, 16200,
-  'user@tropigo.com', 'Sophie Laurent', '+33 6 12 34 56 78',
-  'idem-seed-001', 'web', 'mock', 'mock_pi_seed_001', now() - interval '1 day'
-) on conflict do nothing;
+do $$
+declare
+  v_user_id  uuid;
+  v_booking_id uuid;
+begin
+  select id into v_user_id from auth.users where email = 'user@tropigo.com' limit 1;
+  if v_user_id is null then return; end if;
 
-insert into public.booking_items (
-  booking_id, tour_id, title, starts_at, ends_at,
-  guests, quantity, unit_price, subtotal
-) values (
-  'b0000001-0000-0000-0000-000000000001',
-  '30000000-0000-0000-0000-000000000001',
-  'Le Morne Lagoon Cruise',
-  now() + interval '2 days' + time '09:00',
-  now() + interval '2 days' + time '14:00',
-  2, 2, 9000, 18000
-) on conflict do nothing;
+  insert into public.bookings (
+    user_id, booking_ref, status, payment_status, currency,
+    subtotal_amount, discount_amount, total_amount,
+    customer_email, customer_name, customer_phone,
+    idempotency_key, source, payment_provider, payment_intent_id, paid_at
+  ) values (
+    v_user_id,
+    'TG-20260404-SEED01',
+    'confirmed', 'paid', 'MUR',
+    18000, 1800, 16200,
+    'user@tropigo.com', 'Sophie Laurent', '+33 6 12 34 56 78',
+    'idem-seed-001', 'web', 'mock', 'mock_pi_seed_001', now() - interval '1 day'
+  )
+  on conflict do nothing
+  returning id into v_booking_id;
+
+  if v_booking_id is not null then
+    insert into public.booking_items (
+      booking_id, tour_id, title, starts_at, ends_at,
+      guests, quantity, unit_price, subtotal
+    ) values (
+      v_booking_id,
+      '30000000-0000-0000-0000-000000000001',
+      'Le Morne Lagoon Cruise',
+      now() + interval '2 days' + time '09:00',
+      now() + interval '2 days' + time '14:00',
+      2, 2, 9000, 18000
+    ) on conflict do nothing;
+  end if;
+end $$;

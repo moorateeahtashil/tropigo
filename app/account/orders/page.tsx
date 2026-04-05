@@ -1,8 +1,6 @@
 "use client"
 
 import Section from '@/components/ui/Section'
-import Header from '@/components/site/Header'
-import Footer from '@/components/site/Footer'
 import { getSupabaseClient } from '@/supabase/client'
 import { useEffect, useState } from 'react'
 
@@ -21,11 +19,7 @@ export default function OrdersPage() {
   })() }, [])
 
   return (
-    <div className="min-h-dvh flex flex-col">
-      {/* @ts-expect-error Async Server Component */}
-      <Header />
-      <main className="flex-1">
-        <Section>
+    <Section>
           <div className="max-w-3xl mx-auto bg-white rounded-2xl border border-outline-variant/10 p-6">
             <h1 className="font-headline text-2xl text-primary mb-4">Your Orders</h1>
             {!rows ? (
@@ -46,11 +40,7 @@ export default function OrdersPage() {
               </div>
             )}
           </div>
-        </Section>
-      </main>
-      {/* @ts-expect-error Async Server Component */}
-      <Footer />
-    </div>
+    </Section>
   )
 }
 
