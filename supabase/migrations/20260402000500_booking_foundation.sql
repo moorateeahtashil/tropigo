@@ -43,15 +43,15 @@ exception when duplicate_object then null; end $$;
 
 -- Human booking reference
 create or replace function public.book_generate_ref()
-returns text language sql as $$
-  select 'TG-' || to_char(now(), 'YYYYMMDD') || '-' || upper(substr(encode(gen_random_bytes(6), 'hex'),1,6));
-$$;
+returns text language sql as $BODY$
+  select 'TG-' || to_char(now(), 'YYYYMMDD') || '-' || upper(substr(replace(gen_random_uuid()::text, '-', ''), 1, 6));
+$BODY$;
 
 -- Price selection helper
 create or replace function public.book_effective_unit_price(t public.tours, s public.availability_slots)
-returns numeric language sql stable as $$
+returns numeric language sql stable as $BODY$
   select coalesce(s.price, case when t.sale_active and t.sale_price is not null then t.sale_price else t.price_from end);
-$$;
+$BODY$;
 
 -- Quote a single tour slot
 create or replace function public.book_quote(
@@ -172,12 +172,12 @@ create or replace function public.book_reserve(
   p_tour_id uuid,
   p_slot_id uuid,
   p_quantity int,
-  p_pickup_id uuid default null,
-  p_coupon_code text default null,
   p_customer_email text,
   p_customer_name text,
-  p_customer_phone text default null,
-  p_idempotency_key text
+  p_idempotency_key text,
+  p_pickup_id uuid default null,
+  p_coupon_code text default null,
+  p_customer_phone text default null
 ) returns jsonb
 language plpgsql
 security definer

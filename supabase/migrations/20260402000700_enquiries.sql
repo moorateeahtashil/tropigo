@@ -1,4 +1,5 @@
-create type if not exists enquiry_status as enum ('new','responded','archived');
+drop type if exists enquiry_status;
+create type enquiry_status as enum ('new','responded','archived');
 create table if not exists public.enquiries (
   id uuid primary key default gen_random_uuid(),
   name text,

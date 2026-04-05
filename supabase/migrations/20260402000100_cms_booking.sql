@@ -177,7 +177,8 @@ create policy "admin upd contact settings" on public.contact_settings for update
 create policy "admin del contact settings" on public.contact_settings for delete to authenticated using (is_admin());
 
 -- 8) coupons (private; validated server-side)
-create type if not exists discount_type as enum ('percent','fixed');
+drop type if exists discount_type;
+create type discount_type as enum ('percent','fixed');
 create table if not exists public.coupons (
   id uuid primary key default gen_random_uuid(),
   code text not null unique,
@@ -224,8 +225,10 @@ create policy "owner update profile" on public.profiles for update using (auth.u
 create policy "admin read profiles" on public.profiles for select to authenticated using (is_admin());
 
 -- 10) bookings and booking_items
-create type if not exists booking_status as enum ('pending','reserved','confirmed','canceled','failed','expired');
-create type if not exists payment_status as enum ('unpaid','authorized','paid','refunded','partially_refunded');
+drop type if exists booking_status;
+create type booking_status as enum ('pending','reserved','confirmed','canceled','failed','expired');
+drop type if exists payment_status;
+create type payment_status as enum ('unpaid','authorized','paid','refunded','partially_refunded');
 
 create table if not exists public.bookings (
   id uuid primary key default gen_random_uuid(),
