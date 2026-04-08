@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Luxe Mauritius | Curated Tropical Excellence</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700;800&amp;family=Sora:wght@300;400;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-primary-fixed": "#001b3c",
+              "on-error-container": "#93000a",
+              "background": "#fbf9f4",
+              "surface": "#fbf9f4",
+              "surface-container": "#f0eee9",
+              "primary-fixed-dim": "#a7c8ff",
+              "primary-container": "#003366",
+              "on-tertiary-container": "#fe6e60",
+              "on-background": "#1b1c19",
+              "surface-tint": "#3a5f94",
+              "outline-variant": "#c3c6d1",
+              "surface-container-lowest": "#ffffff",
+              "inverse-surface": "#30312e",
+              "inverse-primary": "#a7c8ff",
+              "surface-bright": "#fbf9f4",
+              "on-primary-container": "#799dd6",
+              "error-container": "#ffdad6",
+              "surface-dim": "#dbdad5",
+              "primary-fixed": "#d5e3ff",
+              "tertiary-fixed-dim": "#ffb4aa",
+              "surface-variant": "#e4e2dd",
+              "on-primary": "#ffffff",
+              "tertiary-fixed": "#ffdad5",
+              "on-tertiary-fixed": "#410001",
+              "on-secondary-fixed-variant": "#004f4f",
+              "on-secondary": "#ffffff",
+              "tertiary-container": "#6e0105",
+              "surface-container-low": "#f5f3ee",
+              "tertiary": "#460002",
+              "secondary-fixed": "#79f6f5",
+              "on-tertiary-fixed-variant": "#8b1a16",
+              "inverse-on-surface": "#f2f1ec",
+              "on-secondary-fixed": "#002020",
+              "on-error": "#ffffff",
+              "primary": "#001e40",
+              "on-surface-variant": "#43474f",
+              "secondary-container": "#79f6f5",
+              "secondary-fixed-dim": "#59d9d9",
+              "error": "#ba1a1a",
+              "outline": "#737780",
+              "secondary": "#006a6a",
+              "on-primary-fixed-variant": "#1f477b",
+              "surface-container-high": "#eae8e3",
+              "on-surface": "#1b1c19",
+              "on-secondary-container": "#007070",
+              "on-tertiary": "#ffffff",
+              "surface-container-highest": "#e4e2dd"
+            },
+            fontFamily: {
+              "headline": ["Eb Garamond"],
+              "body": ["Sora"],
+              "label": ["Sora"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(251, 249, 244, 0.7);
+            backdrop-filter: blur(16px);
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-secondary/30">
+<!-- Top Navigation -->
+<nav class="fixed top-0 w-full z-50 bg-[#fbf9f4]/80 dark:bg-slate-950/80 backdrop-blur-md shadow-sm dark:shadow-none transition-all duration-300">
+<div class="flex justify-between items-center px-8 py-6 w-full max-w-screen-2xl mx-auto">
+<div class="flex items-center gap-12">
+<a class="font-['EB_Garamond'] text-2xl font-bold tracking-[0.2em] text-[#001e40] dark:text-white" href="#">LUXE MAURITIUS</a>
+<div class="hidden md:flex gap-8 items-center">
+<a class="font-['EB_Garamond'] tracking-wide text-lg text-[#006a6a] dark:text-teal-400 border-b-2 border-[#006a6a] pb-1" href="#">Destinations</a>
+<a class="font-['EB_Garamond'] tracking-wide text-lg text-[#001e40] dark:text-slate-300 hover:text-[#006a6a] transition-colors" href="#">Villas</a>
+<a class="font-['EB_Garamond'] tracking-wide text-lg text-[#001e40] dark:text-slate-300 hover:text-[#006a6a] transition-colors" href="#">Experiences</a>
+<a class="font-['EB_Garamond'] tracking-wide text-lg text-[#001e40] dark:text-slate-300 hover:text-[#006a6a] transition-colors" href="#">Journal</a>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden lg:flex items-center bg-surface-container-low px-4 py-2 rounded-full border border-outline-variant/20">
+<span class="material-symbols-outlined text-outline text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-40" placeholder="Search experiences..." type="text"/>
+</div>
+<button class="bg-primary text-on-primary px-8 py-3 rounded-full font-label text-sm tracking-widest uppercase hover:bg-primary/90 transition-all Active:scale-95">Book Now</button>
+</div>
+</div>
+</nav>
+<!-- Hero Section -->
+<section class="relative h-screen w-full overflow-hidden">
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover" data-alt="Cinematic wide shot of a luxury overwater villa in Mauritius at sunset with calm turquoise lagoon and orange glowing sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEU3d2CtcGm_Dv19YYsr8PBrjDGU1NcLL_s7wFT1-cjvrMzxqJAfOjvNf4FpTf6qp4nt5FUU9Km26bp8nXUCy21bSD1ZTl33tfLbI8_ChQoqShHt4F__60j4NGDON56G-MCDWS00fuxQP1bXR1vMlvF3fuStg0W0ClrppYNYiJa6lBuIZVlF_uDzH0qL8R_uW9TMpp9KTgDf3IRT7X9UtP-YMm8CgmSSJ7ki6zP7PjNENioek_JcZWr4kcMoYx94MWchXxi4G2jFI"/>
+<div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/20"></div>
+</div>
+<div class="relative z-10 h-full flex flex-col justify-center items-center px-6 text-center text-white">
+<span class="font-label tracking-[0.4em] uppercase text-sm mb-6 opacity-90">Private Island Sanctuary</span>
+<h1 class="font-headline text-5xl md:text-8xl leading-tight max-w-5xl mb-12">Refined Luxury in the <br/>Heart of the Lagoon</h1>
+<!-- Booking Widget -->
+<div class="glass-panel p-2 rounded-3xl md:rounded-full w-full max-w-5xl shadow-2xl flex flex-col md:flex-row items-center gap-2 border border-white/20">
+<div class="flex-1 grid grid-cols-1 md:grid-cols-4 gap-2 w-full">
+<div class="px-6 py-4 flex flex-col items-start border-r border-on-surface/5">
+<label class="font-label text-[10px] uppercase tracking-wider text-secondary font-bold mb-1">Destination</label>
+<select class="bg-transparent border-none p-0 text-on-surface font-medium focus:ring-0 w-full">
+<option>Le Morne Brabant</option>
+<option>Grand Baie</option>
+<option>Belle Mare</option>
+</select>
+</div>
+<div class="px-6 py-4 flex flex-col items-start border-r border-on-surface/5">
+<label class="font-label text-[10px] uppercase tracking-wider text-secondary font-bold mb-1">Activity</label>
+<select class="bg-transparent border-none p-0 text-on-surface font-medium focus:ring-0 w-full">
+<option>Deep Sea Fishing</option>
+<option>Private Yacht</option>
+<option>Helicopter Tour</option>
+</select>
+</div>
+<div class="px-6 py-4 flex flex-col items-start border-r border-on-surface/5">
+<label class="font-label text-[10px] uppercase tracking-wider text-secondary font-bold mb-1">Travel Dates</label>
+<input class="bg-transparent border-none p-0 text-on-surface font-medium focus:ring-0 w-full placeholder:text-on-surface/40" placeholder="Select dates" type="text"/>
+</div>
+<div class="px-6 py-4 flex flex-col items-start">
+<label class="font-label text-[10px] uppercase tracking-wider text-secondary font-bold mb-1">Guests</label>
+<select class="bg-transparent border-none p-0 text-on-surface font-medium focus:ring-0 w-full">
+<option>2 Adults</option>
+<option>4 Adults</option>
+<option>Family (2+2)</option>
+</select>
+</div>
+</div>
+<button class="bg-tertiary text-on-tertiary px-10 py-5 rounded-full font-label text-sm tracking-widest uppercase hover:brightness-110 transition-all w-full md:w-auto">
+                    Search
+                </button>
+</div>
+</div>
+<div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3 z-10">
+<div class="w-12 h-1 bg-white rounded-full"></div>
+<div class="w-8 h-1 bg-white/30 rounded-full"></div>
+<div class="w-8 h-1 bg-white/30 rounded-full"></div>
+</div>
+</section>
+<!-- Value Prop Strip -->
+<section class="bg-surface py-12 px-8 border-b border-surface-container">
+<div class="max-w-screen-2xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
+<div class="flex items-center gap-4 group">
+<span class="material-symbols-outlined text-secondary text-3xl group-hover:scale-110 transition-transform">verified_user</span>
+<div>
+<p class="font-label text-xs uppercase tracking-widest font-bold text-primary">Certified Luxury</p>
+<p class="text-xs text-on-surface-variant">Top 1% Global Villas</p>
+</div>
+</div>
+<div class="flex items-center gap-4 group">
+<span class="material-symbols-outlined text-secondary text-3xl group-hover:scale-110 transition-transform">concierge</span>
+<div>
+<p class="font-label text-xs uppercase tracking-widest font-bold text-primary">24/7 Concierge</p>
+<p class="text-xs text-on-surface-variant">Personalized Itineraries</p>
+</div>
+</div>
+<div class="flex items-center gap-4 group">
+<span class="material-symbols-outlined text-secondary text-3xl group-hover:scale-110 transition-transform">sustainability</span>
+<div>
+<p class="font-label text-xs uppercase tracking-widest font-bold text-primary">Sustainable Eco</p>
+<p class="text-xs text-on-surface-variant">Local Heritage Support</p>
+</div>
+</div>
+<div class="flex items-center gap-4 group">
+<span class="material-symbols-outlined text-secondary text-3xl group-hover:scale-110 transition-transform">diamond</span>
+<div>
+<p class="font-label text-xs uppercase tracking-widest font-bold text-primary">Member Benefits</p>
+<p class="text-xs text-on-surface-variant">Exclusive Island Access</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Popular Destinations Bento Grid -->
+<section class="py-24 px-8 bg-surface-container-low">
+<div class="max-w-screen-2xl mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+<div class="max-w-2xl">
+<span class="font-label text-secondary uppercase tracking-[0.3em] text-xs font-bold">Curated Atlas</span>
+<h2 class="font-headline text-5xl md:text-6xl text-primary mt-4">Discover Your Haven</h2>
+<p class="text-on-surface-variant mt-6 text-lg">From the rugged peaks of Le Morne to the bustling turquoise waters of Grand Baie, explore Mauritius through our curated lens of exclusivity.</p>
+</div>
+<button class="border-b-2 border-primary text-primary pb-1 font-label text-xs tracking-widest uppercase hover:text-secondary hover:border-secondary transition-all">View All Destinations</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6 h-[800px]">
+<!-- Main Card -->
+<div class="md:col-span-7 relative group overflow-hidden rounded-3xl">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="Aerial drone perspective of Le Morne Brabant mountain in Mauritius surrounded by turquoise coral reef lagoons" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdOxasMRrCG-0CZZuWYfZddwwyQvhB-sQgKs3BpJi8zUWiDDZOuW1BmzeV8YoUpQyxOCYbNYvEPz6inivfg0a7Cz3qvs3GiCyUxJhDhjyVpgQkdcE6NH3a9BhYWScVR5j7SQzNQbFYm_hUqbc0L6hSym3tC3IH9iJ8ttPAjS0TbmE75ql1fBwcCa0fF7NCSVvWLPkYSsCTIa-0MZGJa4e0U6vN9URNH9DoIqG6BYaAqX3ImnQkg-qwQV9drJlFfVxPKPahX4M9jQc"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-10 left-10 text-white">
+<span class="bg-secondary/20 backdrop-blur-md px-4 py-1 rounded-full text-[10px] tracking-widest uppercase mb-4 inline-block">South Coast</span>
+<h3 class="font-headline text-4xl mb-2">Le Morne Brabant</h3>
+<p class="text-white/80 font-light max-w-sm">Majestic peaks and legendary lagoons where heritage meets high luxury.</p>
+</div>
+</div>
+<!-- Top Right Card -->
+<div class="md:col-span-5 relative group overflow-hidden rounded-3xl h-[380px] md:h-auto">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="Beautiful white sand beach with palm trees leaning over crystal clear water in Belle Mare, Mauritius" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCf0NfsYewCSoi08HAzrxYOLJuLRyVAevDojxXwmZhG04-_3yN2Mt1c8m3o-1gzDx1ioZuGa-s1igWmKwgXiEQ1vD5qvnPjuj6I2xw7NX0Ga16-jlmoKypp6UqxfpvY47-zwIfBJHBu2kt0q_PUD7k1uy1d4xMUVOn8PMpkgOjhsN8sI6XBDlIH9Xm-CvOXv4UJhKt74BceKq44yJ5KVF5pfruFdniKdGvqGo29-jnFh3IqN2TzS2PTrC_tEUsILTJP9Q0vkQTVc30"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-8 left-8 text-white">
+<h3 class="font-headline text-3xl mb-1">Belle Mare</h3>
+<p class="text-white/80 font-light">The island's longest white sandy stretch.</p>
+</div>
+</div>
+<!-- Bottom Right Cards -->
+<div class="md:col-span-5 relative group overflow-hidden rounded-3xl h-[380px] md:h-auto">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="Luxury boutique hotel pool area in Mauritius overlooking the ocean with comfortable sun loungers and tropical plants" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDq8KqgOtN0-s1TgR5QT9izMuBtYRkWJUHnfC_npa8rd7rGtopbPmLQCT0OtaNlziRbR0iKGOhT9RuvPFLWnKw9uI4g5e8Z3LwW_ddYIARHqGzOYNdM0gSu5q8FUhcXqrbmq9vns9Yg_588JBjkMVJwz-8Cn-THXd0ZNHVdY3TfVL1FViEa2xpKGEOc9dEt1_tjS9vt9omF9BCC4Fbm96nVdLCnU6ZH3bKyG7JpR04IOFZcDmZ1dcAh6BQ4Tmxbg4VR74yVN_qP7ec"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-8 left-8 text-white">
+<h3 class="font-headline text-3xl mb-1">Grand Baie</h3>
+<p class="text-white/80 font-light">Vibrant yachting life and boutique charm.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Editorial Why Us -->
+<section class="py-32 px-8 bg-surface">
+<div class="max-w-screen-2xl mx-auto flex flex-col md:flex-row gap-20 items-center">
+<div class="w-full md:w-1/2 relative">
+<div class="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl">
+<img class="w-full h-full object-cover" data-alt="Close up of a luxury spa treatment room in Mauritius with wooden accents and view of tropical garden" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhII3xAM9dIrLXMHLOxMqWi12hb0cM8fH4pby19JQmY6HPW7WKywx7v3GQPW1N-CUnwDl-VMLn3Vuwsp1skBVw3u6UxLvtnNfz8ynsyQvMzS7G_RgeVC7H-eNasjOv3Gw4CQdo4L7TdfcXhsF5gPrx9b0sXOQG07vjoZOxcHdL30C18dK6L7NKWPsUov7bpp86qX8ZKVohm1Bjh-Fb1DoJQqzBrJfeGjKnUmEPPFENZVhkEPQvsaKY7mp2_S8QV7eN67vouUs4WN4"/>
+</div>
+<!-- Overlapping Element -->
+<div class="absolute -bottom-12 -right-12 glass-panel p-8 rounded-3xl max-w-xs shadow-xl hidden lg:block border border-white/50">
+<span class="material-symbols-outlined text-tertiary text-4xl mb-4">auto_awesome</span>
+<p class="font-headline text-xl text-primary mb-2">The Curator's Touch</p>
+<p class="text-sm text-on-surface-variant leading-relaxed">Every villa is personally inspected by our team of 15 island specialists.</p>
+</div>
+</div>
+<div class="w-full md:w-1/2 space-y-8">
+<span class="font-label text-secondary uppercase tracking-[0.3em] text-xs font-bold">The Luxe Standard</span>
+<h2 class="font-headline text-6xl text-primary leading-tight">We don't just book trips; we curate legacies.</h2>
+<p class="text-on-surface-variant text-lg leading-relaxed">For over two decades, Luxe Mauritius has been the quiet architect of the island's most exclusive escapes. We believe luxury isn't a price point; it's the seamless alignment of place, pulse, and personalized detail.</p>
+<div class="grid grid-cols-1 gap-6 pt-6">
+<div class="flex gap-6 pb-6 border-b border-surface-container">
+<span class="text-primary font-headline text-3xl">01</span>
+<div>
+<h4 class="font-label font-bold uppercase tracking-wider text-sm mb-2">The Hidden Collection</h4>
+<p class="text-sm text-on-surface-variant">Access to 40+ private estates not listed on any public platforms.</p>
+</div>
+</div>
+<div class="flex gap-6 pb-6 border-b border-surface-container">
+<span class="text-primary font-headline text-3xl">02</span>
+<div>
+<h4 class="font-label font-bold uppercase tracking-wider text-sm mb-2">Island Insiders</h4>
+<p class="text-sm text-on-surface-variant">Private dinners with local artists and secret cove discoveries.</p>
+</div>
+</div>
+<div class="flex gap-6">
+<span class="text-primary font-headline text-3xl">03</span>
+<div>
+<h4 class="font-label font-bold uppercase tracking-wider text-sm mb-2">Impact Conscious</h4>
+<p class="text-sm text-on-surface-variant">15% of every booking goes directly to coral reef restoration.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Experience Carousel (Simulated) -->
+<section class="py-24 overflow-hidden bg-surface-container-low">
+<div class="px-8 max-w-screen-2xl mx-auto mb-16">
+<span class="font-label text-secondary uppercase tracking-[0.3em] text-xs font-bold">Island Rhythms</span>
+<h2 class="font-headline text-5xl text-primary mt-4">Unforgettable Experiences</h2>
+</div>
+<div class="flex gap-8 px-8 no-scrollbar overflow-x-auto snap-x pb-12">
+<!-- Card 1 -->
+<div class="min-w-[400px] snap-center group">
+<div class="h-[500px] rounded-[40px] overflow-hidden mb-6 relative">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="Luxury yacht sailing on deep blue Mauritian waters with champagne and tropical fruits on deck" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMOjN0rfjmAbKt-J2EG7Tgnc7Ua-_Sa4ffwI37CT4YU4Bvd6IaCXnQ2FtLKD9O3jOCj9iLdRI_tz-j3YxgdRkrWTdqzoVHO-lGffEbDnQySWFEM-a5B0jANIWtpFnaUuBoSUC3XifpOMSLj26CGqBbNoqDDt5U2H3Bi5zYLEuA6cCkuuwt6BYAuWaQi30k0zDhXWbUaxAHz51pE1KWw5O6A5l9fudoyCinf81R3KUMSxsou4RrLtNAkgfnlqRC2-X4fNMnpj68P3A"/>
+<div class="absolute top-6 right-6">
+<div class="glass-panel p-3 rounded-full">
+<span class="material-symbols-outlined text-primary" data-weight="fill">favorite</span>
+</div>
+</div>
+</div>
+<h4 class="font-headline text-2xl text-primary mb-1">Sunset Yacht Charter</h4>
+<p class="text-secondary font-label text-[11px] uppercase tracking-widest font-bold">Private Journey · 4 Hours</p>
+</div>
+<!-- Card 2 -->
+<div class="min-w-[400px] snap-center group">
+<div class="h-[500px] rounded-[40px] overflow-hidden mb-6 relative">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="Aerial view of a helicopter flying over a deep blue ocean and white sand beaches of Mauritius" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAt_UO0Zr0OAcP6PwcVIPhAe-EoQqmFAe2d47IDYmCzeaNjF3VqPAdUfgUfHjsPLUAPpbv5pKRL3JqpR52uNo-vzUHJo3z2W_jqIibWSHWMwv6-YMHjT5nR_sFB013ecKoHHKSZVbo6IfLQY1g3gKtdJk3j_c8Rxm19G7_2DiZ5NZi8P1Y9q17cfQQNEVM7ISDHX_4V7MtlmI4_TSNwdxZTgKvdv3yLMG-ASvaL32trU5gdm88tAKcisWQ3MKHMBBSPN5TnGJM8hpg"/>
+<div class="absolute top-6 right-6">
+<div class="glass-panel p-3 rounded-full">
+<span class="material-symbols-outlined text-primary">favorite</span>
+</div>
+</div>
+</div>
+<h4 class="font-headline text-2xl text-primary mb-1">Helicopter Island Tour</h4>
+<p class="text-secondary font-label text-[11px] uppercase tracking-widest font-bold">Aerial View · 45 Mins</p>
+</div>
+<!-- Card 3 -->
+<div class="min-w-[400px] snap-center group">
+<div class="h-[500px] rounded-[40px] overflow-hidden mb-6 relative">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="Luxury resort beachfront dinner setting with elegant table decor and candles under a palm tree at twilight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCj-POb_-dJ5ZWOjeC1nU0SrWkBurgA2M5GBTyGSiXNFMPngilq9HARTfGOKf29bP3i7TjAyJxIcUix9jixFCyNVmipPFTqPQyvyeJGrnBlZFsjYn2uT9PyqaLU4pCJkl8mJAahTJc8m7OtXq84Wu4AAtALjw-vXsDmwjusy7lZG1HjW1Y6jE19S34dXOturex1D2u7EBmsksw8HhCoTRpfOSldt7R0e5m30l5bKyZrkRYHpLFVJbnGw57ZiRafHY8sll2i4XdUMoE"/>
+<div class="absolute top-6 right-6">
+<div class="glass-panel p-3 rounded-full">
+<span class="material-symbols-outlined text-primary">favorite</span>
+</div>
+</div>
+</div>
+<h4 class="font-headline text-2xl text-primary mb-1">Starlight Beach Dining</h4>
+<p class="text-secondary font-label text-[11px] uppercase tracking-widest font-bold">Gastronomy · Bespoke</p>
+</div>
+<!-- Card 4 -->
+<div class="min-w-[400px] snap-center group">
+<div class="h-[500px] rounded-[40px] overflow-hidden mb-6 relative">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="Traditional Mauritian sega dancers in colorful skirts performing on a white sand beach at night by a bonfire" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDj7Zq-rFEkmYSiycex_1QQQmZffSRJeVNITAqNFZTgkQudcY5qR68MbL06j9IV7-821t1Azz3d5h_tRYudXAJbdnQMuqo2ZCGKR0gDTmEMGrceKm8PiCSHOcAhzG6RVOo9uNNYWcJUv0hTyWYkNriWdZ8CmGXIBlIjYUjh8hyqwYVetByqCD_knBaMh2KfhkM0wIy32uk-t3RQa4dIp3mWPp3P4RXJDtmU043UG_ojvOD463GU1zl1m1Nc9wUaRNr4pQYsKLcpUJM"/>
+<div class="absolute top-6 right-6">
+<div class="glass-panel p-3 rounded-full">
+<span class="material-symbols-outlined text-primary">favorite</span>
+</div>
+</div>
+</div>
+<h4 class="font-headline text-2xl text-primary mb-1">Sega Cultural Night</h4>
+<p class="text-secondary font-label text-[11px] uppercase tracking-widest font-bold">Culture · 3 Hours</p>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="bg-[#fbf9f4] dark:bg-slate-900 w-full border-t-0 mt-20 tonal-shift from surface to surface-container-low">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 px-12 py-20 max-w-screen-2xl mx-auto">
+<div class="md:col-span-2">
+<p class="font-['EB_Garamond'] text-3xl font-light text-[#001e40] dark:text-white mb-8">LUXE MAURITIUS</p>
+<p class="text-on-surface-variant max-w-md mb-8 leading-relaxed">Defining the pinnacle of tropical luxury for the discerning traveler. Our concierge team is available around the clock to ensure your stay is nothing short of extraordinary.</p>
+<div class="flex gap-6">
+<a class="text-primary hover:text-secondary transition-colors" href="#"><span class="material-symbols-outlined">social_leaderboard</span></a>
+<a class="text-primary hover:text-secondary transition-colors" href="#"><span class="material-symbols-outlined">camera</span></a>
+<a class="text-primary hover:text-secondary transition-colors" href="#"><span class="material-symbols-outlined">chat</span></a>
+</div>
+</div>
+<div>
+<p class="font-['Manrope'] uppercase tracking-[0.1em] text-xs font-bold text-primary mb-6">Explore</p>
+<ul class="space-y-4">
+<li><a class="font-['Manrope'] uppercase tracking-[0.1em] text-xs text-[#001e40]/70 dark:text-slate-400 hover:text-[#460002] dark:hover:text-coral-400 underline-offset-4 hover:underline transition-transform hover:translate-x-1 duration-200 block" href="#">Villas Collection</a></li>
+<li><a class="font-['Manrope'] uppercase tracking-[0.1em] text-xs text-[#001e40]/70 dark:text-slate-400 hover:text-[#460002] dark:hover:text-coral-400 underline-offset-4 hover:underline transition-transform hover:translate-x-1 duration-200 block" href="#">Experience Map</a></li>
+<li><a class="font-['Manrope'] uppercase tracking-[0.1em] text-xs text-[#001e40]/70 dark:text-slate-400 hover:text-[#460002] dark:hover:text-coral-400 underline-offset-4 hover:underline transition-transform hover:translate-x-1 duration-200 block" href="#">Wedding &amp; Events</a></li>
+<li><a class="font-['Manrope'] uppercase tracking-[0.1em] text-xs text-[#001e40]/70 dark:text-slate-400 hover:text-[#460002] dark:hover:text-coral-400 underline-offset-4 hover:underline transition-transform hover:translate-x-1 duration-200 block" href="#">Member Login</a></li>
+</ul>
+</div>
+<div>
+<p class="font-['Manrope'] uppercase tracking-[0.1em] text-xs font-bold text-primary mb-6">Concierge</p>
+<ul class="space-y-4">
+<li><a class="font-['Manrope'] uppercase tracking-[0.1em] text-xs text-[#001e40]/70 dark:text-slate-400 hover:text-[#460002] dark:hover:text-coral-400 underline-offset-4 hover:underline transition-transform hover:translate-x-1 duration-200 block" href="#">Privacy Policy</a></li>
+<li><a class="font-['Manrope'] uppercase tracking-[0.1em] text-xs text-[#001e40]/70 dark:text-slate-400 hover:text-[#460002] dark:hover:text-coral-400 underline-offset-4 hover:underline transition-transform hover:translate-x-1 duration-200 block" href="#">Terms of Service</a></li>
+<li><a class="font-['Manrope'] uppercase tracking-[0.1em] text-xs text-[#001e40]/70 dark:text-slate-400 hover:text-[#460002] dark:hover:text-coral-400 underline-offset-4 hover:underline transition-transform hover:translate-x-1 duration-200 block" href="#">Sustainability Charter</a></li>
+<li><a class="font-['Manrope'] uppercase tracking-[0.1em] text-xs text-[#001e40]/70 dark:text-slate-400 hover:text-[#460002] dark:hover:text-coral-400 underline-offset-4 hover:underline transition-transform hover:translate-x-1 duration-200 block" href="#">Press Kit</a></li>
+<li><a class="font-['Manrope'] uppercase tracking-[0.1em] text-xs text-[#001e40]/70 dark:text-slate-400 hover:text-[#460002] dark:hover:text-coral-400 underline-offset-4 hover:underline transition-transform hover:translate-x-1 duration-200 block" href="#">Contact Concierge</a></li>
+</ul>
+</div>
+</div>
+<div class="border-t border-surface-container py-8 text-center">
+<p class="font-['Manrope'] uppercase tracking-[0.1em] text-[10px] text-on-surface-variant">© 2024 LUXE MAURITIUS. CURATED TROPICAL EXCELLENCE.</p>
+</div>
+</footer>
+<!-- Concierge FAB -->
+<div class="fixed bottom-8 right-8 z-50">
+<button class="bg-secondary text-on-secondary px-6 py-4 rounded-full shadow-2xl flex items-center gap-3 hover:scale-105 transition-transform glass-panel border border-white/20">
+<span class="material-symbols-outlined">support_agent</span>
+<span class="font-label text-xs uppercase tracking-widest font-bold">Chat with Concierge</span>
+</button>
+</div>
+</body></html>

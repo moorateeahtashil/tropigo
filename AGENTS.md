@@ -1,234 +1,335 @@
 # AGENTS.md
 
+## Project
+Tropigo — Mauritius tourism and booking platform
+
 ## Mission
+Rebuild Tropigo into a modular, scalable travel commerce platform supporting:
+- Airport Transfers
+- Activities / Trips
+- Packages built from multiple activities
 
-Build a small-company, production-ready Mauritius tourism website and booking platform from the PRD, but keep the implementation lean.
+The system must include:
+- public website
+- admin CMS
+- multi-currency pricing
+- booking session + cart + checkout
+- Stripe-first payment flow
+- reviews
+- content management
+- SEO-friendly pages
+- Supabase-backed architecture with secure access patterns
 
-Primary goal:
-- ship the booking funnel first
-- keep the stack simple and low-cost
-- use the provided HTML reference as the visual guide for UI feel, spacing, typography, section rhythm, and component style
-- launch a clean Phase 1 first, then add extras later
+---
 
-## How Codex should work in this repo
-
-- Read this file before making changes.
-- Keep changes small and reviewable.
-- For any task that changes schema, auth, payments, booking rules, or deployment, create or update `PLANS.md` first.
-- In `PLANS.md`, include:
-  - goal
-  - assumptions
-  - files to change
-  - risks
-  - implementation steps
-  - verification checklist
-- Do not silently expand the stack.
-- Do not add paid services unless they are clearly approved here or requested by the repo owner.
-- Do not fake payment success, fake availability, or placeholder security as if it were production-complete.
-
-## Visual reference rule
-
-The repo may include one or more HTML files used as a design reference.
-
-Before implementing UI:
-1. inspect the HTML reference file(s) first
-2. extract the visual system:
-   - fonts
-   - spacing scale
-   - border radius
-   - button styles
-   - card styles
-   - section spacing
-   - layout rhythm
-   - header/footer patterns
-   - color palette
-3. reproduce the same overall feel in the app without blindly copying messy markup
-4. prefer clean Next.js + Tailwind components
-5. if the reference uses a custom font:
-   - use the same font only if it is already provided or easily available
-   - otherwise choose the closest free alternative and document the substitution
-6. keep visual consistency with the reference across all public pages
-
-If a reference HTML file is present, treat it as the main source of truth for the look and feel.
-
-## Keep the stack intentionally small
-
-Use a single app unless there is a real need for more.
-
-### Required stack
-- Next.js (App Router)
+## Stack
+- Next.js App Router
 - TypeScript
 - Tailwind CSS
-- shadcn/ui only when it speeds up implementation
-- Supabase for:
-  - PostgreSQL database
-  - auth
-  - storage if uploads are needed
-- Resend for transactional email if email is required
-- PayPal or Stripe only when payment work starts and the provider is confirmed
+- Supabase (Postgres, Auth, Storage)
+- Resend
+- Stripe-first, PayPal-ready
+- Vercel
 
-### Explicitly avoid for the first build
-- monorepo unless complexity truly justifies it
-- separate worker app unless background jobs become necessary
-- Payload CMS
-- custom design system package
-- S3 or R2 unless later approved
-- extra infra services for problems that do not exist yet
+---
 
-## Free or low-cost defaults
+## Non-negotiable rules
 
-Use the cheapest reasonable option first.
+### 1. Architecture may be broken and rebuilt
+Agents are allowed to:
+- remove weak scaffolding
+- redesign folders
+- redesign schema
+- rename features for clarity
+- replace poor assumptions
 
-- Deploy app: Vercel free tier
-- Database/Auth/Storage: Supabase free tier
-- Images/assets:
-  - start with local assets in `/public` when possible
-  - if admin uploads are required, use Supabase Storage free tier
-  - Cloudinary free tier is acceptable if image tooling becomes necessary
-- Email: Resend free tier
-- Analytics: GA4
-- Error tracking:
-  - start with built-in logs
-  - add Sentry only if errors become hard to track
-- Maps/autocomplete:
-  - do not add Google Places on day one unless the feature is actively being built
-  - a validated text field is acceptable for MVP if pickup autocomplete is not yet required
+Do not preserve bad architecture just because it already exists.
 
-## Suggested app structure
+### 2. Build in stages
+Agents must work stage by stage.
+Do not jump ahead unless the current stage is logically complete.
 
-Use a simple single-app layout:
+### 3. Do not force everything into a “tour” model
+The platform must use a unified product model with specialized product types:
+- `airport_transfer`
+- `activity`
+- `package`
 
-- `app/` - routes and pages
-- `components/` - reusable UI components
-- `lib/` - helpers, config, utilities
-- `lib/server/` - server-only code
-- `features/` - domain modules like tours, booking, checkout, account
-- `supabase/` - client and server setup
-- `styles/` - global styles
-- `docs/` - notes and setup guides
-- `public/` - static assets and reference assets
-- `PLANS.md` - plan for larger changes
+### 4. Separate concerns
+Keep these concerns clearly separated:
+- UI/presentation
+- domain logic
+- data access
+- validation
+- pricing logic
+- booking logic
+- payment logic
+- admin logic
+- content/CMS logic
 
-If the repo already has a different structure, stay consistent unless there is a strong reason to refactor.
+### 5. Security matters
+Booking, payment, customer, and admin data must be treated as sensitive.
+Design with Supabase RLS and secure server-side flows in mind.
 
-## Launch scope priority
+### 6. Webhook is source of truth
+Payment success shown in frontend is not enough.
+Booking confirmation must be driven by verified server-side payment webhook logic.
 
-Build in this order unless told otherwise:
+### 7. Paid pricing must be immutable
+Display pricing can be dynamic.
+Checkout pricing must be snapshotted/frozen.
+Paid booking amounts must never be recalculated.
 
-1. layout shell using the HTML reference style
-2. homepage
-3. tours listing
-4. tour detail page
-5. booking widget
-6. cart
-7. checkout
-8. payment integration
-9. booking confirmation
-10. simple admin/auth
-11. contact, FAQ, legal pages
-12. SEO and deployment polish
+### 8. Avoid placeholder architecture
+Minor placeholders are acceptable only when unavoidable.
+Do not leave major workflow gaps hidden behind TODOs.
 
-## Defer these unless explicitly requested
+---
 
-- loyalty program
-- chatbot
-- advanced multilingual tooling
-- advanced recommendation engine
-- overly complex review systems
-- extra commerce products beyond tours
+## Product model
 
-## Booking rules
+### Product types
+The platform must support:
+- airport transfers
+- activities
+- packages
 
-Treat booking as critical logic.
+### Activity requirements
+Each activity must support at least:
+- trip details
+- duration
+- tour type
+- transportation
+- pickup location
+- pickup time
+- price
+- main photo
+- gallery photos
+- description
+- included
+- excluded
+- destination/region
+- optional availability rules
 
-- validate price on the server
-- validate availability on the server
-- never trust client totals
-- create a clear booking reference
-- store booking status explicitly
-- support enquiry fallback when instant booking is not possible
-- prevent duplicate bookings on refresh or retry
-- do not mark bookings as paid until the provider confirms payment
+### Package requirements
+Packages must support:
+- multiple linked activities/components
+- ordering of components
+- optional items
+- included-by-default items
+- package-level price logic or override
+- minimal duplication of linked activity content
 
-## Auth and admin rules
+### Airport transfer requirements
+Airport transfers must support:
+- top-level navigation entry
+- dedicated public flow
+- fixed pricing
+- dynamic/zone/distance-based pricing
+- pickup/dropoff fields
+- passenger count
+- luggage notes
+- optional flight number
+- special instructions
 
-Keep admin simple.
+---
 
-- use Supabase Auth
-- protect admin routes
-- support at least:
-  - tours
-  - pricing
-  - availability
-  - featured homepage content
-  - FAQs
-  - testimonials
-  - legal pages
-- prefer a lightweight custom admin section inside the same app over a separate CMS product
+## Multi-currency rules
+The system must support:
+- base currency per product
+- base price per product
+- manual admin override prices by currency
+- live conversion fallback using a free API
+- supported currency settings
+- customer display currency switching
+- booking session exchange-rate snapshot
+- frozen checkout totals
 
-## SEO and performance rules
+Priority order:
+1. manual override price
+2. derived converted price
+3. frozen booking snapshot once checkout starts
 
-- prefer server rendering for public SEO pages
-- keep pages text-rich and indexable
-- use clean URLs
-- provide title/meta/canonical/Open Graph
-- generate sitemap
-- use responsive images
-- keep client-side JavaScript light
-- prioritize mobile performance
+---
 
-## Definition of done
+## Booking lifecycle rules
+Expected flow:
+1. customer selects/configures product
+2. system creates booking session
+3. system stores cart items and pricing snapshot
+4. customer enters contact/traveller info
+5. payment session is created
+6. verified payment webhook confirms payment
+7. booking is confirmed
+8. confirmation page/email is sent
 
-A task is not done unless:
-- the code builds
-- the page or feature works in the browser
-- loading, empty, and error states are handled
-- the main happy path is tested manually
-- risky logic has tests where reasonable
-- docs are updated if setup changed
-- the result still matches the reference UI direction
+Important:
+- booking session is not final booking
+- payment success page is not proof of payment
+- webhook-confirmed state drives final booking confirmation
 
-## Commands
+---
 
-Use `pnpm` unless the repo already uses something else.
+## Admin requirements
+Admin must eventually support:
+- destinations
+- activities
+- packages
+- airport transfers
+- pricing/currencies
+- availability rules
+- reviews moderation
+- bookings
+- enquiries
+- homepage sections
+- navigation
+- testimonials
+- promos
+- FAQ
+- legal pages
+- SEO metadata
+- media/storage references
+- settings
 
-Expected commands:
-- `pnpm install`
-- `pnpm dev`
-- `pnpm build`
-- `pnpm lint`
-- `pnpm test`
+---
 
-If the actual repo commands differ, update this file.
+## Design direction
+Public site:
+- premium modern 2026 travel UI/UX
+- elegant, clean, image-led
+- premium but usable
+- strong mobile-first experience
 
-## Important note about AGENTS.md
+Admin:
+- modern, minimal, efficient
+- clear hierarchy
+- excellent form UX
+- reusable patterns
 
-`AGENTS.md` is not an executable script.
-Codex reads it automatically when you run Codex inside this repository.
+Typography:
+- primary: Manrope
+- secondary marketing accent: Instrument Serif
 
-Use it like this from the repo root:
+---
 
-```bash
-codex
-```
+## Folder and code quality expectations
 
-Optional quick-start scaffold in a new repo:
+### Code quality
+Agents should prefer:
+- strong typing
+- explicit naming
+- reusable utilities
+- predictable data contracts
+- validation schemas
+- clean separation of server/client concerns
 
-```bash
-/init
-```
+### Preferred architecture
+Use domain-oriented or feature-oriented organization.
 
-Then ask Codex to work, for example:
-- "Read AGENTS.md and summarize the project rules."
-- "Inspect the HTML reference file and build the homepage in the same style."
-- "Create PLANS.md and scaffold the lean stack described in AGENTS.md."
+Examples of good boundaries:
+- `features/catalog`
+- `features/booking`
+- `features/pricing`
+- `features/transfers`
+- `features/admin`
+- `features/content`
 
-## Keep this file current
+### Avoid
+- dumping everything into `lib`
+- giant page files with mixed business logic
+- duplicate pricing logic in UI components
+- duplicate booking logic in multiple routes
+- fragile hardcoded content
 
-Whenever the project decisions change, update:
-- stack choices
-- commands
-- deployment choices
-- storage choice
-- payment provider choice
-- reference UI instructions
+---
+
+## DB and Supabase expectations
+Schema must be normalized and include at minimum:
+- products
+- activities
+- packages
+- package_items
+- airport_transfers
+- transfer_zones
+- transfer_zone_prices
+- destinations
+- product_destinations
+- product_media
+- product_pricing
+- currency_rates
+- availability_rules
+- reviews
+- booking_sessions
+- cart_items
+- customers
+- bookings
+- booking_travellers
+- payments
+- enquiries
+- pages
+- faqs
+- testimonials
+- promos
+- navigation_items
+- legal_pages
+- settings
+
+Agents should account for:
+- enums
+- FKs
+- indexes
+- publish state
+- slug uniqueness
+- audit timestamps
+- RLS-sensitive tables
+
+---
+
+## Output format for every agent task
+Every agent must return:
+
+### 1. Summary
+What was completed.
+
+### 2. Files changed
+Explicit list of created/updated/deleted files.
+
+### 3. Key decisions
+Important architectural or implementation choices.
+
+### 4. Assumptions
+Anything assumed because requirements were unclear.
+
+### 5. Deferred items
+Anything intentionally left for a later stage.
+
+### 6. Risks
+Any possible issues or follow-up concerns.
+
+---
+
+## Stage discipline
+Agents must respect stage boundaries.
+
+### Example
+- DB agent should not invent final UI pages unless necessary
+- UI agent should not redesign DB without clearly flagging it
+- payment agent should not bypass booking snapshot logic
+- admin agent should not hardcode content that belongs in CMS
+
+---
+
+## If tradeoffs are needed
+Prefer:
+1. correctness
+2. maintainability
+3. security
+4. premium UX
+5. scalability
+
+Do not prefer speed if it damages the above.
+
+---
+
+## Final principle
+Build Tropigo like a real modular booking platform, not a brochure site with a hacked checkout.

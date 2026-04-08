@@ -1,662 +1,201 @@
--- =============================================================================
--- Tropigo full test seed
--- =============================================================================
--- Credentials
---   Admin : admin@tropigo.com  /  Admin1234!
---   User  : user@tropigo.com   /  User1234!
--- =============================================================================
+-- =============================================================
+-- TROPIGO — SEED DATA (Development)
+-- Requires: 20260408000000_clean_rebuild.sql to be applied first
+-- =============================================================
 
--- -------------------------
--- Profiles
--- Create users first via Supabase Dashboard → Authentication → Users:
---   admin@tropigo.com / Admin1234!  (tick "Auto Confirm")
---   user@tropigo.com  / User1234!   (tick "Auto Confirm")
--- Then run this seed — it patches the profiles by email lookup.
--- -------------------------
-do $$
-declare
-  v_admin_id uuid;
-  v_user_id  uuid;
-begin
-  select id into v_admin_id from auth.users where email = 'admin@tropigo.com' limit 1;
-  select id into v_user_id  from auth.users where email = 'user@tropigo.com'  limit 1;
+-- Settings
+UPDATE public.settings SET
+  brand_name = 'Tropigo',
+  tagline = 'Discover Mauritius, Your Way',
+  contact_email = 'hello@tropigo.mu',
+  contact_phone = '+230 5 000 0000',
+  whatsapp = '+23050000000',
+  address = '{"street": "Royal Road", "city": "Grand Baie", "region": "Rivière du Rempart", "country": "Mauritius"}',
+  socials = '{"instagram": "https://instagram.com/tropigo", "facebook": "https://facebook.com/tropigo"}',
+  supported_currencies = '{EUR,USD,GBP,MUR}',
+  default_currency = 'EUR',
+  default_seo_title = 'Tropigo — Mauritius Tours, Transfers & Experiences',
+  default_seo_description = 'Discover the best of Mauritius with Tropigo. Book airport transfers, activities, and packages.'
+WHERE id = '00000000-0000-0000-0000-000000000001'::uuid;
 
-  if v_admin_id is not null then
-    insert into public.profiles (id, full_name, phone, country, is_admin)
-    values (v_admin_id, 'Tropigo Admin', '+230 5000 0001', 'MU', true)
-    on conflict (id) do update set is_admin = true, full_name = 'Tropigo Admin';
-  end if;
+-- Navigation
+INSERT INTO public.navigation_menus (id, key, label) VALUES
+  ('11111111-0000-0000-0000-000000000001'::uuid, 'main', 'Main Navigation'),
+  ('11111111-0000-0000-0000-000000000002'::uuid, 'footer', 'Footer Navigation')
+ON CONFLICT DO NOTHING;
 
-  if v_user_id is not null then
-    insert into public.profiles (id, full_name, phone, country, is_admin)
-    values (v_user_id, 'Sophie Laurent', '+33 6 12 34 56 78', 'FR', false)
-    on conflict (id) do nothing;
-  end if;
-end $$;
+INSERT INTO public.navigation_items (menu_id, label, href, position) VALUES
+  ('11111111-0000-0000-0000-000000000001'::uuid, 'Transfers', '/transfers', 0),
+  ('11111111-0000-0000-0000-000000000001'::uuid, 'Activities', '/activities', 1),
+  ('11111111-0000-0000-0000-000000000001'::uuid, 'Packages', '/packages', 2),
+  ('11111111-0000-0000-0000-000000000001'::uuid, 'Destinations', '/destinations', 3),
+  ('11111111-0000-0000-0000-000000000002'::uuid, 'About', '/about', 0),
+  ('11111111-0000-0000-0000-000000000002'::uuid, 'Contact', '/contact', 1),
+  ('11111111-0000-0000-0000-000000000002'::uuid, 'FAQ', '/faq', 2),
+  ('11111111-0000-0000-0000-000000000002'::uuid, 'Privacy Policy', '/legal/privacy-policy', 3),
+  ('11111111-0000-0000-0000-000000000002'::uuid, 'Terms & Conditions', '/legal/terms-and-conditions', 4);
 
--- -------------------------
--- Site settings
--- -------------------------
-insert into public.site_settings (
-  brand_name, logo_url, default_locale, currency,
-  contact_email, phone, socials,
-  seo_title_template, default_meta_description, default_og_image_url
-) values (
-  'Tropigo', '/logo.svg', 'en', 'MUR',
-  'hello@tropigo.mu', '+230 5800 1234',
-  '{"instagram":"https://instagram.com/tropigo","facebook":"https://facebook.com/tropigo","tiktok":"https://tiktok.com/@tropigo"}'::jsonb,
-  '%s | Tropigo',
-  'Curated tours and experiences in Mauritius — book your island adventure with Tropigo.',
-  '/og-default.jpg'
-) on conflict do nothing;
-
--- -------------------------
--- Contact settings
--- -------------------------
-insert into public.contact_settings (
-  emails, phones, whatsapp, address, hours, published, map_url, whatsapp_cta
-) values (
-  array['hello@tropigo.mu','bookings@tropigo.mu'],
-  array['+230 5800 1234','+230 5800 5678'],
-  '+23058001234',
-  '{"street":"Royal Road","city":"Grand Baie","island":"Mauritius","zip":"30517"}'::jsonb,
-  '{"weekdays":"Mon–Fri 08:00–18:00","weekend":"Sat–Sun 09:00–15:00"}'::jsonb,
-  true,
-  'https://maps.google.com/?q=Grand+Baie+Mauritius',
-  'Chat with us on WhatsApp'
-) on conflict do nothing;
-
--- -------------------------
--- Navigation (legacy menus)
--- -------------------------
-insert into public.navigation_menus (key, label) values
-('main',   'Main Navigation'),
-('footer', 'Footer Navigation')
-on conflict do nothing;
-
-with menu as (select id from public.navigation_menus where key = 'main')
-insert into public.navigation_links (menu_id, label, href, position, visible)
-select id, 'Experiences',   '/experiences',   1, true from menu union all
-select id, 'Destinations',  '/destinations',  2, true from menu union all
-select id, 'Blog',          '/blog',          3, true from menu union all
-select id, 'About',         '/about',         4, true from menu union all
-select id, 'Contact',       '/contact',       5, true from menu;
-
--- Modern navigation_items
-insert into public.navigation_items (area, label, href, external, position, visible) values
-('main',    'Experiences',  '/experiences',  false, 1, true),
-('main',    'Destinations', '/destinations', false, 2, true),
-('main',    'Blog',         '/blog',         false, 3, true),
-('main',    'About',        '/about',        false, 4, true),
-('main',    'Contact',      '/contact',      false, 5, true),
-('utility', 'My Bookings',  '/account',      false, 1, true),
-('footer',  'Privacy Policy','/legal/privacy-policy', false, 1, true),
-('footer',  'Terms',        '/legal/terms-and-conditions', false, 2, true),
-('footer',  'Cancellations','/legal/cancellation-policy',  false, 3, true);
-
--- -------------------------
--- Footer
--- -------------------------
-insert into public.footer_blocks (key, title, content, position, published) values
-('company', 'Company',
- '[{"label":"About","href":"/about"},{"label":"Team","href":"/team"},{"label":"Careers","href":"/careers"},{"label":"Press","href":"/press"}]'::jsonb,
- 1, true),
-('explore', 'Explore',
- '[{"label":"All Experiences","href":"/experiences"},{"label":"Destinations","href":"/destinations"},{"label":"Blog","href":"/blog"},{"label":"Gift Cards","href":"/gift-cards"}]'::jsonb,
- 2, true),
-('support', 'Support',
- '[{"label":"Help Center","href":"/help"},{"label":"Contact Us","href":"/contact"},{"label":"Cancellation Policy","href":"/legal/cancellation-policy"},{"label":"Safety","href":"/safety"}]'::jsonb,
- 3, true)
-on conflict do nothing;
-
-insert into public.footer_groups (key, title, items, position, published) values
-('company', 'Company',
- '[{"label":"About","href":"/about"},{"label":"Team","href":"/team"},{"label":"Press","href":"/press"}]'::jsonb,
- 1, true),
-('explore', 'Explore',
- '[{"label":"All Experiences","href":"/experiences"},{"label":"Destinations","href":"/destinations"},{"label":"Blog","href":"/blog"}]'::jsonb,
- 2, true),
-('legal',   'Legal',
- '[{"label":"Privacy Policy","href":"/legal/privacy-policy"},{"label":"Terms","href":"/legal/terms-and-conditions"},{"label":"Cancellations","href":"/legal/cancellation-policy"}]'::jsonb,
- 3, true)
-on conflict do nothing;
-
--- -------------------------
--- Badges
--- -------------------------
-insert into public.badges (id, label, description, context, position, published) values
-('b0000000-0000-0000-0000-000000000001', 'Top 1% Global Experiences', 'Hand-vetted by our local team',           'sitewide',  1, true),
-('b0000000-0000-0000-0000-000000000002', 'Instant Confirmation',       'Booking confirmed within seconds',        'sitewide',  2, true),
-('b0000000-0000-0000-0000-000000000003', 'Free Cancellation',          'Up to 24 h before departure',             'sitewide',  3, true),
-('b0000000-0000-0000-0000-000000000004', 'Local Experts',              'Born and raised on the island',           'homepage',  1, true),
-('b0000000-0000-0000-0000-000000000005', 'Eco Certified',              'Partners respect marine life & reefs',    'tour',      1, true)
-on conflict (id) do nothing;
-
--- -------------------------
--- Promo banners
--- -------------------------
-insert into public.promo_banners (title, body, cta_label, cta_url, placement, active, priority) values
-('Early Summer Deal', 'Save 15 % on all catamaran cruises — book before 30 Apr.', 'Browse Cruises', '/experiences?cat=catamaran', 'sitewide_top', true, 10),
-('New: Dolphin Watch at Dawn', 'Our most popular experience is back for the season.', 'Learn More', '/experiences/grand-baie-dolphin-watch', 'homepage_hero', true, 5)
-on conflict do nothing;
-
--- -------------------------
 -- Destinations
--- -------------------------
-insert into public.destinations (
-  id, name, slug, summary, body,
-  hero_image_url, gallery_urls, region,
-  lat, lng, featured, position, published
-) values
-(
-  '10000000-0000-0000-0000-000000000001',
-  'Le Morne', 'le-morne',
-  'Dramatic basalt peak, turquoise lagoon and world-class kitesurfing beach.',
-  '## Le Morne Brabant
+INSERT INTO public.destinations (slug, name, summary, region, hero_image_url, featured, position, published) VALUES
+  ('grand-baie', 'Grand Baie', 'The vibrant hub of northern Mauritius.', 'North', 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1600&q=80', true, 0, true),
+  ('le-morne', 'Le Morne', 'UNESCO heritage and world-class kitesurfing.', 'South West', 'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=1600&q=80', true, 1, true),
+  ('ile-aux-cerfs', 'Île aux Cerfs', 'A stunning private island in the blue eastern lagoon.', 'East', 'https://images.unsplash.com/photo-1559494007-9f5847c49d94?w=1600&q=80', true, 2, true)
+ON CONFLICT (slug) DO NOTHING;
 
-Le Morne Brabant is a UNESCO World Heritage Site on the south-western tip of Mauritius. The iconic mountain rises steeply from the sea, surrounded by one of the longest white-sand beaches on the island.
+-- Transfer zones
+INSERT INTO public.transfer_zones (id, name, description, color, sort_order) VALUES
+  ('22222222-0000-0000-0000-000000000001'::uuid, 'Airport (SSR)', 'Sir Seewoosagur Ramgoolam International Airport', '#EF4444', 0),
+  ('22222222-0000-0000-0000-000000000002'::uuid, 'North', 'Grand Baie, Pereybere, Cap Malheureux, Trou aux Biches', '#3B82F6', 1),
+  ('22222222-0000-0000-0000-000000000003'::uuid, 'East', 'Belle Mare, Trou d''Eau Douce, Flacq, Mahébourg', '#10B981', 2),
+  ('22222222-0000-0000-0000-000000000004'::uuid, 'South', 'Blue Bay, Souillac, Bel Ombre', '#8B5CF6', 3),
+  ('22222222-0000-0000-0000-000000000005'::uuid, 'South West', 'Le Morne, Flic en Flac, Tamarin', '#F59E0B', 4),
+  ('22222222-0000-0000-0000-000000000006'::uuid, 'Central', 'Port Louis, Curepipe, Quatre Bornes', '#6B7280', 5)
+ON CONFLICT DO NOTHING;
 
-The lagoon is a playground for water sports — snorkelling, kayaking and kitesurfing — while the mountain offers guided hikes with unforgettable panoramic views.',
-  'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=1600',
-  array[
-    'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=800',
-    'https://images.unsplash.com/photo-1559827291-72ee739d0d9a?w=800'
-  ],
-  'South-West', -20.4500, 57.3200,
-  true, 1, true
-),
-(
-  '10000000-0000-0000-0000-000000000002',
-  'Belle Mare', 'belle-mare',
-  'The east coast''s finest stretch of powder sand, calm aquamarine waters and luxury resorts.',
-  '## Belle Mare
+-- Products
+INSERT INTO public.products (id, product_type, slug, title, subtitle, summary, status, base_currency, base_price, featured, position) VALUES
+  ('33333333-0000-0000-0000-000000000001'::uuid, 'airport_transfer', 'airport-transfer-private', 'Private Airport Transfer', 'Door-to-door across Mauritius', 'Reliable private transfers between SSR Airport and any destination in Mauritius.', 'published', 'EUR', 45.00, true, 0),
+  ('33333333-0000-0000-0000-000000000002'::uuid, 'activity', 'ile-aux-cerfs-island-trip', 'Île aux Cerfs Island Day Trip', 'Full-day boat trip to the most beautiful island', 'Spend a magical day on Île aux Cerfs with speedboat, water sports, and BBQ lunch.', 'published', 'EUR', 89.00, true, 0),
+  ('33333333-0000-0000-0000-000000000003'::uuid, 'activity', 'le-morne-kitesurfing-lesson', 'Kitesurfing Lesson at Le Morne', 'Learn at the world-famous Le Morne lagoon', 'IKO-certified kitesurfing lessons at one of the world''s best locations.', 'published', 'EUR', 120.00, true, 1),
+  ('33333333-0000-0000-0000-000000000004'::uuid, 'activity', 'underwater-sea-walk', 'Underwater Sea Walk', 'Walk on the ocean floor, no experience needed', 'Walk among tropical fish at 3–4m depth with a special helmet. No diving experience required.', 'published', 'EUR', 65.00, false, 2),
+  ('33333333-0000-0000-0000-000000000005'::uuid, 'package', 'mauritius-highlights-package', 'Mauritius Highlights Package', 'The best of Mauritius in one bundle', 'Island trip, sea walk, and transfers — all in one discounted package.', 'published', 'EUR', null, true, 0)
+ON CONFLICT DO NOTHING;
 
-Belle Mare is widely regarded as Mauritius''s most beautiful beach. The 9-km arc of white sand faces a calm lagoon protected by the outer reef, making it ideal for swimming, paddleboarding and glass-bottom boat rides year-round.',
-  'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600',
-  array[
-    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800'
-  ],
-  'East', -20.2020, 57.7780,
-  true, 2, true
-),
-(
-  '10000000-0000-0000-0000-000000000003',
-  'Grand Baie', 'grand-baie',
-  'The island''s vibrant north-coast hub — lively bay, boutique shopping, water sports and nightlife.',
-  '## Grand Baie
+-- Airport transfer extension
+INSERT INTO public.airport_transfers (product_id, pricing_model, vehicle_type, max_passengers, max_luggage, includes_meet_greet, includes_flight_tracking, notes)
+VALUES ('33333333-0000-0000-0000-000000000001'::uuid, 'zone_based', 'sedan', 4, 4, true, true, 'Flight tracking included. 30 min free waiting after landing.')
+ON CONFLICT DO NOTHING;
 
-Grand Baie is Mauritius''s main tourism village. The sheltered bay is dotted with charter boats, colourful fishing pirogues and water sports operators. It is the best departure point for dolphin-watching cruises, island hopping and deep-sea fishing.',
-  'https://images.unsplash.com/photo-1590523278191-995cbcda646b?w=1600',
-  array[
-    'https://images.unsplash.com/photo-1590523278191-995cbcda646b?w=800'
-  ],
-  'North', -20.0130, 57.5820,
-  true, 3, true
-),
-(
-  '10000000-0000-0000-0000-000000000004',
-  'Flic en Flac', 'flic-en-flac',
-  'West-coast sunset beach famous for its colourful coral gardens and relaxed village atmosphere.',
-  '## Flic en Flac
+-- Zone prices
+INSERT INTO public.transfer_zone_prices (transfer_id, from_zone_id, to_zone_id, vehicle_type, price) VALUES
+  ('33333333-0000-0000-0000-000000000001'::uuid, '22222222-0000-0000-0000-000000000001'::uuid, '22222222-0000-0000-0000-000000000002'::uuid, 'sedan', 45.00),
+  ('33333333-0000-0000-0000-000000000001'::uuid, '22222222-0000-0000-0000-000000000001'::uuid, '22222222-0000-0000-0000-000000000003'::uuid, 'sedan', 55.00),
+  ('33333333-0000-0000-0000-000000000001'::uuid, '22222222-0000-0000-0000-000000000001'::uuid, '22222222-0000-0000-0000-000000000004'::uuid, 'sedan', 40.00),
+  ('33333333-0000-0000-0000-000000000001'::uuid, '22222222-0000-0000-0000-000000000001'::uuid, '22222222-0000-0000-0000-000000000005'::uuid, 'sedan', 50.00),
+  ('33333333-0000-0000-0000-000000000001'::uuid, '22222222-0000-0000-0000-000000000001'::uuid, '22222222-0000-0000-0000-000000000006'::uuid, 'sedan', 35.00),
+  ('33333333-0000-0000-0000-000000000001'::uuid, '22222222-0000-0000-0000-000000000001'::uuid, '22222222-0000-0000-0000-000000000002'::uuid, 'minivan', 65.00),
+  ('33333333-0000-0000-0000-000000000001'::uuid, '22222222-0000-0000-0000-000000000001'::uuid, '22222222-0000-0000-0000-000000000003'::uuid, 'minivan', 75.00),
+  ('33333333-0000-0000-0000-000000000001'::uuid, '22222222-0000-0000-0000-000000000001'::uuid, '22222222-0000-0000-0000-000000000005'::uuid, 'minivan', 70.00)
+ON CONFLICT DO NOTHING;
 
-Flic en Flac offers some of the best shore diving and snorkelling on the island. The beach faces west, making it the top spot to watch the sun set over the lagoon. The nearby Casela Nature Parks adds safari and zip-line activities for non-beach days.',
-  'https://images.unsplash.com/photo-1519046904884-53103b34b206?w=1600',
-  array[
-    'https://images.unsplash.com/photo-1519046904884-53103b34b206?w=800'
-  ],
-  'West', -20.2910, 57.3650,
-  false, 4, true
-)
-on conflict (id) do nothing;
+-- Hotels
+INSERT INTO public.transfer_hotels (name, zone_id, address) VALUES
+  ('LUX* Grand Gaube', '22222222-0000-0000-0000-000000000002'::uuid, 'Grand Gaube, Mauritius'),
+  ('Zilwa Attitude', '22222222-0000-0000-0000-000000000002'::uuid, 'Kalodyne Road, Grand Gaube'),
+  ('Heritage Le Telfair', '22222222-0000-0000-0000-000000000004'::uuid, 'Bel Ombre, Mauritius'),
+  ('Shanti Maurice', '22222222-0000-0000-0000-000000000004'::uuid, 'Chemin Grenier, Souillac'),
+  ('Sugar Beach Mauritius', '22222222-0000-0000-0000-000000000005'::uuid, 'Flic en Flac, Mauritius'),
+  ('Dinarobin Beachcomber', '22222222-0000-0000-0000-000000000005'::uuid, 'Le Morne Peninsula'),
+  ('Constance Belle Mare Plage', '22222222-0000-0000-0000-000000000003'::uuid, 'Belle Mare, Flacq'),
+  ('Four Seasons Mauritius', '22222222-0000-0000-0000-000000000003'::uuid, 'Anahita, Beau Champ');
 
--- -------------------------
 -- Activities
--- -------------------------
-insert into public.activities (id, name, slug, description, published, position) values
-('20000000-0000-0000-0000-000000000001', 'Snorkelling',       'snorkelling',       'Explore coral gardens teeming with tropical fish.', true, 1),
-('20000000-0000-0000-0000-000000000002', 'Deep-Sea Fishing',  'deep-sea-fishing',  'Chase marlin, sailfish and tuna aboard a charter boat.', true, 2),
-('20000000-0000-0000-0000-000000000003', 'Hiking',            'hiking',            'Guided mountain trails with panoramic ocean views.', true, 3),
-('20000000-0000-0000-0000-000000000004', 'Dolphin Watching',  'dolphin-watching',  'Swim with wild spinner dolphins in the open ocean.', true, 4),
-('20000000-0000-0000-0000-000000000005', 'Catamaran Cruise',  'catamaran-cruise',  'Sail the lagoon on a private catamaran with BBQ lunch.', true, 5),
-('20000000-0000-0000-0000-000000000006', 'Kitesurfing',       'kitesurfing',       'Ride the legendary Le Morne trade winds.', true, 6),
-('20000000-0000-0000-0000-000000000007', 'Glass-Bottom Boat', 'glass-bottom-boat', 'Peer through the hull at coral reefs and sea turtles.', true, 7)
-on conflict (id) do nothing;
+INSERT INTO public.activities (product_id, duration_minutes, tour_type, pickup_location, pickup_time, min_participants, max_participants, included_items, excluded_items, highlights, destination_id)
+SELECT
+  '33333333-0000-0000-0000-000000000002'::uuid,
+  480, 'shared', 'Your hotel or agreed meeting point', '08:30 AM',
+  2, 30,
+  '{"Speedboat transfers","BBQ seafood lunch","Snorkelling equipment","Licensed guide","Life jackets"}',
+  '{"Alcoholic beverages","Personal insurance","Tips"}',
+  '{"White-sand beaches","Snorkelling","Traditional BBQ","Water sports","Lagoon views"}',
+  d.id FROM public.destinations d WHERE d.slug = 'ile-aux-cerfs'
+ON CONFLICT DO NOTHING;
 
--- -------------------------
--- Activity categories
--- -------------------------
-insert into public.activity_categories (id, name, slug, description, position, published) values
-('c0000000-0000-0000-0000-000000000001', 'Water Sports',   'water-sports',   'Snorkelling, kitesurfing, kayaking and more.', 1, true),
-('c0000000-0000-0000-0000-000000000002', 'Cruises',        'cruises',        'Catamaran and boat tours around the island.',  2, true),
-('c0000000-0000-0000-0000-000000000003', 'Land & Hiking',  'land-hiking',    'Mountain trails, parks and nature reserves.',  3, true),
-('c0000000-0000-0000-0000-000000000004', 'Wildlife',       'wildlife',       'Dolphins, turtles and exotic bird watching.',  4, true),
-('c0000000-0000-0000-0000-000000000005', 'Fishing',        'fishing',        'Deep-sea and lagoon fishing charters.',        5, true)
-on conflict (id) do nothing;
+INSERT INTO public.activities (product_id, duration_minutes, tour_type, pickup_location, pickup_time, min_participants, max_participants, included_items, excluded_items, highlights, destination_id)
+SELECT
+  '33333333-0000-0000-0000-000000000003'::uuid,
+  180, 'private', 'Le Morne Beach', '09:00 AM',
+  1, 2,
+  '{"3-hour IKO lesson","All equipment","Safety harness","Wetsuit","Safety briefing"}',
+  '{"Transport to Le Morne","Personal insurance"}',
+  '{"World-class conditions","IKO-certified instructors","Le Morne backdrop"}',
+  d.id FROM public.destinations d WHERE d.slug = 'le-morne'
+ON CONFLICT DO NOTHING;
 
--- -------------------------
--- Tours
--- -------------------------
-insert into public.tours (
-  id, name, slug, destination_id, summary, description,
-  duration, price_from, currency,
-  hero_image_url, gallery_urls,
-  transport, inclusions, exclusions, itinerary, notices,
-  is_active, featured, position, published
-) values
-(
-  '30000000-0000-0000-0000-000000000001',
-  'Le Morne Lagoon Cruise',
-  'le-morne-lagoon-cruise',
-  '10000000-0000-0000-0000-000000000001',
-  'Private catamaran cruise with snorkelling, BBQ lunch and open bar in the Le Morne lagoon.',
-  '## About This Experience
+INSERT INTO public.activities (product_id, duration_minutes, tour_type, pickup_location, pickup_time, min_participants, max_participants, included_items, excluded_items, highlights, destination_id)
+SELECT
+  '33333333-0000-0000-0000-000000000004'::uuid,
+  90, 'shared', 'Grand Baie boat jetty', '10:00 AM',
+  1, 8,
+  '{"Helmet","Instructor guide","Fish feeding","Towels"}',
+  '{"Transport","Personal photos","Tips"}',
+  '{"No experience needed","Walk at 3-4m depth","Tropical fish","Suitable for all ages"}',
+  d.id FROM public.destinations d WHERE d.slug = 'grand-baie'
+ON CONFLICT DO NOTHING;
 
-Spend a half-day sailing the impossibly blue lagoon at the foot of Le Morne Brabant. Snorkel above vibrant coral gardens, enjoy a freshly grilled seafood BBQ and sip rum punch as you sail back to the beach.',
-  'Half day (5 h)',
-  18000, 'MUR',
-  'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=1600',
-  array[
-    'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=800',
-    'https://images.unsplash.com/photo-1559827291-72ee739d0d9a?w=800'
-  ],
-  'Private catamaran — pickup from Le Morne beach',
-  '["Catamaran cruise","Snorkelling equipment","BBQ seafood lunch","Open bar (rum punch, beer, soft drinks)","Professional guide","Life jackets"]'::jsonb,
-  '["Hotel transfers","Gratuities","Personal travel insurance"]'::jsonb,
-  '[{"time":"08:30","desc":"Meet at Le Morne beach pontoon"},{"time":"09:00","desc":"Depart by catamaran"},{"time":"10:00","desc":"Snorkelling stop 1 — coral garden"},{"time":"11:00","desc":"BBQ lunch on board"},{"time":"12:30","desc":"Snorkelling stop 2 — lagoon drift"},{"time":"13:30","desc":"Return to pontoon"}]'::jsonb,
-  'Minimum age 6. Guests must be able to swim. Itinerary may vary with weather.',
-  true, true, 1, true
-),
-(
-  '30000000-0000-0000-0000-000000000002',
-  'Le Morne Mountain Hike',
-  'le-morne-mountain-hike',
-  '10000000-0000-0000-0000-000000000001',
-  'Guided ascent of the UNESCO-listed Le Morne Brabant with breathtaking 360° views.',
-  '## About This Experience
+-- Package
+INSERT INTO public.packages (product_id, pricing_mode, discount_percent, duration_days, highlights)
+VALUES ('33333333-0000-0000-0000-000000000005'::uuid, 'computed_with_discount', 15.00, 3,
+  '{"Île aux Cerfs day trip","Underwater sea walk","Private airport transfers","15% bundle discount","Flexible scheduling"}')
+ON CONFLICT DO NOTHING;
 
-Le Morne Brabant (556 m) is Mauritius''s most iconic peak. This guided hike follows a safe route through endemic forest to a viewpoint with panoramic views of the lagoon, the south-west coast and, on a clear day, Réunion Island.',
-  'Half day (4 h)',
-  9500, 'MUR',
-  'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1600',
-  array[
-    'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800'
-  ],
-  'Minibus from Grand Baie included',
-  '["Certified mountain guide","Minibus transfers","Hiking poles","Light snacks & water"]'::jsonb,
-  '["Hiking boots (available to hire)","Personal travel insurance","Gratuities"]'::jsonb,
-  '[{"time":"06:00","desc":"Pickup from Grand Baie hotels"},{"time":"08:00","desc":"Trail briefing at base"},{"time":"08:15","desc":"Begin ascent"},{"time":"10:30","desc":"Summit viewpoint & photos"},{"time":"11:30","desc":"Descent begins"},{"time":"13:00","desc":"Return transfers"}]'::jsonb,
-  'Moderate fitness required. Not suitable for guests with knee or heart conditions. Bring sunscreen and a hat.',
-  true, true, 2, true
-),
-(
-  '30000000-0000-0000-0000-000000000003',
-  'Belle Mare Snorkel & Swim',
-  'belle-mare-snorkel-swim',
-  '10000000-0000-0000-0000-000000000002',
-  'Glass-bottom boat ride followed by guided snorkelling over the Belle Mare reef — perfect for beginners.',
-  '## About This Experience
+INSERT INTO public.package_items (package_id, product_id, sort_order, is_optional, is_default_selected, quantity) VALUES
+  ('33333333-0000-0000-0000-000000000005'::uuid, '33333333-0000-0000-0000-000000000002'::uuid, 0, false, true, 1),
+  ('33333333-0000-0000-0000-000000000005'::uuid, '33333333-0000-0000-0000-000000000004'::uuid, 1, false, true, 1),
+  ('33333333-0000-0000-0000-000000000005'::uuid, '33333333-0000-0000-0000-000000000001'::uuid, 2, true, true, 2)
+ON CONFLICT DO NOTHING;
 
-Discover the east coast''s pristine coral gardens without getting on a big boat. Our small-group glass-bottom boat takes you to the best reef spots, then you hop in with full snorkelling gear and a guide to explore at your own pace.',
-  '3 hours',
-  6500, 'MUR',
-  'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600',
-  array[
-    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800'
-  ],
-  'Glass-bottom boat from Belle Mare beach',
-  '["Glass-bottom boat","Snorkelling equipment","Experienced marine guide","Refreshments"]'::jsonb,
-  '["Hotel transfers","Gratuities"]'::jsonb,
-  '[{"time":"09:00","desc":"Meet at Belle Mare beach"},{"time":"09:15","desc":"Glass-bottom boat departs"},{"time":"09:45","desc":"Reef snorkelling (60 min)"},{"time":"11:00","desc":"Return to beach"}]'::jsonb,
-  'Suitable for non-swimmers with life jacket. Maximum 8 guests per group.',
-  true, false, 3, true
-),
-(
-  '30000000-0000-0000-0000-000000000004',
-  'Grand Baie Dolphin Watch',
-  'grand-baie-dolphin-watch',
-  '10000000-0000-0000-0000-000000000003',
-  'Early-morning speedboat excursion to swim with wild spinner dolphins in their natural habitat.',
-  '## About This Experience
+-- Product destinations
+INSERT INTO public.product_destinations (product_id, destination_id)
+SELECT '33333333-0000-0000-0000-000000000002'::uuid, id FROM public.destinations WHERE slug = 'ile-aux-cerfs'
+ON CONFLICT DO NOTHING;
+INSERT INTO public.product_destinations (product_id, destination_id)
+SELECT '33333333-0000-0000-0000-000000000003'::uuid, id FROM public.destinations WHERE slug = 'le-morne'
+ON CONFLICT DO NOTHING;
+INSERT INTO public.product_destinations (product_id, destination_id)
+SELECT '33333333-0000-0000-0000-000000000004'::uuid, id FROM public.destinations WHERE slug = 'grand-baie'
+ON CONFLICT DO NOTHING;
 
-Leave Grand Baie at dawn on a speedboat to find wild spinner dolphins before the other boats arrive. You''ll have the chance to snorkel alongside them in open water — a genuinely unforgettable encounter. Returns to bay by 10:30.',
-  '4 hours',
-  12000, 'MUR',
-  'https://images.unsplash.com/photo-1590523278191-995cbcda646b?w=1600',
-  array[
-    'https://images.unsplash.com/photo-1590523278191-995cbcda646b?w=800'
-  ],
-  'Speedboat from Grand Baie jetty',
-  '["Speedboat","Snorkelling gear","Marine biologist guide","Light breakfast on board"]'::jsonb,
-  '["Hotel transfers","Dolphin sightings are never guaranteed (nature)","Gratuities"]'::jsonb,
-  '[{"time":"06:00","desc":"Depart Grand Baie jetty"},{"time":"06:45","desc":"Dolphin search area"},{"time":"07:00-09:00","desc":"Snorkelling with dolphins (weather permitting)"},{"time":"09:30","desc":"Return journey & breakfast"},{"time":"10:30","desc":"Arrive back at jetty"}]'::jsonb,
-  'Departure time is fixed — please arrive 15 min early. Pregnant guests and children under 5 cannot snorkel in open water.',
-  true, true, 4, true
-),
-(
-  '30000000-0000-0000-0000-000000000005',
-  'Flic en Flac Deep-Sea Fishing',
-  'flic-en-flac-deep-sea-fishing',
-  '10000000-0000-0000-0000-000000000004',
-  'Full-day charter boat fishing for marlin, sailfish and yellowfin tuna in the Indian Ocean.',
-  '## About This Experience
+-- Media
+INSERT INTO public.product_media (product_id, url, alt, is_cover, sort_order) VALUES
+  ('33333333-0000-0000-0000-000000000001'::uuid, 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200&q=80', 'Private airport transfer', true, 0),
+  ('33333333-0000-0000-0000-000000000002'::uuid, 'https://images.unsplash.com/photo-1559494007-9f5847c49d94?w=1200&q=80', 'Île aux Cerfs lagoon', true, 0),
+  ('33333333-0000-0000-0000-000000000002'::uuid, 'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=1200&q=80', 'Speedboat to island', false, 1),
+  ('33333333-0000-0000-0000-000000000003'::uuid, 'https://images.unsplash.com/photo-1530053969600-caed2596d242?w=1200&q=80', 'Kitesurfing Le Morne', true, 0),
+  ('33333333-0000-0000-0000-000000000004'::uuid, 'https://images.unsplash.com/photo-1560275619-4cc5fa59d3ae?w=1200&q=80', 'Underwater sea walk', true, 0),
+  ('33333333-0000-0000-0000-000000000005'::uuid, 'https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=1200&q=80', 'Mauritius highlights package', true, 0);
 
-Mauritius is one of the world''s top big-game fishing destinations. Board our fully-equipped sportfishing vessel from Flic en Flac and head to the blue water where marlin and sailfish patrol year-round. All gear is provided and the experienced crew will put you on the fish.',
-  'Full day (8 h)',
-  85000, 'MUR',
-  'https://images.unsplash.com/photo-1519046904884-53103b34b206?w=1600',
-  array[
-    'https://images.unsplash.com/photo-1519046904884-53103b34b206?w=800'
-  ],
-  'Private charter boat — departs Flic en Flac harbour',
-  '["Private sportfishing boat (up to 6 guests)","All fishing equipment","Experienced captain & crew","Lunch & beverages","Catch & release or keep your catch"]'::jsonb,
-  '["Fishing licence (included for locals, ask for visitors)","Gratuities","Hotel transfers"]'::jsonb,
-  '[{"time":"06:30","desc":"Meet at Flic en Flac harbour"},{"time":"07:00","desc":"Depart to fishing grounds (~45 min)"},{"time":"08:00-14:00","desc":"Trolling & big-game fishing"},{"time":"14:30","desc":"Return to harbour"}]'::jsonb,
-  'Seasickness patches recommended. Minimum group of 2 required. Private charters can be split across strangers — ask when booking.',
-  true, false, 5, true
-)
-on conflict (id) do nothing;
+-- Currency rates
+INSERT INTO public.currency_rates (from_currency, to_currency, rate) VALUES
+  ('EUR', 'USD', 1.0850), ('EUR', 'GBP', 0.8560), ('EUR', 'MUR', 48.50),
+  ('USD', 'EUR', 0.9217), ('USD', 'GBP', 0.7887), ('USD', 'MUR', 44.70),
+  ('GBP', 'EUR', 1.1682), ('GBP', 'USD', 1.2679), ('GBP', 'MUR', 56.67),
+  ('MUR', 'EUR', 0.0206), ('MUR', 'USD', 0.0224), ('MUR', 'GBP', 0.0177)
+ON CONFLICT (from_currency, to_currency) DO UPDATE SET rate = EXCLUDED.rate, fetched_at = now();
 
--- -------------------------
--- Tour ↔ activities
--- -------------------------
-insert into public.tours_activities (tour_id, activity_id) values
-('30000000-0000-0000-0000-000000000001', '20000000-0000-0000-0000-000000000001'), -- Lagoon Cruise + Snorkelling
-('30000000-0000-0000-0000-000000000001', '20000000-0000-0000-0000-000000000005'), -- Lagoon Cruise + Catamaran
-('30000000-0000-0000-0000-000000000002', '20000000-0000-0000-0000-000000000003'), -- Mountain Hike + Hiking
-('30000000-0000-0000-0000-000000000003', '20000000-0000-0000-0000-000000000001'), -- Belle Mare + Snorkelling
-('30000000-0000-0000-0000-000000000003', '20000000-0000-0000-0000-000000000007'), -- Belle Mare + Glass-Bottom
-('30000000-0000-0000-0000-000000000004', '20000000-0000-0000-0000-000000000004'), -- Dolphin Watch + Dolphins
-('30000000-0000-0000-0000-000000000004', '20000000-0000-0000-0000-000000000001'), -- Dolphin Watch + Snorkelling
-('30000000-0000-0000-0000-000000000005', '20000000-0000-0000-0000-000000000002')  -- Deep-Sea Fishing
-on conflict do nothing;
-
--- Tour ↔ activity categories
-insert into public.tours_activity_categories (tour_id, category_id) values
-('30000000-0000-0000-0000-000000000001', 'c0000000-0000-0000-0000-000000000002'), -- Cruise
-('30000000-0000-0000-0000-000000000001', 'c0000000-0000-0000-0000-000000000001'), -- Water Sports
-('30000000-0000-0000-0000-000000000002', 'c0000000-0000-0000-0000-000000000003'), -- Land & Hiking
-('30000000-0000-0000-0000-000000000003', 'c0000000-0000-0000-0000-000000000001'), -- Water Sports
-('30000000-0000-0000-0000-000000000004', 'c0000000-0000-0000-0000-000000000004'), -- Wildlife
-('30000000-0000-0000-0000-000000000005', 'c0000000-0000-0000-0000-000000000005')  -- Fishing
-on conflict do nothing;
-
--- Tour images
-insert into public.tour_images (tour_id, image_url, alt, position) values
-('30000000-0000-0000-0000-000000000001', 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=800', 'Catamaran on Le Morne lagoon', 1),
-('30000000-0000-0000-0000-000000000001', 'https://images.unsplash.com/photo-1559827291-72ee739d0d9a?w=800', 'Snorkelling on the reef', 2),
-('30000000-0000-0000-0000-000000000002', 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800', 'Le Morne Brabant peak', 1),
-('30000000-0000-0000-0000-000000000003', 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800', 'Belle Mare beach', 1),
-('30000000-0000-0000-0000-000000000004', 'https://images.unsplash.com/photo-1590523278191-995cbcda646b?w=800', 'Spinner dolphins Grand Baie', 1),
-('30000000-0000-0000-0000-000000000005', 'https://images.unsplash.com/photo-1519046904884-53103b34b206?w=800', 'Deep-sea fishing boat', 1);
-
--- Tour ↔ badges
-insert into public.tour_badges (tour_id, badge_id) values
-('30000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000005'), -- Eco Certified
-('30000000-0000-0000-0000-000000000004', 'b0000000-0000-0000-0000-000000000005')  -- Eco Certified
-on conflict do nothing;
-
--- -------------------------
--- Availability slots (next 30 days)
--- -------------------------
-insert into public.availability_slots (tour_id, starts_at, ends_at, capacity, reserved, price, currency, is_active) values
--- Le Morne Lagoon Cruise (half day, 09:00–14:00)
-('30000000-0000-0000-0000-000000000001', now() + interval '2 days' + time '09:00', now() + interval '2 days' + time '14:00', 12, 3, 18000, 'MUR', true),
-('30000000-0000-0000-0000-000000000001', now() + interval '4 days' + time '09:00', now() + interval '4 days' + time '14:00', 12, 0, 18000, 'MUR', true),
-('30000000-0000-0000-0000-000000000001', now() + interval '7 days' + time '09:00', now() + interval '7 days' + time '14:00', 12, 8, 18000, 'MUR', true),
-('30000000-0000-0000-0000-000000000001', now() + interval '9 days' + time '09:00', now() + interval '9 days' + time '14:00', 12, 0, 18000, 'MUR', true),
-('30000000-0000-0000-0000-000000000001', now() + interval '14 days' + time '09:00', now() + interval '14 days' + time '14:00', 12, 2, 17000, 'MUR', true), -- sale
--- Le Morne Hike (06:00–13:00)
-('30000000-0000-0000-0000-000000000002', now() + interval '3 days' + time '06:00', now() + interval '3 days' + time '13:00', 8, 0, 9500, 'MUR', true),
-('30000000-0000-0000-0000-000000000002', now() + interval '6 days' + time '06:00', now() + interval '6 days' + time '13:00', 8, 5, 9500, 'MUR', true),
-('30000000-0000-0000-0000-000000000002', now() + interval '10 days' + time '06:00', now() + interval '10 days' + time '13:00', 8, 0, 9500, 'MUR', true),
--- Belle Mare Snorkel (09:00–12:00)
-('30000000-0000-0000-0000-000000000003', now() + interval '1 days' + time '09:00', now() + interval '1 days' + time '12:00', 8, 2, 6500, 'MUR', true),
-('30000000-0000-0000-0000-000000000003', now() + interval '3 days' + time '09:00', now() + interval '3 days' + time '12:00', 8, 0, 6500, 'MUR', true),
-('30000000-0000-0000-0000-000000000003', now() + interval '5 days' + time '09:00', now() + interval '5 days' + time '12:00', 8, 7, 6500, 'MUR', true),
-('30000000-0000-0000-0000-000000000003', now() + interval '8 days' + time '09:00', now() + interval '8 days' + time '12:00', 8, 0, 6500, 'MUR', true),
--- Grand Baie Dolphins (06:00–10:30)
-('30000000-0000-0000-0000-000000000004', now() + interval '2 days' + time '06:00', now() + interval '2 days' + time '10:30', 10, 4, 12000, 'MUR', true),
-('30000000-0000-0000-0000-000000000004', now() + interval '5 days' + time '06:00', now() + interval '5 days' + time '10:30', 10, 0, 12000, 'MUR', true),
-('30000000-0000-0000-0000-000000000004', now() + interval '9 days' + time '06:00', now() + interval '9 days' + time '10:30', 10, 1, 12000, 'MUR', true),
-('30000000-0000-0000-0000-000000000004', now() + interval '12 days' + time '06:00', now() + interval '12 days' + time '10:30', 10, 0, 11000, 'MUR', true),
--- Deep-Sea Fishing (07:00–15:00) — small boat, 6 guests
-('30000000-0000-0000-0000-000000000005', now() + interval '4 days' + time '07:00', now() + interval '4 days' + time '15:00', 6, 0, 85000, 'MUR', true),
-('30000000-0000-0000-0000-000000000005', now() + interval '11 days' + time '07:00', now() + interval '11 days' + time '15:00', 6, 2, 85000, 'MUR', true),
-('30000000-0000-0000-0000-000000000005', now() + interval '18 days' + time '07:00', now() + interval '18 days' + time '15:00', 6, 0, 85000, 'MUR', true);
-
--- -------------------------
--- Booking rules
--- -------------------------
--- Global default rule
-insert into public.booking_rules (tour_id, min_lead_hours, max_lead_days, min_guests, max_guests, allow_same_day) values
-(null, 12, 90, 1, null, false)
-on conflict do nothing;
-
--- Dolphin watch: must book at least 1 day ahead (6 AM departure)
-insert into public.booking_rules (tour_id, min_lead_hours, max_lead_days, min_guests, max_guests, allow_same_day) values
-('30000000-0000-0000-0000-000000000004', 24, 60, 2, 10, false)
-on conflict do nothing;
-
--- Fishing: private charter, min 2 guests
-insert into public.booking_rules (tour_id, min_lead_hours, max_lead_days, min_guests, max_guests, allow_same_day) values
-('30000000-0000-0000-0000-000000000005', 48, 60, 2, 6, false)
-on conflict do nothing;
-
--- -------------------------
--- Pickup options
--- -------------------------
-insert into public.tours_pickup_options (tour_id, label, surcharge, position, active) values
-('30000000-0000-0000-0000-000000000001', 'Le Morne Beach (included)', 0,    1, true),
-('30000000-0000-0000-0000-000000000001', 'Grand Baie hotels',         2500, 2, true),
-('30000000-0000-0000-0000-000000000001', 'Port Louis area',           3000, 3, true),
-('30000000-0000-0000-0000-000000000002', 'Grand Baie hotels',         0,    1, true),
-('30000000-0000-0000-0000-000000000002', 'Port Louis area',           1500, 2, true),
-('30000000-0000-0000-0000-000000000004', 'Grand Baie jetty (included)', 0,  1, true),
-('30000000-0000-0000-0000-000000000004', 'Grand Baie hotels',         500,  2, true);
-
--- -------------------------
--- Coupons
--- -------------------------
-insert into public.coupons (code, description, discount_kind, discount_value, currency, active, starts_at, ends_at, max_redemptions) values
-('WELCOME10', '10 % off your first booking',   'percent', 10,   'MUR', true,  now(), now() + interval '1 year', 500),
-('SUMMER20',  '20 % off during summer season', 'percent', 20,   'MUR', true,  now(), now() + interval '3 months', 100),
-('FLAT500',   'Rs 500 off any experience',     'fixed',   500,  'MUR', true,  now(), now() + interval '6 months', null),
-('HIKE15',    '15 % off any hike',             'percent', 15,   'MUR', true,  now(), now() + interval '6 months', 200)
-on conflict do nothing;
-
--- Update HIKE15 to be tour-specific
-update public.coupons
-set applicable_tour_id = '30000000-0000-0000-0000-000000000002'
-where code = 'HIKE15';
-
--- -------------------------
 -- Testimonials
--- -------------------------
-insert into public.testimonials (author_name, author_location, quote, rating, related_tour_id, published, position) values
-('Sophie L.',    'Paris, FR',        'The lagoon cruise was the highlight of our honeymoon. Absolutely magical!', 5, '30000000-0000-0000-0000-000000000001', true, 1),
-('Marcus T.',    'London, UK',       'Swimming with dolphins before breakfast — I still can''t believe it''s real. Tropigo made it seamless.', 5, '30000000-0000-0000-0000-000000000004', true, 2),
-('Yuki H.',      'Tokyo, JP',        'The hike guide knew every plant by name. Reached the top in misty clouds — unforgettable.', 5, '30000000-0000-0000-0000-000000000002', true, 3),
-('Amara N.',     'Johannesburg, ZA', 'Caught a 180 kg blue marlin on the fishing charter! Crew was brilliant.', 5, '30000000-0000-0000-0000-000000000005', true, 4),
-('Claire & Tom', 'Sydney, AU',       'Belle Mare snorkel was perfect for our kids. Small group, patient guide, stunning reef.', 4, '30000000-0000-0000-0000-000000000003', true, 5),
-('Diego R.',     'Madrid, ES',       'From booking to departure Tropigo was professional and responsive. Will definitely come back.', 5, null, true, 6)
-on conflict do nothing;
+INSERT INTO public.testimonials (author_name, author_location, quote, rating, position, published) VALUES
+  ('Sophie Laurent', 'Paris, France', 'The Île aux Cerfs trip was the highlight of our honeymoon. Everything was perfectly organised. Tropigo made it effortless.', 5, 0, true),
+  ('James & Karen Mitchell', 'London, UK', 'The driver was waiting with a sign, the car was immaculate. Perfect airport transfer experience.', 5, 1, true),
+  ('Marco Bianchi', 'Milan, Italy', 'Tried the underwater sea walk with my family — my daughter was absolutely amazed. Highly recommend!', 5, 2, true),
+  ('Anita Müller', 'Vienna, Austria', 'My kitesurfing lesson at Le Morne was incredible. I was up on the board by the end of the session!', 5, 3, true);
 
--- -------------------------
 -- FAQs
--- -------------------------
-insert into public.faqs (category, question, answer, position, published) values
-('Booking',    'How far in advance should I book?',
- 'We recommend booking at least 48 hours ahead for most experiences, and 7+ days in advance during peak season (December–April). Availability is live on the site.',
- 1, true),
-('Booking',    'Can I book for a group?',
- 'Yes — all our experiences can accommodate groups. For groups of 10 or more, contact us directly at hello@tropigo.mu for a custom quote.',
- 2, true),
-('Booking',    'What payment methods do you accept?',
- 'We accept all major credit/debit cards. Payment is processed securely at checkout. For large charters we can arrange bank transfer — contact us.',
- 3, true),
-('Cancellation','What is your cancellation policy?',
- 'Free cancellation up to 24 hours before your experience starts. Within 24 hours, a 50 % fee applies. No-shows are non-refundable.',
- 4, true),
-('Cancellation','What if the tour is cancelled by Tropigo?',
- 'In the rare event we need to cancel due to weather or other safety reasons, you will receive a full refund or a free rebook — your choice.',
- 5, true),
-('On the Day', 'What should I bring?',
- 'Sunscreen, a hat and comfortable clothing suited to the activity. For water activities, a swimsuit and towel. Snorkelling gear is always provided.',
- 6, true),
-('On the Day', 'Are airport transfers included?',
- 'Transfers are not included by default but can be added as a pickup option at checkout for most tours, or arranged separately via our concierge service.',
- 7, true),
-('General',    'Are your experiences suitable for children?',
- 'Many of our experiences welcome children (minimum ages vary by activity — check each listing). The Belle Mare Snorkel & Swim is our most family-friendly option.',
- 8, true)
-on conflict do nothing;
+INSERT INTO public.faqs (category, question, answer, position, published) VALUES
+  ('booking', 'Can I book last minute?', 'We recommend booking at least 48 hours in advance. For urgent requests, contact us directly.', 0, true),
+  ('booking', 'How do I get my booking confirmation?', 'You will receive an email confirmation within minutes of completing payment with your booking reference.', 1, true),
+  ('booking', 'Can I change or cancel my booking?', 'Free cancellation up to 48 hours before your activity. Within 48 hours, a 50% charge applies.', 2, true),
+  ('transfers', 'What happens if my flight is delayed?', 'We track all incoming flights in real time. Your driver will adjust automatically at no extra charge for the first 60 minutes.', 0, true),
+  ('transfers', 'Do you offer child seats?', 'Yes, child seats are available on request at no extra charge. Specify age and weight when booking.', 1, true),
+  ('activities', 'Are activities weather dependent?', 'Water activities are weather dependent. If unsafe, we will reschedule or offer a full refund.', 0, true),
+  ('payments', 'What currencies do you accept?', 'We accept EUR, USD, GBP, and MUR. Prices are locked at checkout with no hidden fees.', 0, true),
+  ('payments', 'Is my payment secure?', 'All payments are processed through Stripe, PCI-DSS Level 1 certified. We never store card details.', 1, true);
 
--- -------------------------
 -- Legal pages
--- -------------------------
-insert into public.legal_pages (title, slug, content, published, position) values
-('Privacy Policy', 'privacy-policy',
- E'# Privacy Policy\n\nLast updated: April 2026\n\nTropigo ("we", "us") operates the Tropigo website and booking platform. This page informs you of our policies regarding the collection, use and disclosure of personal data.\n\n## Data We Collect\nWe collect information you provide directly, such as name, email, phone number and payment details when making a booking.\n\n## How We Use Data\nWe use your data to process bookings, send confirmation emails and improve our services. We do not sell your data to third parties.\n\n## Contact\nhello@tropigo.mu',
- true, 1),
-('Terms & Conditions', 'terms-and-conditions',
- E'# Terms & Conditions\n\nLast updated: April 2026\n\nBy booking through Tropigo you agree to these terms. Tropigo acts as an agent connecting guests with licensed local operators. All activities carry inherent risk — guests participate at their own risk.\n\n## Liability\nTropigo is not liable for injury, loss or damage arising from participation in any activity.\n\n## Governing Law\nThese terms are governed by the laws of the Republic of Mauritius.',
- true, 2),
-('Cancellation Policy', 'cancellation-policy',
- E'# Cancellation Policy\n\n- **More than 24 h before departure:** Full refund.\n- **6–24 h before departure:** 50 % refund.\n- **Less than 6 h / no-show:** No refund.\n\nTropigo-initiated cancellations (weather, safety): full refund or free rebook.\n\nRefunds are processed within 5–10 business days to the original payment method.',
- true, 3)
-on conflict do nothing;
+INSERT INTO public.legal_pages (slug, title, content, version, effective_date, published) VALUES
+  ('terms-and-conditions', 'Terms & Conditions', '# Terms & Conditions
 
--- -------------------------
--- Blog categories & posts
--- -------------------------
-insert into public.blog_categories (id, name, slug, description, position, published) values
-('d0000000-0000-0000-0000-000000000001', 'Travel Guides',   'travel-guides',   'Island tips and itinerary inspiration.',      1, true),
-('d0000000-0000-0000-0000-000000000002', 'Marine Life',     'marine-life',     'Dolphins, turtles and the reefs of Mauritius.',2, true),
-('d0000000-0000-0000-0000-000000000003', 'Activities',      'activities',      'Deep dives into our favourite experiences.',   3, true)
-on conflict (id) do nothing;
+All bookings are confirmed after full payment. Cancellations more than 48 hours before activity receive a full refund. Within 48 hours, 50% charge applies.', '1.0', '2026-04-01', true),
+  ('privacy-policy', 'Privacy Policy', '# Privacy Policy
 
-insert into public.blog_posts (title, slug, excerpt, content, cover_image_url, category_id, published, published_at) values
-(
-  '7 Reasons to Visit Mauritius in April',
-  '7-reasons-to-visit-mauritius-in-april',
-  'April is arguably the best month to visit — find out why the island is at its most spectacular.',
-  E'# 7 Reasons to Visit Mauritius in April\n\n## 1. Perfect Weather\nApril sits right between the cyclone season (ending March) and the cooler austral winter. Temperatures hover around 27 °C with low humidity.\n\n## 2. Flat Seas\nThe trade winds ease in April, making catamaran cruises and snorkelling excursions especially smooth.\n\n## 3. Fewer Crowds\nEuropean school holidays are over and the peak Christmas rush is long past — you get the beaches largely to yourself.\n\n## 4. Dolphin Season\nSpinner dolphins are reliably sighted in the north in April before they head further offshore in winter.\n\n## 5. Hiking Conditions\nDryer trails mean better grip on the Le Morne ascent and less mud on the coastal paths.\n\n## 6. Lower Prices\nMany hotels and tour operators offer shoulder-season rates, giving you more for your budget.\n\n## 7. Blooming Flame Trees\nThe iconic flamboyant trees burst into orange-red bloom in April, lining every road with colour.',
-  'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=1200',
-  'd0000000-0000-0000-0000-000000000001',
-  true, now() - interval '5 days'
-),
-(
-  'Swimming With Spinner Dolphins: What to Expect',
-  'swimming-with-spinner-dolphins-guide',
-  'A calm morning, a fast boat and the ocean to yourself — here''s the real story of a dolphin swim.',
-  E'# Swimming with Spinner Dolphins\n\nSpinner dolphins (*Stenella longirostris*) gather in the waters off the north-west coast of Mauritius every morning before heading to deeper water to feed at night.\n\n## Best Time to Go\nDepart before 07:00. The dolphins rest near the surface in the early morning and are more relaxed around snorkellers at this hour.\n\n## What Actually Happens\nYou will hear them before you see them — a chorus of clicks and whistles through your snorkel. They move fast; you cannot chase them. The trick is to float still and let them come to you.\n\n## Ethical Guidelines\nOur guide follows the Mauritius Marine Conservation Society guidelines: no touching, no chasing, no flash photography underwater.',
-  'https://images.unsplash.com/photo-1590523278191-995cbcda646b?w=1200',
-  'd0000000-0000-0000-0000-000000000002',
-  true, now() - interval '12 days'
-),
-(
-  'Le Morne Hike: Complete Trail Guide 2026',
-  'le-morne-hike-trail-guide-2026',
-  'Everything you need to know before you lace up your boots and tackle Mauritius''s most iconic peak.',
-  E'# Le Morne Hike: Complete Trail Guide\n\n## The Route\nThe main trail starts at the car park on the south side of the peninsula. It is 3.8 km round trip with 450 m of elevation gain. Allow 3–4 hours.\n\n## Difficulty\nModerate. The first half is a gentle forest path; the final 30 minutes involves scrambling over loose basalt — trekking poles recommended.\n\n## What to Bring\n- 2 L of water per person\n- Sunscreen and hat\n- Sturdy shoes (not sandals)\n- Snacks\n\n## The Summit\nYou will not reach the true summit (access is restricted to protect nesting birds) but the guide will take you to the panoramic viewpoint at ~480 m — easily the best view on the island.',
-  'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200',
-  'd0000000-0000-0000-0000-000000000003',
-  true, now() - interval '20 days'
-)
-on conflict do nothing;
+We collect your name, email, and booking details to process your reservation. Data is not sold to third parties. Contact hello@tropigo.mu for data requests.', '1.0', '2026-04-01', true)
+ON CONFLICT (slug) DO NOTHING;
 
--- -------------------------
--- Static pages
--- -------------------------
-insert into public.static_pages (title, slug, content, position, published) values
-('About Tropigo', 'about',
- E'# About Tropigo\n\nTropigo was founded by a group of Mauritians passionate about sharing the best of their island with the world. We hand-pick every experience we offer — if it isn''t exceptional, it doesn''t go on the site.\n\n## Our Mission\nTo make it effortless to discover and book authentic, responsible experiences in Mauritius.\n\n## Our Team\nWe are a small team of local guides, travel specialists and tech people based in Grand Baie.',
- 1, true),
-('How It Works', 'how-it-works',
- E'# How It Works\n\n1. **Browse** — Explore curated experiences by destination, activity type or date.\n2. **Choose a slot** — Live availability, instant confirmation.\n3. **Book & pay securely** — All major cards accepted.\n4. **Get your voucher** — Emailed instantly, show it on your phone.\n5. **Enjoy!** — Meet your guide and have the best day of your trip.',
- 2, true)
-on conflict do nothing;
-
--- -------------------------
 -- Homepage sections
--- -------------------------
-insert into public.homepage_sections (section_type, title, subtitle, data, position, published) values
-('hero',         'Your Island Adventure Starts Here',
-  'Curated tours and experiences across Mauritius — book in seconds.',
-  '{"cta_label":"Explore Experiences","cta_url":"/experiences","bg_image":"/hero-bg.jpg"}'::jsonb,
-  1, true),
-('badges',       null, null,
-  '{"badge_ids":["b0000000-0000-0000-0000-000000000001","b0000000-0000-0000-0000-000000000002","b0000000-0000-0000-0000-000000000003"]}'::jsonb,
-  2, true),
-('regions',      'Explore by Destination', 'Choose your corner of the island.',
-  '{}'::jsonb,
-  3, true),
-('experiences',  'Top Experiences', 'Hand-picked by our local team.',
-  '{"tour_ids":["30000000-0000-0000-0000-000000000001","30000000-0000-0000-0000-000000000004","30000000-0000-0000-0000-000000000002"]}'::jsonb,
-  4, true),
-('testimonials', 'What Our Guests Say', null,
-  '{}'::jsonb,
-  5, true),
-('faqs',         'Frequently Asked Questions', null,
-  '{}'::jsonb,
-  6, true),
-('cta',          'Ready to Book?', 'Secure your spot today — free cancellation up to 24 h before.',
-  '{"cta_label":"Browse All Experiences","cta_url":"/experiences"}'::jsonb,
-  7, true)
-on conflict do nothing;
-
--- -------------------------
--- Sample enquiry
--- -------------------------
-insert into public.enquiries (name, email, phone, message, tour_id, status) values
-(
-  'James Okafor',
-  'james.okafor@example.com',
-  '+44 7911 123456',
-  'Hi, I am visiting with my family of 4 (2 adults, 2 kids aged 8 & 11) in late April. Can you recommend the best combination of activities? We are staying near Grand Baie.',
-  '30000000-0000-0000-0000-000000000004',
-  'new'
-)
-on conflict do nothing;
-
--- -------------------------
--- Sample booking for test user (created only if user@tropigo.com exists)
--- -------------------------
-do $$
-declare
-  v_user_id  uuid;
-  v_booking_id uuid;
-begin
-  select id into v_user_id from auth.users where email = 'user@tropigo.com' limit 1;
-  if v_user_id is null then return; end if;
-
-  insert into public.bookings (
-    user_id, booking_ref, status, payment_status, currency,
-    subtotal_amount, discount_amount, total_amount,
-    customer_email, customer_name, customer_phone,
-    idempotency_key, source, payment_provider, payment_intent_id, paid_at
-  ) values (
-    v_user_id,
-    'TG-20260404-SEED01',
-    'confirmed', 'paid', 'MUR',
-    18000, 1800, 16200,
-    'user@tropigo.com', 'Sophie Laurent', '+33 6 12 34 56 78',
-    'idem-seed-001', 'web', 'mock', 'mock_pi_seed_001', now() - interval '1 day'
-  )
-  on conflict do nothing
-  returning id into v_booking_id;
-
-  if v_booking_id is not null then
-    insert into public.booking_items (
-      booking_id, tour_id, title, starts_at, ends_at,
-      guests, quantity, unit_price, subtotal
-    ) values (
-      v_booking_id,
-      '30000000-0000-0000-0000-000000000001',
-      'Le Morne Lagoon Cruise',
-      now() + interval '2 days' + time '09:00',
-      now() + interval '2 days' + time '14:00',
-      2, 2, 9000, 18000
-    ) on conflict do nothing;
-  end if;
-end $$;
+INSERT INTO public.homepage_sections (section_type, title, subtitle, data, position, published) VALUES
+  ('hero', 'Discover Mauritius, Your Way', 'Premium transfers, island activities, and curated packages.', '{"cta_primary_label":"Explore Activities","cta_primary_href":"/activities","cta_secondary_label":"Book a Transfer","cta_secondary_href":"/transfers","hero_image_url":"https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=1920&q=80"}', 0, true),
+  ('transfers_cta', 'Airport Transfers', 'Arrive relaxed. Depart on time.', '{"cta_label":"See Prices","cta_href":"/transfers","image_url":"https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80"}', 1, true),
+  ('featured_activities', 'Top Experiences', 'Curated adventures for every traveller.', '{"limit":6}', 2, true),
+  ('destinations', 'Explore Mauritius', 'From northern beaches to the wild southwestern coast.', '{"limit":3}', 3, true),
+  ('testimonials', 'What Our Guests Say', 'Thousands of happy travellers trust Tropigo.', '{"limit":4}', 4, true),
+  ('faqs', 'Frequently Asked Questions', null, '{"limit":6,"category":"booking"}', 5, true);
