@@ -1,13 +1,20 @@
 import type { Metadata } from 'next'
-import { Manrope } from 'next/font/google'
+import { Sora, EB_Garamond } from 'next/font/google'
 import { Toaster } from 'sonner'
 import './globals.css'
 
-const manrope = Manrope({
+const sora = Sora({
   subsets: ['latin'],
-  variable: '--font-manrope',
+  variable: '--font-sora',
   display: 'swap',
-  weight: ['300', '400', '500', '600', '700', '800'],
+  weight: ['300', '400', '500', '600', '700'],
+})
+
+const ebGaramond = EB_Garamond({
+  subsets: ['latin'],
+  variable: '--font-eb-garamond',
+  display: 'swap',
+  weight: ['400', '500', '600', '700', '800'],
 })
 
 
@@ -42,8 +49,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${manrope.variable}`}>
-      <body className="min-h-screen bg-sand-50 font-sans antialiased">
+    <html lang="en" className={`${sora.variable} ${ebGaramond.variable}`}>
+      <body className="min-h-screen bg-background font-sans antialiased">
         {children}
         <Toaster
           position="bottom-right"

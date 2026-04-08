@@ -47,12 +47,11 @@ export function Header() {
           <Link
             href="/"
             className={cn(
-              'text-xl font-bold tracking-tight transition-colors',
-              scrolled || !isHomepage ? 'text-brand-950' : 'text-white',
+              'font-headline text-xl font-bold tracking-[0.2em] transition-colors',
+              scrolled || !isHomepage ? 'text-primary' : 'text-white',
             )}
           >
-            <span className="font-serif italic">Tropi</span>
-            <span>go</span>
+            TROPIGO
           </Link>
 
           {/* Desktop nav */}
@@ -84,8 +83,9 @@ export function Header() {
               variant={scrolled || !isHomepage ? 'primary' : 'secondary'}
               size="sm"
               asChild
+              className="rounded-full font-label text-xs uppercase tracking-widest"
             >
-              <Link href="/transfers">Book Transfer</Link>
+              <Link href="/transfers">Book Now</Link>
             </Button>
           </div>
 

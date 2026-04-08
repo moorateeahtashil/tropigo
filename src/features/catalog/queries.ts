@@ -204,7 +204,7 @@ export async function getPublishedPackages(options?: {
       *,
       packages!inner(*),
       product_media(url, is_cover, sort_order),
-      package_items(id)
+      package_items!package_items_package_id_fkey(id)
     `)
     .eq('status', 'published')
     .eq('product_type', 'package')
@@ -237,9 +237,9 @@ export async function getPackageBySlug(slug: string) {
       *,
       packages!inner(*),
       product_media(*),
-      package_items(
+      package_items!package_items_package_id_fkey(
         id, sort_order, is_optional, is_default_selected, quantity, price_override, notes,
-        product:products!product_id(
+        product:products!package_items_product_id_fkey(
           id, slug, title, summary, base_price, base_currency, product_type,
           product_media(url, is_cover)
         )
