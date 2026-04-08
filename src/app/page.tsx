@@ -44,7 +44,7 @@ export default async function HomePage() {
         <section className="relative flex min-h-[100svh] items-end overflow-hidden">
           <div className="absolute inset-0">
             <Image
-              src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=2560&q=95"
+              src="/hero-mauritius.jpg"
               alt="Mauritius 4K aerial view of green island in turquoise water"
               fill
               priority
@@ -62,25 +62,24 @@ export default async function HomePage() {
             </h1>
             
             {/* Quick actions */}
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <div className="mb-16 mt-12 flex flex-wrap items-center justify-center gap-4">
               <Link
                 href="/activities"
-                className="rounded-full bg-secondary px-8 py-3 font-label text-sm uppercase tracking-widest text-on-secondary transition-all hover:brightness-110 active:scale-95"
+                className="rounded-full bg-secondary px-10 py-4 font-label text-sm uppercase tracking-widest text-on-secondary transition-all hover:brightness-110 active:scale-95"
               >
                 Explore Activities
               </Link>
               <Link
                 href="/transfers"
-                className="rounded-full border border-white/30 bg-white/10 px-8 py-3 font-label text-sm uppercase tracking-widest text-white backdrop-blur-sm transition-all hover:bg-white/20"
+                className="rounded-full border border-white/30 bg-white/10 px-10 py-4 font-label text-sm uppercase tracking-widest text-white backdrop-blur-sm transition-all hover:bg-white/20"
               >
                 Book Transfer
               </Link>
             </div>
           </div>
-          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 flex gap-3">
-            <div className="h-1 w-12 rounded-full bg-white" />
-            <div className="h-1 w-8 rounded-full bg-white/30" />
-            <div className="h-1 w-8 rounded-full bg-white/30" />
+          {/* Single indicator dot */}
+          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10">
+            <div className="h-1.5 w-16 rounded-full bg-white" />
           </div>
         </section>
 

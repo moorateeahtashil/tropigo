@@ -1,13 +1,22 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-export function middleware(_req: NextRequest) {
-  // Auth is handled client-side by AdminGuard via Supabase localStorage session.
-  // Middleware cannot read localStorage, so we let all requests through and rely
-  // on AdminGuard to redirect unauthenticated users to /admin/login.
-  return NextResponse.next()
+export function middleware(req: NextRequest) {
+  const response = NextResponse.next()
+  
+  // Currency cookie - set default if not exists
+  const currencyCookie = req.cookies.get('tropigo_currency')
+  if (!currencyCookie) {
+    response.cookies.set('tropigo_currency', 'EUR', {
+      maxAge: 60 * 60 * 24 * 365, // 1 year
+      path: '/',
+      sameSite: 'lax',
+    })
+  }
+  
+  return response
 }
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/admin/:path*', '/activities/:path*', '/transfers/:path*', '/packages/:path*', '/destinations/:path*'],
 }

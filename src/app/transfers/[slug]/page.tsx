@@ -9,9 +9,10 @@ import { TransferBookingWidget } from './TransferBookingWidget'
 
 export const revalidate = 600
 
-export default async function TransferDetail({ params }: { params: { slug: string } }) {
+export default async function TransferDetail({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = await params
   const currency = (await cookies()).get('tropigo_currency')?.value || 'EUR'
-  const transfer = await getTransferBySlug(params.slug)
+  const transfer = await getTransferBySlug(resolvedParams.slug)
   if (!transfer) return notFound()
 
   // Get media items for gallery

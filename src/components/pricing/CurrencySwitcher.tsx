@@ -4,49 +4,54 @@ import { useState, useEffect } from 'react'
 import { cn } from '@/lib/utils/cn'
 import { SUPPORTED_CURRENCIES, DEFAULT_CURRENCY } from '@/features/pricing/types'
 
-const STORAGE_KEY = 'tropigo_currency'
+const COOKIE_NAME = 'tropigo_currency'
+const EVENT_NAME = 'currency:change'
 
-export function useCurrency() {
-  const [currency, setCurrencyState] = useState<string>(DEFAULT_CURRENCY)
+// Read cookie from document.cookie (works for SSR-set cookies)
+function getCookieCurrency(): string {
+  if (typeof document === 'undefined') return DEFAULT_CURRENCY
+  const match = document.cookie.match(new RegExp(`(?:^|; )${COOKIE_NAME}=([^;]*)`))
+  return match ? decodeURIComponent(match[1]) : DEFAULT_CURRENCY
+}
 
+export function CurrencySwitcher({ className, variant = 'pill' }: { className?: string; variant?: 'pill' | 'select' }) {
+  const [currency, setCurrencyState] = useState(DEFAULT_CURRENCY)
+
+  // Initialize from cookie
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    const valid = SUPPORTED_CURRENCIES.find(c => c.code === stored)
-    if (valid) setCurrencyState(valid.code)
+    setCurrencyState(getCookieCurrency())
   }, [])
 
-  function setCurrency(code: string) {
+  // Listen for currency changes from other components
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail as string
+      if (detail) setCurrencyState(detail)
+    }
+    window.addEventListener(EVENT_NAME, handler)
+    return () => window.removeEventListener(EVENT_NAME, handler)
+  }, [])
+
+  const setCurrency = (code: string) => {
     const valid = SUPPORTED_CURRENCIES.find(c => c.code === code)
     if (!valid) return
+
     setCurrencyState(code)
-    localStorage.setItem(STORAGE_KEY, code)
-    // Dispatch event so other components can react
-    window.dispatchEvent(new CustomEvent('currency-change', { detail: code }))
+    localStorage.setItem(COOKIE_NAME, code)
+    // Set cookie for SSR (1 year)
+    document.cookie = `${COOKIE_NAME}=${code}; Path=/; Max-Age=${60 * 60 * 24 * 365}; SameSite=Lax`
+    // Dispatch event
+    window.dispatchEvent(new CustomEvent(EVENT_NAME, { detail: code }))
   }
-
-  return { currency, setCurrency }
-}
-
-interface CurrencySwitcherProps {
-  className?: string
-  variant?: 'pill' | 'select'
-}
-
-export function CurrencySwitcher({ className, variant = 'pill' }: CurrencySwitcherProps) {
-  const { currency, setCurrency } = useCurrency()
 
   if (variant === 'select') {
     return (
       <select
         value={currency}
-        onChange={e => {
-          setCurrency(e.target.value)
-          // also set a cookie for SSR pages (1 year)
-          document.cookie = `${STORAGE_KEY}=${e.target.value}; Path=/; Max-Age=${60*60*24*365}`
-        }}
+        onChange={e => setCurrency(e.target.value)}
         className={cn(
           'rounded-lg border border-sand-300 bg-white px-2 py-1 text-sm text-ink',
-          'focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500',
+          'focus:border-secondary focus:outline-none focus:ring-1 focus:ring-secondary',
           className,
         )}
         aria-label="Select currency"
@@ -72,19 +77,16 @@ export function CurrencySwitcher({ className, variant = 'pill' }: CurrencySwitch
       {SUPPORTED_CURRENCIES.map(c => (
         <button
           key={c.code}
-          onClick={() => {
-            setCurrency(c.code)
-            document.cookie = `${STORAGE_KEY}=${c.code}; Path=/; Max-Age=${60*60*24*365}`
-          }}
+          onClick={() => setCurrency(c.code)}
           className={cn(
             'rounded-lg px-2.5 py-1 text-xs font-medium transition-colors',
             currency === c.code
-              ? 'bg-brand-700 text-white shadow-sm'
-              : 'text-ink-secondary hover:text-ink hover:bg-sand-50',
+              ? 'bg-secondary text-white shadow-sm'
+              : 'text-on-surface-variant hover:text-on-surface hover:bg-sand-50',
           )}
           aria-pressed={currency === c.code}
         >
-          {c.symbol} {c.code}
+          {c.code}
         </button>
       ))}
     </div>

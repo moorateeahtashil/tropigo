@@ -26,6 +26,10 @@ export const metadata: Metadata = {
   description:
     'Discover the best of Mauritius with Tropigo. Book private airport transfers, island day trips, activities, and curated holiday packages.',
   keywords: ['Mauritius', 'tours', 'airport transfer', 'activities', 'holidays', 'Île aux Cerfs'],
+  icons: {
+    icon: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
   openGraph: {
     type: 'website',
     locale: 'en_US',
