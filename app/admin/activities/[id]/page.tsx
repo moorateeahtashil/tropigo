@@ -4,11 +4,11 @@ import Breadcrumbs from '@/components/admin/Breadcrumbs'
 import PageHeader from '@/components/admin/PageHeader'
 import { Button, Field, Input, Textarea, Switch } from '@/components/admin/Forms'
 import ImagePicker from '@/components/admin/ImagePicker'
-import { useEffect, useState } from 'react'
+import { use, useEffect, useState } from 'react'
 import { getSupabaseClient } from '@/supabase/client'
 
-export default function EditCategory({ params }: { params: { id: string } }) {
-  const id = params.id
+export default function EditCategory({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
   const supabase = getSupabaseClient()
   const [row, setRow] = useState<any>(null)
   const [badges, setBadges] = useState<any[]>([])

@@ -3,11 +3,11 @@
 import Breadcrumbs from '@/components/admin/Breadcrumbs'
 import PageHeader from '@/components/admin/PageHeader'
 import { Table, THead, TH, TBody, TR, TD } from '@/components/admin/Table'
-import { useEffect, useState } from 'react'
+import { use, useEffect, useState } from 'react'
 import { getSupabaseClient } from '@/supabase/client'
 
-export default function CustomerDetail({ params }: { params: { id: string } }) {
-  const id = params.id
+export default function CustomerDetail({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
   const supabase = getSupabaseClient()
   const [profile, setProfile] = useState<any>(null)
   const [orders, setOrders] = useState<any[]>([])
