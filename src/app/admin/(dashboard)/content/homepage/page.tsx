@@ -27,18 +27,7 @@ export default async function HomepageSections() {
           </thead>
           <tbody id="rows">
             {rows.map((r:any)=> (
-              <tr key={r.id} data-id={r.id} draggable onDragStart={(e)=> e.dataTransfer.setData('text/plain', r.id)} onDragOver={(e)=> e.preventDefault()} onDrop={(e)=>{
-                e.preventDefault();
-                const fromId = e.dataTransfer.getData('text/plain')
-                const tbody = document.getElementById('rows')!
-                const order = Array.from(tbody.children).map(el=> (el as HTMLElement).dataset.id!)
-                const fromIdx = order.indexOf(fromId)
-                const toIdx = order.indexOf(r.id)
-                if (fromIdx<0 || toIdx<0) return
-                order.splice(toIdx, 0, order.splice(fromIdx,1)[0])
-                ;(document.getElementById('ordered_ids') as HTMLInputElement).value = order.join(',')
-                ;(document.getElementById('save-order') as HTMLButtonElement).disabled = false
-              }} className="border-t border-sand-100">
+              <tr key={r.id} data-id={r.id} className="border-t border-sand-100">
                 <td className="px-4 py-2">{r.section_type}</td>
                 <td className="px-4 py-2">{r.title || '—'}</td>
                 <td className="px-4 py-2">{r.position}</td>

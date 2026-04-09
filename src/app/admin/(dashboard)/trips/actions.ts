@@ -73,7 +73,16 @@ export async function getTripProduct(id: string) {
     .eq('id', id)
     .eq('product_type','trip')
     .single()
-  if (error) throw new Error(error.message)
+  if (error) {
+    // If trips table doesn't exist yet (migration not pushed), try without the join
+    const { data: product, error: pErr } = await supabase
+      .from('products')
+      .select(`*, product_media(*), product_destinations(destination_id), product_pricing(*), availability_rules(*)`)
+      .eq('id', id)
+      .single()
+    if (pErr) throw new Error(error.message)
+    return { ...product, trips: null }
+  }
   return data
 }
 
@@ -146,7 +155,8 @@ export async function createTrip(productInput: ProductInput, tripInput: TripInpu
   }
 
   revalidatePath('/admin/trips')
-  redirect('/admin/trips?toast=success&toast_title=Trip+created&toast_msg=Successfully+created+' + encodeURIComponent(product.title || 'trip'))
+  revalidatePath(`/admin/trips/${product.id}`)
+  redirect(`/admin/trips/${product.id}?toast=success&toast_title=Trip+created&toast_msg=Now+add+photos+and+schedule`)
 }
 
 export async function updateTrip(id: string, productInput: ProductInput, tripInput: TripInput) {

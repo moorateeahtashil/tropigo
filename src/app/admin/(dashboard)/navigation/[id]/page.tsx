@@ -29,18 +29,7 @@ export default async function MenuItemsPage({ params }: { params: { id: string }
           </thead>
           <tbody id="menuRows">
             {items.map((it:any)=> (
-              <tr key={it.id} data-id={it.id} draggable onDragStart={(e)=>e.dataTransfer.setData('text/plain', it.id)} onDragOver={(e)=>e.preventDefault()} onDrop={(e)=>{
-                e.preventDefault();
-                const fromId = e.dataTransfer.getData('text/plain')
-                const tbody = document.getElementById('menuRows')!
-                const order = Array.from(tbody.children).map(el=> (el as HTMLElement).dataset.id!)
-                const fromIdx = order.indexOf(fromId)
-                const toIdx = order.indexOf(it.id)
-                if (fromIdx<0 || toIdx<0) return
-                order.splice(toIdx, 0, order.splice(fromIdx,1)[0])
-                ;(document.getElementById('nav-ordered') as HTMLInputElement).value = order.join(',')
-                ;(document.getElementById('nav-save') as HTMLButtonElement).disabled = false
-              }} className="border-t border-sand-100">
+              <tr key={it.id} data-id={it.id} className="border-t border-sand-100">
                 <td className="px-4 py-2">
                   <form action={updateAction} className="flex items-center gap-2">
                     <input type="hidden" name="id" value={it.id} />

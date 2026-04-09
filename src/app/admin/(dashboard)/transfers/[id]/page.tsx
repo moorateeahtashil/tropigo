@@ -225,39 +225,27 @@ async function deleteZoneAction(formData: FormData) {
 
 function GalleryManager({ row }: { row: any }) {
   return (
-    <section className="rounded-2xl border border-sand-200 bg-white p-5 shadow-card">
-      <h2 className="mb-3 text-lg font-semibold text-ink">Gallery</h2>
-      <ReorderHint />
+    <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <h2 className="mb-4 text-base font-semibold text-gray-900">Gallery</h2>
       <form action={uploadAction.bind(null, row.id)} className="flex items-center gap-3">
         <input type="file" name="image" accept="image/*" required className="text-sm" />
-        <button className="rounded-lg border border-sand-300 px-3 py-2 text-sm">Upload</button>
+        <button className="rounded-lg border border-gray-300 bg-white px-3.5 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50">Upload</button>
       </form>
       <form action={reorderAction.bind(null, row.id)}>
-      <div className="mt-4 grid gap-3 sm:grid-cols-3" data-sortable>
+      <div className="mt-4 grid gap-3 sm:grid-cols-3">
         {(row.product_media || []).sort((a:any,b:any)=>a.sort_order-b.sort_order).map((m: any) => (
-          <div key={m.id} className="overflow-hidden rounded-xl border border-sand-200" draggable onDragStart={(e)=>e.dataTransfer.setData('text/plain', m.id)} onDragOver={(e)=>e.preventDefault()} onDrop={(e)=>{
-              e.preventDefault();
-              const fromId = e.dataTransfer.getData('text/plain');
-              const container = (e.currentTarget.parentElement as HTMLElement)
-              if (!container) return
-              const order = Array.from(container.children).map((el:any)=> el.getAttribute('data-id'))
-              const fromIdx = order.indexOf(fromId); const toIdx = order.indexOf(m.id)
-              if (fromIdx<0 || toIdx<0) return
-              order.splice(toIdx, 0, order.splice(fromIdx,1)[0])
-              ;(document.getElementById('media-order') as HTMLInputElement).value = order.join(',')
-              ;(document.getElementById('save-order') as HTMLButtonElement).disabled = false
-            }} data-id={m.id}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={m.url} alt={m.alt || ''} className="h-40 w-full object-cover" />
+          <div key={m.id} className="overflow-hidden rounded-lg border border-gray-200">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={m.url} alt={m.alt || ''} className="h-40 w-full object-cover" />
             <div className="flex items-center justify-between p-2 text-xs">
               <div className="flex items-center gap-2">
                 {m.is_cover ? (
-                  <span className="rounded-full bg-brand-50 px-2 py-0.5 text-brand-700">Cover</span>
+                  <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-yellow-800">Cover</span>
                 ) : (
                   <form action={setCoverAction}>
                     <input type="hidden" name="product_id" value={row.id} />
                     <input type="hidden" name="media_id" value={m.id} />
-                    <button className="text-brand-700 hover:underline">Set cover</button>
+                    <button className="text-indigo-600 hover:underline">Set cover</button>
                   </form>
                 )}
               </div>
@@ -266,13 +254,13 @@ function GalleryManager({ row }: { row: any }) {
                   <input type="hidden" name="product_id" value={row.id} />
                   <input type="hidden" name="media_id" value={m.id} />
                   <input type="hidden" name="direction" value="up" />
-                  <button title="Move up">↑</button>
+                  <button className="text-gray-500 hover:text-gray-700">↑</button>
                 </form>
                 <form action={moveMediaAction}>
                   <input type="hidden" name="product_id" value={row.id} />
                   <input type="hidden" name="media_id" value={m.id} />
                   <input type="hidden" name="direction" value="down" />
-                  <button title="Move down">↓</button>
+                  <button className="text-gray-500 hover:text-gray-700">↓</button>
                 </form>
                 <form action={deleteMediaAction}>
                   <input type="hidden" name="product_id" value={row.id} />
@@ -281,18 +269,18 @@ function GalleryManager({ row }: { row: any }) {
                 </form>
               </div>
             </div>
-            <form action={saveAltAction} className="flex items-center gap-2 border-t border-sand-200 p-2">
+            <form action={saveAltAction} className="flex items-center gap-2 border-t border-gray-200 p-2">
               <input type="hidden" name="product_id" value={row.id} />
               <input type="hidden" name="media_id" value={m.id} />
-              <input name="alt" defaultValue={m.alt || ''} placeholder="Alt text" className="flex-1 rounded-lg border-sand-300 text-xs shadow-sm focus:border-brand-500 focus:ring-brand-500" />
-              <button className="rounded-lg border border-sand-300 px-2 py-1 text-xs">Save</button>
+              <input name="alt" defaultValue={m.alt || ''} placeholder="Alt text" className="flex-1 rounded-lg border border-gray-300 bg-white px-3.5 py-2 text-xs text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+              <button className="rounded-lg border border-gray-300 bg-white px-2.5 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50">Save</button>
             </form>
           </div>
         ))}
       </div>
       <input type="hidden" id="media-order" name="ordered_ids" />
       <div className="mt-3">
-        <button id="save-order" disabled className="rounded-lg border border-sand-300 px-3 py-2 text-sm disabled:opacity-50">Save order</button>
+        <button id="save-order" disabled className="rounded-lg border border-gray-300 bg-white px-3.5 py-2 text-sm disabled:opacity-50">Save order</button>
       </div>
       </form>
     </section>

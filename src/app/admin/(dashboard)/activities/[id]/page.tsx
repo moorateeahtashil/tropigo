@@ -164,31 +164,20 @@ function GalleryManager({ row }: { row: any }) {
         <button className="rounded-lg border border-sand-300 px-3 py-2 text-sm">Upload</button>
       </form>
       <form action={reorderAction.bind(null, row.id)}>
-      <div className="mt-4 grid gap-3 sm:grid-cols-3" data-sortable>
+      <div className="mt-4 grid gap-3 sm:grid-cols-3">
         {(row.product_media || []).sort((a:any,b:any)=>a.sort_order-b.sort_order).map((m: any) => (
-          <div key={m.id} className="overflow-hidden rounded-xl border border-sand-200" draggable onDragStart={(e)=>e.dataTransfer.setData('text/plain', m.id)} onDragOver={(e)=>e.preventDefault()} onDrop={(e)=>{
-              e.preventDefault();
-              const fromId = e.dataTransfer.getData('text/plain');
-              const container = (e.currentTarget.parentElement as HTMLElement)
-              if (!container) return
-              const order = Array.from(container.children).map((el:any)=> el.getAttribute('data-id'))
-              const fromIdx = order.indexOf(fromId); const toIdx = order.indexOf(m.id)
-              if (fromIdx<0 || toIdx<0) return
-              order.splice(toIdx, 0, order.splice(fromIdx,1)[0])
-              ;(document.getElementById('media-order') as HTMLInputElement).value = order.join(',')
-              ;(document.getElementById('save-order') as HTMLButtonElement).disabled = false
-            }} data-id={m.id}>
+          <div key={m.id} className="overflow-hidden rounded-lg border border-gray-200">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={m.url} alt={m.alt || ''} className="h-40 w-full object-cover" />
             <div className="flex items-center justify-between p-2 text-xs">
               <div className="flex items-center gap-2">
                 {m.is_cover ? (
-                  <span className="rounded-full bg-brand-50 px-2 py-0.5 text-brand-700">Cover</span>
+                  <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-yellow-800">Cover</span>
                 ) : (
                   <form action={setCoverAction}>
                     <input type="hidden" name="product_id" value={row.id} />
                     <input type="hidden" name="media_id" value={m.id} />
-                    <button className="text-brand-700 hover:underline">Set cover</button>
+                    <button className="text-indigo-600 hover:underline">Set cover</button>
                   </form>
                 )}
               </div>
