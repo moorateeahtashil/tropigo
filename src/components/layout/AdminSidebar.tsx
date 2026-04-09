@@ -4,10 +4,11 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils/cn'
 import {
-  LayoutDashboard, MapPin, Waves, Package, Car, DollarSign,
+  LayoutDashboard, MapPin, Package, Car, DollarSign,
   Calendar, Star, BookOpen, MessageSquare, Home, Menu,
-  Link2, Users, FileText, HelpCircle, Gift, Settings,
-  ChevronDown, ChevronRight, Globe, UserCheck, Route,
+  Users, FileText, HelpCircle, Gift, Settings,
+  ChevronDown, ChevronRight, Globe, UserCheck, Route, Shield,
+  LogOut, ChevronUp, ChevronDown as ChevronDownIcon,
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -26,7 +27,6 @@ const NAV_ITEMS: NavItem[] = [
     icon: <Globe className="h-4 w-4" />,
     children: [
       { href: '/admin/trips', label: 'Trips', icon: <Route className="h-4 w-4" /> },
-      { href: '/admin/activities', label: 'Activities (Legacy)', icon: <Waves className="h-4 w-4" /> },
       { href: '/admin/transfers', label: 'Transfers', icon: <Car className="h-4 w-4" /> },
       { href: '/admin/packages', label: 'Packages', icon: <Package className="h-4 w-4" /> },
       { href: '/admin/destinations', label: 'Destinations', icon: <MapPin className="h-4 w-4" /> },
@@ -40,8 +40,10 @@ const NAV_ITEMS: NavItem[] = [
     children: [
       { href: '/admin/bookings', label: 'Bookings', icon: <BookOpen className="h-4 w-4" /> },
       { href: '/admin/customers', label: 'Customers', icon: <Users className="h-4 w-4" /> },
+      { href: '/admin/users', label: 'Users', icon: <Shield className="h-4 w-4" /> },
       { href: '/admin/enquiries', label: 'Enquiries', icon: <MessageSquare className="h-4 w-4" /> },
-      { href: '/admin/pricing', label: 'Pricing & Currencies', icon: <DollarSign className="h-4 w-4" /> },
+      { href: '/admin/pricing', label: 'Pricing', icon: <DollarSign className="h-4 w-4" /> },
+      { href: '/admin/reviews', label: 'Reviews', icon: <Star className="h-4 w-4" /> },
     ],
   },
   {
@@ -57,7 +59,6 @@ const NAV_ITEMS: NavItem[] = [
       { href: '/admin/navigation', label: 'Navigation', icon: <Menu className="h-4 w-4" /> },
     ],
   },
-  { href: '/admin/reviews', label: 'Reviews', icon: <Star className="h-4 w-4" /> },
   { href: '/admin/settings', label: 'Settings', icon: <Settings className="h-4 w-4" /> },
 ]
 
@@ -74,24 +75,20 @@ function NavLink({ item, depth = 0 }: { item: NavItem; depth?: number }) {
         <button
           onClick={() => setExpanded(prev => !prev)}
           className={cn(
-            'flex w-full items-center justify-between rounded-xl px-3 py-2 text-sm font-medium transition-colors',
-            'text-ink-muted hover:bg-sand-50 hover:text-ink',
+            'flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+            'text-gray-500 hover:bg-gray-100 hover:text-gray-900',
           )}
         >
           <span className="flex items-center gap-2.5">
-            <span className="opacity-60">{item.icon}</span>
+            {item.icon}
             {item.label}
           </span>
-          {expanded ? (
-            <ChevronDown className="h-3.5 w-3.5 opacity-60" />
-          ) : (
-            <ChevronRight className="h-3.5 w-3.5 opacity-60" />
-          )}
+          {expanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDownIcon className="h-3.5 w-3.5" />}
         </button>
         {expanded && (
-          <div className="ml-3 mt-0.5 border-l border-sand-200 pl-3 space-y-0.5">
+          <div className="ml-4 mt-1 space-y-0.5 border-l border-gray-200 pl-4">
             {item.children.map(child => (
-              <NavLink key={child.href ?? child.label} item={child} depth={depth + 1} />
+              <NavLink key={child.href || child.label} item={child} depth={depth + 1} />
             ))}
           </div>
         )}
@@ -99,28 +96,26 @@ function NavLink({ item, depth = 0 }: { item: NavItem; depth?: number }) {
     )
   }
 
-  const isActive = item.href === '/admin'
-    ? pathname === '/admin'
-    : item.href && pathname.startsWith(item.href)
+  const isActive = item.href && (
+    item.href === '/admin'
+      ? pathname === '/admin'
+      : pathname.startsWith(item.href)
+  )
 
   return (
     <Link
-      href={item.href!}
+      href={item.href || '#'}
       className={cn(
-        'flex items-center justify-between rounded-xl px-3 py-2 text-sm font-medium transition-colors',
+        'flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
         isActive
-          ? 'bg-brand-50 text-brand-700'
-          : 'text-ink-muted hover:bg-sand-50 hover:text-ink',
+          ? 'bg-indigo-50 text-indigo-700'
+          : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
       )}
     >
-      <span className="flex items-center gap-2.5">
-        <span className={cn(isActive ? 'text-brand-600' : 'opacity-60')}>
-          {item.icon}
-        </span>
-        {item.label}
-      </span>
-      {item.badge != null && (
-        <span className="rounded-full bg-red-100 px-1.5 py-0.5 text-xs font-medium text-red-600">
+      {item.icon}
+      {item.label}
+      {item.badge && (
+        <span className="ml-auto rounded-full bg-gray-200 px-2 py-0.5 text-xs font-medium text-gray-600">
           {item.badge}
         </span>
       )}
@@ -129,32 +124,33 @@ function NavLink({ item, depth = 0 }: { item: NavItem; depth?: number }) {
 }
 
 export function AdminSidebar() {
+  const pathname = usePathname()
+
   return (
-    <aside className="flex h-full w-60 flex-col border-r border-sand-200 bg-white">
+    <aside className="flex w-64 flex-col border-r border-gray-200 bg-white shadow-sm">
       {/* Logo */}
-      <div className="flex h-14 items-center border-b border-sand-200 px-4">
-        <Link href="/admin" className="text-lg font-bold text-brand-950">
-          <span className="font-serif italic">Tropi</span>go{' '}
-          <span className="text-xs font-normal text-ink-muted">Admin</span>
+      <div className="flex h-16 items-center border-b border-gray-200 px-5">
+        <Link href="/admin" className="text-lg font-bold text-gray-900">
+          <span className="text-indigo-600">Tropigo</span>
+          <span className="ml-1 text-xs font-normal text-gray-400">Admin</span>
         </Link>
       </div>
 
-      {/* Nav */}
-      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
+      {/* Navigation */}
+      <nav className="flex-1 space-y-1 overflow-y-auto p-3">
         {NAV_ITEMS.map(item => (
-          <NavLink key={item.href ?? item.label} item={item} />
+          <NavLink key={item.href || item.label} item={item} />
         ))}
       </nav>
 
-      {/* Footer */}
-      <div className="border-t border-sand-200 p-3">
+      {/* Back to site */}
+      <div className="border-t border-gray-200 p-3">
         <Link
           href="/"
-          target="_blank"
-          className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs text-ink-muted hover:bg-sand-50 hover:text-ink transition-colors"
+          className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900"
         >
-          <Globe className="h-3.5 w-3.5" />
-          View public site
+          <LogOut className="h-4 w-4" />
+          Back to Website
         </Link>
       </div>
     </aside>

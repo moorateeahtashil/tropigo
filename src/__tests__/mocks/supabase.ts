@@ -1,4 +1,6 @@
 // Mock Supabase admin client for all admin tests
+import { vi } from 'vitest'
+
 export const mockSupabase = {
   from: vi.fn(() => mockQueryBuilder),
   storage: {

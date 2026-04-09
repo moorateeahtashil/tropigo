@@ -1,66 +1,71 @@
-import { forwardRef } from 'react'
-import { cn } from '@/lib/utils/cn'
+import { InputHTMLAttributes, TextareaHTMLAttributes, SelectHTMLAttributes, forwardRef } from 'react'
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  error?: string
-  label?: string
-  hint?: string
-  leadingIcon?: React.ReactNode
-  trailingIcon?: React.ReactNode
-}
-
-const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, error, label, hint, leadingIcon, trailingIcon, id, ...props }, ref) => {
-    const inputId = id ?? props.name
-
+export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement> & { label?: string }>(
+  ({ className = '', label, id, ...props }, ref) => {
+    const inputId = id || `input-${Math.random().toString(36).slice(2, 8)}`
     return (
-      <div className="w-full">
+      <div className="space-y-1.5">
         {label && (
-          <label
-            htmlFor={inputId}
-            className="mb-1.5 block text-sm font-medium text-ink"
-          >
-            {label}
-            {props.required && <span className="ml-1 text-red-500">*</span>}
-          </label>
+          <label htmlFor={inputId} className="block text-sm font-medium text-gray-700">{label}</label>
         )}
-        <div className="relative">
-          {leadingIcon && (
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-ink-muted">
-              {leadingIcon}
-            </div>
-          )}
-          <input
-            id={inputId}
-            type={type ?? 'text'}
-            ref={ref}
-            className={cn(
-              'block w-full rounded-xl border bg-white px-4 py-3 text-sm text-ink shadow-sm transition-all',
-              'placeholder:text-on-surface-variant',
-              'focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/20',
-              'disabled:cursor-not-allowed disabled:bg-surface-container disabled:text-on-surface-variant',
-              error
-                ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20'
-                : 'border-outline-variant hover:border-secondary',
-              leadingIcon && 'pl-11',
-              trailingIcon && 'pr-11',
-              className,
-            )}
-            {...props}
-          />
-          {trailingIcon && (
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-ink-muted">
-              {trailingIcon}
-            </div>
-          )}
-        </div>
-        {error && <p className="mt-1.5 text-sm text-red-600">{error}</p>}
-        {hint && !error && <p className="mt-1.5 text-sm text-ink-muted">{hint}</p>}
+        <input
+          ref={ref}
+          id={inputId}
+          className={`block w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-400 shadow-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+          {...props}
+        />
       </div>
     )
-  },
+  }
 )
-
 Input.displayName = 'Input'
 
-export { Input }
+export const Textarea = forwardRef<HTMLTextAreaElement, TextareaHTMLAttributes<HTMLTextAreaElement> & { label?: string }>(
+  ({ className = '', label, id, ...props }, ref) => {
+    const inputId = id || `textarea-${Math.random().toString(36).slice(2, 8)}`
+    return (
+      <div className="space-y-1.5">
+        {label && (
+          <label htmlFor={inputId} className="block text-sm font-medium text-gray-700">{label}</label>
+        )}
+        <textarea
+          ref={ref}
+          id={inputId}
+          className={`block w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-400 shadow-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-50 resize-y ${className}`}
+          {...props}
+        />
+      </div>
+    )
+  }
+)
+Textarea.displayName = 'Textarea'
+
+export const Select = forwardRef<HTMLSelectElement, SelectHTMLAttributes<HTMLSelectElement> & { label?: string }>(
+  ({ className = '', label, id, children, ...props }, ref) => {
+    const inputId = id || `select-${Math.random().toString(36).slice(2, 8)}`
+    return (
+      <div className="space-y-1.5">
+        {label && (
+          <label htmlFor={inputId} className="block text-sm font-medium text-gray-700">{label}</label>
+        )}
+        <select
+          ref={ref}
+          id={inputId}
+          className={`block w-full appearance-none rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm transition-colors focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+          {...props}
+        >
+          {children}
+        </select>
+      </div>
+    )
+  }
+)
+Select.displayName = 'Select'
+
+export function FieldLabel({ children, className = '', htmlFor }: { children: React.ReactNode; className?: string; htmlFor?: string }) {
+  return (
+    <label htmlFor={htmlFor} className={`mb-1.5 block text-sm font-medium text-gray-700 ${className}`}>
+      {children}
+    </label>
+  )
+}

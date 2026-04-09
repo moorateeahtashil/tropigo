@@ -69,13 +69,11 @@ export function ActivityReviewsSection({ productId }: { productId: string }) {
         <form onSubmit={submit} className="h-max space-y-4 rounded-2xl border border-outline-variant/20 bg-white p-5 shadow-card">
           <h3 className="text-lg font-semibold text-primary">Leave a review</h3>
           <Input
-            label="Name"
             value={name}
             onChange={e => setName(e.target.value)}
             required
           />
           <Input
-            label="Email (optional)"
             type="email"
             value={email}
             onChange={e => setEmail(e.target.value)}
