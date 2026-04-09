@@ -1,6 +1,8 @@
 import { getPublishedActivities, getPublishedDestinations } from '@/features/catalog/queries'
 import { resolveProductPriceBatch } from '@/features/pricing/resolve'
 import { cookies } from 'next/headers'
+import { Header } from '@/components/layout/Header'
+import { Footer } from '@/components/layout/Footer'
 import ActivitiesPageClient from './ActivitiesPageClient'
 
 export const revalidate = 600
@@ -19,5 +21,11 @@ export default async function ActivitiesPage() {
     currency,
   )
 
-  return <ActivitiesPageClient activities={activities} destinations={destinations} priceMap={priceMap} currency={currency} />
+  return (
+    <>
+      <Header />
+      <ActivitiesPageClient activities={activities} destinations={destinations} priceMap={priceMap} currency={currency} />
+      <Footer />
+    </>
+  )
 }

@@ -12,8 +12,9 @@ import { cn } from '@/lib/utils/cn'
 
 export const revalidate = 600
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const product = await getPackageBySlug(params.slug)
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = await params
+  const product = await getPackageBySlug(resolvedParams.slug)
   if (!product) return {}
   return {
     title: product.seo_title || product.title,
@@ -26,9 +27,10 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 }
 
-export default async function PackageDetail({ params }: { params: { slug: string } }) {
+export default async function PackageDetail({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = await params
   const currency = (await cookies()).get('tropigo_currency')?.value || 'EUR'
-  const pkg = await getPackageBySlug(params.slug)
+  const pkg = await getPackageBySlug(resolvedParams.slug)
   if (!pkg) return notFound()
   const display = pkg.base_price ? await resolveProductPrice(pkg.id, currency) : null
 

@@ -101,8 +101,9 @@ export default async function TransferDetail({ params }: { params: Promise<{ slu
   )
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const product = await getTransferBySlug(params.slug)
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = await params
+  const product = await getTransferBySlug(resolvedParams.slug)
   if (!product) return {}
   return {
     title: product.seo_title || product.title,

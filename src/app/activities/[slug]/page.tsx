@@ -11,8 +11,9 @@ import { ActivityBookingSection } from './ActivityBookingSection'
 
 export const revalidate = 600
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const product = await getActivityBySlug(params.slug)
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = await params
+  const product = await getActivityBySlug(resolvedParams.slug)
   if (!product) return {}
   return {
     title: product.seo_title || product.title,
@@ -25,9 +26,10 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 }
 
-export default async function ActivityDetail({ params }: { params: { slug: string } }) {
+export default async function ActivityDetail({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = await params
   const currency = (await cookies()).get('tropigo_currency')?.value || 'EUR'
-  const activity = await getActivityBySlug(params.slug)
+  const activity = await getActivityBySlug(resolvedParams.slug)
   if (!activity) return notFound()
 
   const media = (activity as any).product_media || []

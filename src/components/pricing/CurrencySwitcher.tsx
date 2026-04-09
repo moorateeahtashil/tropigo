@@ -1,38 +1,61 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { cn } from '@/lib/utils/cn'
-import { SUPPORTED_CURRENCIES, DEFAULT_CURRENCY } from '@/features/pricing/types'
+import { SUPPORTED_CURRENCIES } from '@/features/pricing/types'
 
-const COOKIE_NAME = 'tropigo_currency'
-const EVENT_NAME = 'currency:change'
+export const COOKIE_NAME = 'tropigo_currency'
+export const EVENT_NAME = 'currency:change'
+const DEFAULT_CURRENCY = 'EUR'
 
-// Read cookie from document.cookie (works for SSR-set cookies)
-function getCookieCurrency(): string {
+function getStoredCurrency(): string {
   if (typeof document === 'undefined') return DEFAULT_CURRENCY
+  // Try cookie first
   const match = document.cookie.match(new RegExp(`(?:^|; )${COOKIE_NAME}=([^;]*)`))
-  return match ? decodeURIComponent(match[1]) : DEFAULT_CURRENCY
+  if (match) {
+    const val = decodeURIComponent(match[1])
+    if (SUPPORTED_CURRENCIES.find(c => c.code === val)) return val
+  }
+  // Fallback to localStorage
+  const stored = localStorage.getItem(COOKIE_NAME)
+  if (stored && SUPPORTED_CURRENCIES.find(c => c.code === stored)) return stored
+  return DEFAULT_CURRENCY
 }
 
 export function CurrencySwitcher({ className, variant = 'pill' }: { className?: string; variant?: 'pill' | 'select' }) {
   const [currency, setCurrencyState] = useState(DEFAULT_CURRENCY)
+  const [mounted, setMounted] = useState(false)
 
-  // Initialize from cookie
+  // Sync currency on mount
   useEffect(() => {
-    setCurrencyState(getCookieCurrency())
+    const initial = getStoredCurrency()
+    setCurrencyState(initial)
+    setMounted(true)
   }, [])
 
-  // Listen for currency changes from other components
+  // Listen for currency changes from other tabs/components
   useEffect(() => {
     const handler = (e: Event) => {
       const detail = (e as CustomEvent).detail as string
-      if (detail) setCurrencyState(detail)
+      if (detail && detail !== currency) {
+        setCurrencyState(detail)
+      }
     }
     window.addEventListener(EVENT_NAME, handler)
-    return () => window.removeEventListener(EVENT_NAME, handler)
-  }, [])
+    // Also listen to storage changes (cross-tab)
+    const storageHandler = (e: StorageEvent) => {
+      if (e.key === COOKIE_NAME && e.newValue) {
+        setCurrencyState(e.newValue)
+      }
+    }
+    window.addEventListener('storage', storageHandler)
+    return () => {
+      window.removeEventListener(EVENT_NAME, handler)
+      window.removeEventListener('storage', storageHandler)
+    }
+  }, [currency])
 
-  const setCurrency = (code: string) => {
+  const setCurrency = useCallback((code: string) => {
     const valid = SUPPORTED_CURRENCIES.find(c => c.code === code)
     if (!valid) return
 
@@ -40,9 +63,11 @@ export function CurrencySwitcher({ className, variant = 'pill' }: { className?: 
     localStorage.setItem(COOKIE_NAME, code)
     // Set cookie for SSR (1 year)
     document.cookie = `${COOKIE_NAME}=${code}; Path=/; Max-Age=${60 * 60 * 24 * 365}; SameSite=Lax`
-    // Dispatch event
+    // Dispatch event for other components
     window.dispatchEvent(new CustomEvent(EVENT_NAME, { detail: code }))
-  }
+  }, [])
+
+  if (!mounted) return null
 
   if (variant === 'select') {
     return (

@@ -7,10 +7,11 @@ import Link from 'next/link'
 
 export const revalidate = 600
 
-export default async function DestinationDetail({ params }: { params: { slug: string } }) {
+export default async function DestinationDetail({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = await params
   const [destination, activities] = await Promise.all([
-    getDestinationBySlug(params.slug),
-    getPublishedActivities({ destinationSlug: params.slug, limit: 6 }),
+    getDestinationBySlug(resolvedParams.slug),
+    getPublishedActivities({ destinationSlug: resolvedParams.slug, limit: 6 }),
   ])
 
   if (!destination) return notFound()
