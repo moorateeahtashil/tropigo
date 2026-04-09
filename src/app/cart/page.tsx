@@ -62,6 +62,7 @@ export default function CartPage() {
       })
       if (!res.ok) throw new Error('Failed to update quantity')
       await loadCart()
+      window.dispatchEvent(new Event('cart-change'))
     } catch (err) {
       console.error('Failed to update cart:', err)
     } finally {
@@ -79,6 +80,7 @@ export default function CartPage() {
       })
       if (!res.ok) throw new Error('Failed to remove item')
       await loadCart()
+      window.dispatchEvent(new Event('cart-change'))
     } catch (err) {
       console.error('Failed to remove item:', err)
     } finally {

@@ -15,6 +15,49 @@ const NAV_LINKS = [
   { href: '/destinations', label: 'Destinations' },
 ]
 
+function CartIcon({ scrolled, isHomepage }: { scrolled: boolean; isHomepage: boolean }) {
+  const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    const loadCartCount = async () => {
+      try {
+        const res = await fetch('/api/booking/cart')
+        const json = await res.json()
+        const items = json.items || []
+        setCount(items.reduce((sum: number, i: any) => sum + i.quantity, 0))
+      } catch {
+        // Silently fail
+      }
+    }
+    loadCartCount()
+
+    // Listen for cart changes
+    const handler = () => loadCartCount()
+    window.addEventListener('cart-change', handler)
+    return () => window.removeEventListener('cart-change', handler)
+  }, [])
+
+  return (
+    <Link
+      href="/cart"
+      className={cn(
+        'relative rounded-lg p-2 transition-colors',
+        scrolled || !isHomepage
+          ? 'text-ink-secondary hover:bg-sand-100'
+          : 'text-white hover:bg-white/10',
+      )}
+      aria-label="View cart"
+    >
+      <ShoppingCart className="h-5 w-5" />
+      {count > 0 && (
+        <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-secondary text-[10px] font-bold text-white">
+          {count}
+        </span>
+      )}
+    </Link>
+  )
+}
+
 export function Header() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -78,6 +121,7 @@ export function Header() {
 
           {/* Right actions */}
           <div className="hidden md:flex items-center gap-3">
+            <CartIcon scrolled={scrolled} isHomepage={isHomepage} />
             <CurrencySwitcher variant="select" className="text-xs" />
             <Button
               variant={scrolled || !isHomepage ? 'primary' : 'secondary'}
@@ -125,7 +169,10 @@ export function Header() {
             ))}
           </nav>
           <div className="mt-4 flex flex-col gap-3 border-t border-sand-100 pt-4">
-            <CurrencySwitcher variant="pill" />
+            <div className="flex items-center gap-3">
+              <CartIcon scrolled={false} isHomepage={false} />
+              <CurrencySwitcher variant="pill" />
+            </div>
             <Button asChild size="md" className="w-full">
               <Link href="/transfers">Book Airport Transfer</Link>
             </Button>

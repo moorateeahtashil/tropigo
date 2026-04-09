@@ -194,12 +194,13 @@ export function AvailabilityCalendar({
               onClick={() => handleDateClick(dayInfo.date, dayInfo.isPast)}
               disabled={isPastOrFuture}
               className={cn(
-                'relative flex h-9 w-full items-center justify-center rounded-lg text-sm transition-colors',
-                !dayInfo.isCurrentMonth && 'text-ink-muted opacity-50',
-                dayInfo.isToday && 'ring-1 ring-brand-500',
-                isSelected && 'bg-brand-700 font-semibold text-white',
+                'relative flex h-9 w-full items-center justify-center rounded-lg text-sm transition-all',
+                !dayInfo.isCurrentMonth && 'text-on-surface-variant opacity-50',
+                dayInfo.isToday && 'ring-1 ring-secondary',
+                isSelected && 'bg-secondary font-semibold text-white shadow-md',
                 isPastOrFuture && 'cursor-not-allowed opacity-40',
-                !isSelected && dayInfo.isCurrentMonth && !isPastOrFuture && 'hover:bg-sand-50',
+                !isSelected && dayInfo.isCurrentMonth && !isPastOrFuture && 'hover:bg-surface-container',
+                hasAvailability && !isSelected && dayInfo.isCurrentMonth && 'text-green-700 font-medium',
               )}
             >
               {dayInfo.day}
@@ -234,12 +235,12 @@ export function AvailabilityCalendar({
                 onClick={() => onSelect?.(selectedDate, slot.time)}
                 disabled={!slot.available}
                 className={cn(
-                  'rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors',
+                  'rounded-lg border px-3 py-1.5 text-xs font-medium transition-all',
                   slot.time === selectedTime
-                    ? 'border-brand-500 bg-brand-50 text-brand-700'
+                    ? 'border-secondary bg-secondary/10 text-secondary ring-1 ring-secondary'
                     : slot.available
-                    ? 'border-sand-200 text-ink-secondary hover:border-brand-300 hover:bg-sand-50'
-                    : 'border-sand-100 text-ink-muted opacity-50',
+                    ? 'border-outline-variant text-on-surface hover:border-secondary hover:bg-secondary/5'
+                    : 'border-outline-variant/20 text-on-surface-variant opacity-50 cursor-not-allowed',
                 )}
               >
                 {slot.time}
