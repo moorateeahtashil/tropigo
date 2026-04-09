@@ -49,7 +49,7 @@ export default async function MenuItemsPage({ params }: { params: { id: string }
                     <input name="href" defaultValue={it.href} className="w-40 rounded-lg border-sand-300 text-sm shadow-sm focus:border-brand-500 focus:ring-brand-500" />
                     <select name="link_type" defaultValue={it.link_type} className="rounded-lg border-sand-300 text-sm shadow-sm focus:border-brand-500 focus:ring-brand-500"><option value="internal">internal</option><option value="external">external</option><option value="anchor">anchor</option></select>
                     <input name="position" type="number" defaultValue={it.position || 0} className="w-16 rounded-lg border-sand-300 text-sm shadow-sm focus:border-brand-500 focus:ring-brand-500" />
-                    <label className="flex items-center gap-2"><input name="open_in_new_tab" type="checkbox" defaultChecked={it.open_in_new_tab} className="h-4 w-4 rounded border-sand-300" /> New Tab</label>
+                    <label className="flex items-center gap-2"><input name="open_in_new_tab" type="checkbox" defaultChecked={it.open_in_new_tab} className="h-4 w-4 rounded border-gray-300" /> New Tab</label>
                     <button className="rounded-lg border border-sand-300 px-2 py-1 text-xs">Save</button>
                   </form>
                 </td>

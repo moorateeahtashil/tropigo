@@ -10,7 +10,7 @@ export default async function EnquiriesPage({ searchParams }: { searchParams: Pr
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold text-ink">Enquiries</h1>
         <form>
-          <select name="status" defaultValue={resolvedSearchParams.status || ''} className="rounded-lg border-sand-300 text-sm shadow-sm focus:border-brand-500 focus:ring-brand-500">
+          <select name="status" defaultValue={resolvedSearchParams.status || ''} className="rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
             <option value="">All</option>
             <option value="new">New</option>
             <option value="in_progress">In Progress</option>

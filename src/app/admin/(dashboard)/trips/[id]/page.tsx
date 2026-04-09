@@ -48,16 +48,16 @@ function TripForm({
           <h2 className="mb-3 text-lg font-semibold text-ink">Basic Info</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Title">
-              <input name="title" required defaultValue={product.title} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" />
+              <input name="title" required defaultValue={product.title} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
             </Field>
             <Field label="Slug">
-              <input name="slug" required defaultValue={product.slug} placeholder="south-island-tour" className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" />
+              <input name="slug" required defaultValue={product.slug} placeholder="south-island-tour" className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
             </Field>
             <Field label="Subtitle">
-              <input name="subtitle" defaultValue={product.subtitle ?? ''} placeholder="Explore the South of Mauritius" className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" />
+              <input name="subtitle" defaultValue={product.subtitle ?? ''} placeholder="Explore the South of Mauritius" className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
             </Field>
             <Field label="Region / Destination">
-              <select name="destination_id" defaultValue={destinationId} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
+              <select name="destination_id" defaultValue={destinationId} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
                 <option value="">—</option>
                 {destinations.map(d => (
                   <option key={d.id} value={d.id}>{d.name}{d.region ? ` — ${d.region}` : ''}</option>
@@ -65,10 +65,10 @@ function TripForm({
               </select>
             </Field>
             <Field label="Summary" full>
-              <textarea name="summary" rows={2} defaultValue={product.summary ?? ''} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" />
+              <textarea name="summary" rows={2} defaultValue={product.summary ?? ''} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
             </Field>
             <Field label="Description" full>
-              <textarea name="description" rows={6} defaultValue={product.description ?? ''} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" />
+              <textarea name="description" rows={6} defaultValue={product.description ?? ''} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
             </Field>
           </div>
         </section>
@@ -78,15 +78,15 @@ function TripForm({
           <h2 className="mb-3 text-lg font-semibold text-ink">Pricing & Status</h2>
           <div className="grid gap-4 sm:grid-cols-3">
             <Field label="Base Currency">
-              <select name="base_currency" defaultValue={product.base_currency} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
+              <select name="base_currency" defaultValue={product.base_currency} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
                 {['EUR','USD','GBP','MUR'].map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </Field>
             <Field label="Base Price">
-              <input name="base_price" type="number" step="0.01" min="0" defaultValue={product.base_price ?? ''} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" />
+              <input name="base_price" type="number" step="0.01" min="0" defaultValue={product.base_price ?? ''} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
             </Field>
             <Field label="Status">
-              <select name="status" defaultValue={product.status} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
+              <select name="status" defaultValue={product.status} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
                 <option value="draft">Draft</option>
                 <option value="published">Published</option>
                 <option value="archived">Archived</option>
@@ -95,10 +95,10 @@ function TripForm({
           </div>
           <div className="grid gap-4 sm:grid-cols-3 mt-3">
             <Field label="Position">
-              <input name="position" type="number" defaultValue={product.position} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" />
+              <input name="position" type="number" defaultValue={product.position} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
             </Field>
             <Field label="Featured">
-              <input name="featured" type="checkbox" defaultChecked={product.featured} className="h-4 w-4 rounded border-sand-300" />
+              <input name="featured" type="checkbox" defaultChecked={product.featured} className="h-4 w-4 rounded border-gray-300" />
             </Field>
           </div>
         </section>
@@ -108,7 +108,7 @@ function TripForm({
           <h2 className="mb-3 text-lg font-semibold text-ink">Trip Details</h2>
           <div className="grid gap-4 sm:grid-cols-3">
             <Field label="Trip Type">
-              <select name="trip_type" defaultValue={tripData?.trip_type ?? ''} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
+              <select name="trip_type" defaultValue={tripData?.trip_type ?? ''} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
                 <option value="">—</option>
                 <option value="north">North</option>
                 <option value="south">South</option>
@@ -121,10 +121,10 @@ function TripForm({
               </select>
             </Field>
             <Field label="Duration (minutes)">
-              <input name="duration_minutes" type="number" min="0" defaultValue={tripData?.duration_minutes ?? ''} placeholder="480" className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" />
+              <input name="duration_minutes" type="number" min="0" defaultValue={tripData?.duration_minutes ?? ''} placeholder="480" className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
             </Field>
             <Field label="Vehicle Type">
-              <select name="vehicle_type" defaultValue={tripData?.vehicle_type ?? ''} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
+              <select name="vehicle_type" defaultValue={tripData?.vehicle_type ?? ''} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
                 <option value="">—</option>
                 <option value="sedan">Sedan</option>
                 <option value="minivan">Minivan</option>
@@ -133,10 +133,10 @@ function TripForm({
               </select>
             </Field>
             <Field label="Max Passengers">
-              <input name="max_passengers" type="number" defaultValue={tripData?.max_passengers ?? 6} min={1} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" />
+              <input name="max_passengers" type="number" defaultValue={tripData?.max_passengers ?? 6} min={1} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
             </Field>
             <Field label="Difficulty">
-              <select name="difficulty_level" defaultValue={tripData?.difficulty_level ?? ''} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
+              <select name="difficulty_level" defaultValue={tripData?.difficulty_level ?? ''} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
                 <option value="">—</option>
                 <option value="easy">Easy</option>
                 <option value="moderate">Moderate</option>
@@ -151,27 +151,27 @@ function TripForm({
           <h2 className="mb-3 text-lg font-semibold text-ink">Pickup & Dropoff</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Pickup Included">
-              <input name="pickup_included" type="checkbox" defaultChecked={tripData?.pickup_included ?? true} className="h-4 w-4 rounded border-sand-300" />
+              <input name="pickup_included" type="checkbox" defaultChecked={tripData?.pickup_included ?? true} className="h-4 w-4 rounded border-gray-300" />
             </Field>
             <Field label="Dropoff Included">
-              <input name="dropoff_included" type="checkbox" defaultChecked={tripData?.dropoff_included ?? true} className="h-4 w-4 rounded border-sand-300" />
+              <input name="dropoff_included" type="checkbox" defaultChecked={tripData?.dropoff_included ?? true} className="h-4 w-4 rounded border-gray-300" />
             </Field>
             <Field label="Pickup Location">
-              <input name="pickup_location" defaultValue={tripData?.pickup_location ?? ''} placeholder="Hotel lobby, any hotel in the region" className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" />
+              <input name="pickup_location" defaultValue={tripData?.pickup_location ?? ''} placeholder="Hotel lobby, any hotel in the region" className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
             </Field>
             <Field label="Pickup Time">
-              <input name="pickup_time" defaultValue={tripData?.pickup_time ?? ''} placeholder="08:00" className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" />
+              <input name="pickup_time" defaultValue={tripData?.pickup_time ?? ''} placeholder="08:00" className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
             </Field>
             <Field label="Dropoff Location" full>
-              <input name="dropoff_location" defaultValue={tripData?.dropoff_location ?? ''} placeholder="Same as pickup" className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" />
+              <input name="dropoff_location" defaultValue={tripData?.dropoff_location ?? ''} placeholder="Same as pickup" className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
             </Field>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 mt-3">
             <Field label="Min Participants">
-              <input name="min_participants" type="number" defaultValue={tripData?.min_participants ?? 1} min={1} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" />
+              <input name="min_participants" type="number" defaultValue={tripData?.min_participants ?? 1} min={1} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
             </Field>
             <Field label="Max Participants">
-              <input name="max_participants" type="number" defaultValue={tripData?.max_participants ?? ''} min={1} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" />
+              <input name="max_participants" type="number" defaultValue={tripData?.max_participants ?? ''} min={1} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
             </Field>
           </div>
         </section>
@@ -181,13 +181,13 @@ function TripForm({
           <h2 className="mb-3 text-lg font-semibold text-ink">Included, Excluded & Highlights</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Included (comma-separated)" full>
-              <input name="included_items" defaultValue={(tripData?.included_items ?? []).join(', ')} placeholder="Hotel pickup, Guide, Lunch, Entrance fees" className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500"/>
+              <input name="included_items" defaultValue={(tripData?.included_items ?? []).join(', ')} placeholder="Hotel pickup, Guide, Lunch, Entrance fees" className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"/>
             </Field>
             <Field label="Excluded (comma-separated)" full>
-              <input name="excluded_items" defaultValue={(tripData?.excluded_items ?? []).join(', ')} placeholder="Drinks, Souvenirs, Optional activities" className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500"/>
+              <input name="excluded_items" defaultValue={(tripData?.excluded_items ?? []).join(', ')} placeholder="Drinks, Souvenirs, Optional activities" className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"/>
             </Field>
             <Field label="Highlights (comma-separated)" full>
-              <input name="highlights" defaultValue={(tripData?.highlights ?? []).join(', ')} placeholder="Grand Bassin, Chamarel Waterfall, Seven Colored Earths" className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500"/>
+              <input name="highlights" defaultValue={(tripData?.highlights ?? []).join(', ')} placeholder="Grand Bassin, Chamarel Waterfall, Seven Colored Earths" className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"/>
             </Field>
           </div>
         </section>
@@ -210,7 +210,7 @@ function TripForm({
         <section className="rounded-2xl border border-sand-200 bg-white p-5 shadow-card">
           <h2 className="mb-3 text-lg font-semibold text-ink">Important Notes</h2>
           <Field label="" full>
-            <textarea name="important_notes" rows={3} defaultValue={tripData?.important_notes ?? ''} placeholder="Please wear comfortable walking shoes. Bring sunscreen and a camera." className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" />
+            <textarea name="important_notes" rows={3} defaultValue={tripData?.important_notes ?? ''} placeholder="Please wear comfortable walking shoes. Bring sunscreen and a camera." className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
           </Field>
         </section>
 

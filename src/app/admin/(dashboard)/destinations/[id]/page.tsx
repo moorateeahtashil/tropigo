@@ -14,19 +14,19 @@ function DestinationForm({ row }: { row: any }) {
   return (
     <form action={updateAction} className="space-y-4">
       <input type="hidden" name="id" defaultValue={row.id} />
-      <Row label="Name"><input name="name" defaultValue={row.name} required className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Row>
-      <Row label="Slug"><input name="slug" defaultValue={row.slug} required className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Row>
-      <Row label="Region"><input name="region" defaultValue={row.region || ''} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Row>
-      <Row label="Summary"><textarea name="summary" defaultValue={row.summary || ''} rows={2} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Row>
-      <Row label="Description"><textarea name="description" defaultValue={row.description || ''} rows={6} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Row>
-      <Row label="Hero Image URL"><input name="hero_image_url" defaultValue={row.hero_image_url || ''} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Row>
+      <Row label="Name"><input name="name" defaultValue={row.name} required className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Row>
+      <Row label="Slug"><input name="slug" defaultValue={row.slug} required className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Row>
+      <Row label="Region"><input name="region" defaultValue={row.region || ''} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Row>
+      <Row label="Summary"><textarea name="summary" defaultValue={row.summary || ''} rows={2} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Row>
+      <Row label="Description"><textarea name="description" defaultValue={row.description || ''} rows={6} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Row>
+      <Row label="Hero Image URL"><input name="hero_image_url" defaultValue={row.hero_image_url || ''} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Row>
       <div className="grid grid-cols-3 gap-3">
-        <Row label="Position"><input type="number" name="position" defaultValue={row.position || 0} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Row>
-        <Row label="Featured"><input type="checkbox" name="featured" defaultChecked={row.featured} className="h-4 w-4 rounded border-sand-300" /></Row>
-        <Row label="Published"><input type="checkbox" name="published" defaultChecked={row.published} className="h-4 w-4 rounded border-sand-300" /></Row>
+        <Row label="Position"><input type="number" name="position" defaultValue={row.position || 0} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Row>
+        <Row label="Featured"><input type="checkbox" name="featured" defaultChecked={row.featured} className="h-4 w-4 rounded border-gray-300" /></Row>
+        <Row label="Published"><input type="checkbox" name="published" defaultChecked={row.published} className="h-4 w-4 rounded border-gray-300" /></Row>
       </div>
-      <Row label="SEO Title"><input name="seo_title" defaultValue={row.seo_title || ''} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Row>
-      <Row label="SEO Description"><textarea name="seo_description" defaultValue={row.seo_description || ''} rows={2} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Row>
+      <Row label="SEO Title"><input name="seo_title" defaultValue={row.seo_title || ''} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Row>
+      <Row label="SEO Description"><textarea name="seo_description" defaultValue={row.seo_description || ''} rows={2} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Row>
       <div className="flex gap-2">
         <button className="rounded-xl bg-brand-700 px-3 py-2 text-white">Save</button>
       </div>

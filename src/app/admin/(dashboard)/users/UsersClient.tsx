@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Search, Shield, Users } from 'lucide-react'
-import { toggleUserAdmin } from './actions'
+import { Search, Shield, Users, UserPlus, X } from 'lucide-react'
+import { toggleUserAdmin, createAdminUser } from './actions'
 
 interface UserProfile {
   id: string
@@ -16,6 +16,13 @@ export default function UsersClient({ initialUsers }: { initialUsers: UserProfil
   const [users, setUsers] = useState<UserProfile[]>(initialUsers)
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<'all' | 'admin' | 'customer'>('all')
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [addEmail, setAddEmail] = useState('')
+  const [addName, setAddName] = useState('')
+  const [addPassword, setAddPassword] = useState('')
+  const [addLoading, setAddLoading] = useState(false)
+  const [addError, setAddError] = useState<string | null>(null)
+  const [addSuccess, setAddSuccess] = useState(false)
 
   const filtered = users.filter(u => {
     if (filter === 'admin' && !u.is_admin) return false
@@ -30,11 +37,45 @@ export default function UsersClient({ initialUsers }: { initialUsers: UserProfil
     setUsers(prev => prev.map(u => u.id === userId ? { ...u, is_admin: newAdmin } : u))
   }
 
+  async function handleAddAdmin(e: React.FormEvent) {
+    e.preventDefault()
+    setAddLoading(true)
+    setAddError(null)
+    try {
+      await createAdminUser(addEmail, addPassword, addName)
+      setAddSuccess(true)
+      // Refresh user list
+      const res = await fetch('/api/admin/users')
+      const data = await res.json()
+      if (Array.isArray(data)) setUsers(data)
+      setTimeout(() => {
+        setShowAddModal(false)
+        setAddEmail('')
+        setAddName('')
+        setAddPassword('')
+        setAddSuccess(false)
+      }, 1500)
+    } catch (err: any) {
+      setAddError(err.message || 'Failed to create admin user')
+    } finally {
+      setAddLoading(false)
+    }
+  }
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
-        <p className="mt-1 text-sm text-gray-500">Manage admin and customer users.</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
+          <p className="mt-1 text-sm text-gray-500">Manage admin and customer users.</p>
+        </div>
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-indigo-700"
+        >
+          <UserPlus className="h-4 w-4" />
+          Add Admin
+        </button>
       </div>
 
       {/* Filters */}
@@ -120,6 +161,90 @@ export default function UsersClient({ initialUsers }: { initialUsers: UserProfil
           </div>
         )}
       </div>
+
+      {/* Add Admin Modal */}
+      {showAddModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-gray-900">Add New Admin</h2>
+              <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-gray-600">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {addSuccess ? (
+              <div className="rounded-lg bg-green-50 p-4 text-center">
+                <Shield className="mx-auto mb-2 h-8 w-8 text-green-500" />
+                <p className="font-medium text-green-800">Admin user created!</p>
+                <p className="mt-1 text-sm text-green-600">The user can now access the admin panel.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleAddAdmin} className="space-y-4">
+                {addError && (
+                  <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
+                    {addError}
+                  </div>
+                )}
+
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium text-gray-700">Full Name (optional)</label>
+                  <input
+                    type="text"
+                    value={addName}
+                    onChange={e => setAddName(e.target.value)}
+                    placeholder="John Doe"
+                    className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium text-gray-700">Email Address</label>
+                  <input
+                    type="email"
+                    value={addEmail}
+                    onChange={e => setAddEmail(e.target.value)}
+                    required
+                    placeholder="admin@tropigo.mu"
+                    className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium text-gray-700">Password</label>
+                  <input
+                    type="password"
+                    value={addPassword}
+                    onChange={e => setAddPassword(e.target.value)}
+                    required
+                    minLength={8}
+                    placeholder="Minimum 8 characters"
+                    className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  />
+                  <p className="mt-1 text-xs text-gray-500">Choose a strong password. The user can change it later.</p>
+                </div>
+
+                <div className="flex gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowAddModal(false)}
+                    className="flex-1 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={addLoading}
+                    className="flex-1 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {addLoading ? 'Creating...' : 'Create Admin'}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -25,11 +25,11 @@ function PackageForm({ row }: { row: any }) {
       <section className="rounded-2xl border border-sand-200 bg-white p-5 shadow-card">
         <h2 className="mb-3 text-lg font-semibold text-ink">Basic Info</h2>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Title"><input name="title" defaultValue={row.title} required className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Field>
-          <Field label="Slug"><input name="slug" defaultValue={row.slug} required className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Field>
-          <Field label="Subtitle"><input name="subtitle" defaultValue={row.subtitle || ''} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Field>
-          <Field label="Summary" full><textarea name="summary" defaultValue={row.summary || ''} rows={2} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Field>
-          <Field label="Description" full><textarea name="description" defaultValue={row.description || ''} rows={6} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Field>
+          <Field label="Title"><input name="title" defaultValue={row.title} required className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Field>
+          <Field label="Slug"><input name="slug" defaultValue={row.slug} required className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Field>
+          <Field label="Subtitle"><input name="subtitle" defaultValue={row.subtitle || ''} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Field>
+          <Field label="Summary" full><textarea name="summary" defaultValue={row.summary || ''} rows={2} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Field>
+          <Field label="Description" full><textarea name="description" defaultValue={row.description || ''} rows={6} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Field>
         </div>
       </section>
 
@@ -37,13 +37,13 @@ function PackageForm({ row }: { row: any }) {
         <h2 className="mb-3 text-lg font-semibold text-ink">Pricing & Status</h2>
         <div className="grid gap-4 sm:grid-cols-3">
           <Field label="Base Currency">
-            <select name="base_currency" defaultValue={row.base_currency} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
+            <select name="base_currency" defaultValue={row.base_currency} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
               {['EUR','USD','GBP','MUR'].map(c => <option key={c} value={c}>{c}</option>)}
             </select>
           </Field>
-          <Field label="Base Price (optional)"><input name="base_price" type="number" step="0.01" defaultValue={row.base_price ?? ''} min="0" className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Field>
+          <Field label="Base Price (optional)"><input name="base_price" type="number" step="0.01" defaultValue={row.base_price ?? ''} min="0" className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Field>
           <Field label="Status">
-            <select name="status" defaultValue={row.status} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
+            <select name="status" defaultValue={row.status} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
               <option value="draft">Draft</option>
               <option value="published">Published</option>
               <option value="archived">Archived</option>
@@ -51,8 +51,8 @@ function PackageForm({ row }: { row: any }) {
           </Field>
         </div>
         <div className="grid gap-4 sm:grid-cols-3 mt-3">
-          <Field label="Position"><input name="position" type="number" defaultValue={row.position || 0} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Field>
-          <Field label="Featured"><input name="featured" type="checkbox" defaultChecked={row.featured} className="h-4 w-4 rounded border-sand-300" /></Field>
+          <Field label="Position"><input name="position" type="number" defaultValue={row.position || 0} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Field>
+          <Field label="Featured"><input name="featured" type="checkbox" defaultChecked={row.featured} className="h-4 w-4 rounded border-gray-300" /></Field>
         </div>
       </section>
 
@@ -60,16 +60,16 @@ function PackageForm({ row }: { row: any }) {
         <h2 className="mb-3 text-lg font-semibold text-ink">Package Settings</h2>
         <div className="grid gap-4 sm:grid-cols-3">
           <Field label="Pricing Mode">
-            <select name="pricing_mode" defaultValue={p?.pricing_mode ?? 'computed'} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
+            <select name="pricing_mode" defaultValue={p?.pricing_mode ?? 'computed'} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
               <option value="fixed">Fixed</option>
               <option value="computed">Computed</option>
               <option value="computed_with_discount">Computed with Discount</option>
             </select>
           </Field>
-          <Field label="Discount %"><input name="discount_percent" type="number" min="0" max="100" defaultValue={p?.discount_percent ?? 0} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Field>
-          <Field label="Duration (days)"><input name="duration_days" type="number" min="1" defaultValue={p?.duration_days ?? ''} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Field>
-          <Field label="Highlights (comma-separated)" full><input name="highlights" defaultValue={(p?.highlights || []).join(', ')} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Field>
-          <Field label="Important Notes" full><textarea name="important_notes" defaultValue={p?.important_notes || ''} rows={2} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Field>
+          <Field label="Discount %"><input name="discount_percent" type="number" min="0" max="100" defaultValue={p?.discount_percent ?? 0} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Field>
+          <Field label="Duration (days)"><input name="duration_days" type="number" min="1" defaultValue={p?.duration_days ?? ''} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Field>
+          <Field label="Highlights (comma-separated)" full><input name="highlights" defaultValue={(p?.highlights || []).join(', ')} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Field>
+          <Field label="Important Notes" full><textarea name="important_notes" defaultValue={p?.important_notes || ''} rows={2} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Field>
         </div>
       </section>
 
@@ -126,7 +126,7 @@ function Composer({ packageId, items, catalog, baseCurrency }: { packageId: stri
       <form action={addItemAction.bind(null, packageId)} className="grid gap-3 sm:grid-cols-6">
         <div className="sm:col-span-3">
           <label className="mb-1 block text-sm font-medium text-ink">Product</label>
-          <select name="product_id" className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" required>
+          <select name="product_id" className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" required>
             {catalog.map(p => (
               <option key={p.id} value={p.id}>{p.title} ({p.product_type})</option>
             ))}
@@ -134,15 +134,15 @@ function Composer({ packageId, items, catalog, baseCurrency }: { packageId: stri
         </div>
         <div>
           <label className="mb-1 block text-sm font-medium text-ink">Qty</label>
-          <input name="quantity" type="number" min={1} defaultValue={1} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" />
+          <input name="quantity" type="number" min={1} defaultValue={1} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
         </div>
         <div>
           <label className="mb-1 block text-sm font-medium text-ink">Price Override ({baseCurrency})</label>
-          <input name="price_override" type="number" step="0.01" min={0} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" />
+          <input name="price_override" type="number" step="0.01" min={0} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
         </div>
         <div className="flex items-end gap-3">
-          <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="is_optional" className="h-4 w-4 rounded border-sand-300" /> Optional</label>
-          <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="is_default_selected" defaultChecked className="h-4 w-4 rounded border-sand-300" /> Default</label>
+          <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="is_optional" className="h-4 w-4 rounded border-gray-300" /> Optional</label>
+          <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="is_default_selected" defaultChecked className="h-4 w-4 rounded border-gray-300" /> Default</label>
         </div>
         <div className="flex items-end">
           <button className="rounded-lg border border-sand-300 px-3 py-2 text-sm">Add Item</button>
@@ -171,7 +171,7 @@ function Composer({ packageId, items, catalog, baseCurrency }: { packageId: stri
                   <form action={updateItemAction}>
                     <input type="hidden" name="item_id" value={i.id} />
                     <input type="hidden" name="package_id" value={packageId} />
-                    <input name="quantity" type="number" min={1} defaultValue={i.quantity} className="w-20 rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" />
+                    <input name="quantity" type="number" min={1} defaultValue={i.quantity} className="w-20 rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
                     <button className="ml-2 rounded-lg border border-sand-300 px-2 py-1 text-xs">Save</button>
                   </form>
                 </td>
@@ -179,7 +179,7 @@ function Composer({ packageId, items, catalog, baseCurrency }: { packageId: stri
                   <form action={updateItemAction}>
                     <input type="hidden" name="item_id" value={i.id} />
                     <input type="hidden" name="package_id" value={packageId} />
-                    <input name="price_override" type="number" step="0.01" min={0} defaultValue={i.price_override ?? ''} className="w-28 rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" />
+                    <input name="price_override" type="number" step="0.01" min={0} defaultValue={i.price_override ?? ''} className="w-28 rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
                     <button className="ml-2 rounded-lg border border-sand-300 px-2 py-1 text-xs">Save</button>
                   </form>
                 </td>
@@ -187,8 +187,8 @@ function Composer({ packageId, items, catalog, baseCurrency }: { packageId: stri
                   <form action={updateItemAction} className="flex items-center gap-3">
                     <input type="hidden" name="item_id" value={i.id} />
                     <input type="hidden" name="package_id" value={packageId} />
-                    <label className="flex items-center gap-2 text-xs"><input type="checkbox" name="is_optional" defaultChecked={i.is_optional} className="h-4 w-4 rounded border-sand-300" /> Optional</label>
-                    <label className="flex items-center gap-2 text-xs"><input type="checkbox" name="is_default_selected" defaultChecked={i.is_default_selected} className="h-4 w-4 rounded border-sand-300" /> Default</label>
+                    <label className="flex items-center gap-2 text-xs"><input type="checkbox" name="is_optional" defaultChecked={i.is_optional} className="h-4 w-4 rounded border-gray-300" /> Optional</label>
+                    <label className="flex items-center gap-2 text-xs"><input type="checkbox" name="is_default_selected" defaultChecked={i.is_default_selected} className="h-4 w-4 rounded border-gray-300" /> Default</label>
                     <button className="rounded-lg border border-sand-300 px-2 py-1 text-xs">Save</button>
                   </form>
                 </td>
@@ -393,13 +393,13 @@ function PricingOverrides({ row }: { row: any }) {
       <form action={addOverrideAction.bind(null, row.id)} className="flex flex-wrap items-end gap-3">
         <div>
           <label className="mb-1 block text-sm font-medium text-ink">Currency</label>
-          <select name="currency" className="rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
+          <select name="currency" className="rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
             {['EUR','USD','GBP','MUR'].map(c => <option key={c} value={c}>{c}</option>)}
           </select>
         </div>
         <div>
           <label className="mb-1 block text-sm font-medium text-ink">Price</label>
-          <input name="price" type="number" step="0.01" min="0" className="rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" />
+          <input name="price" type="number" step="0.01" min="0" className="rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
         </div>
         <button className="rounded-lg border border-sand-300 px-3 py-2 text-sm">Add / Update</button>
       </form>

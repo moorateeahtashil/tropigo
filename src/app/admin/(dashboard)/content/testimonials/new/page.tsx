@@ -6,15 +6,15 @@ export default function NewTestimonial() {
       <h1 className="text-2xl font-semibold text-ink">New Testimonial</h1>
       <form action={createAction} className="space-y-4 rounded-2xl border border-sand-200 bg-white p-5 shadow-card">
         <div className="grid gap-3 sm:grid-cols-2">
-          <label className="block text-sm"><span className="mb-1 block">Author Name</span><input name="author_name" required className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></label>
-          <label className="block text-sm"><span className="mb-1 block">Author Location</span><input name="author_location" className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></label>
+          <label className="block text-sm"><span className="mb-1 block">Author Name</span><input name="author_name" required className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></label>
+          <label className="block text-sm"><span className="mb-1 block">Author Location</span><input name="author_location" className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></label>
         </div>
-        <label className="block text-sm"><span className="mb-1 block">Quote</span><textarea name="quote" rows={4} required className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></label>
+        <label className="block text-sm"><span className="mb-1 block">Quote</span><textarea name="quote" rows={4} required className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></label>
         <div className="grid gap-3 sm:grid-cols-2">
-          <label className="block text-sm"><span className="mb-1 block">Rating</span><input name="rating" type="number" min={1} max={5} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></label>
-          <label className="block text-sm"><span className="mb-1 block">Position</span><input name="position" type="number" defaultValue={0} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></label>
+          <label className="block text-sm"><span className="mb-1 block">Rating</span><input name="rating" type="number" min={1} max={5} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></label>
+          <label className="block text-sm"><span className="mb-1 block">Position</span><input name="position" type="number" defaultValue={0} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></label>
         </div>
-        <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="published" defaultChecked className="h-4 w-4 rounded border-sand-300" /> Published</label>
+        <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="published" defaultChecked className="h-4 w-4 rounded border-gray-300" /> Published</label>
         <button className="rounded-xl bg-brand-700 px-3 py-2 text-white">Create</button>
       </form>
     </div>

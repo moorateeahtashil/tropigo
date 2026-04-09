@@ -16,19 +16,19 @@ function ActivityForm({ destinations }: { destinations: Array<{ id: string; name
       <section className="rounded-2xl border border-sand-200 bg-white p-5 shadow-card">
         <h2 className="mb-3 text-lg font-semibold text-ink">Basic Info</h2>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Title"><input name="title" required className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Field>
-          <Field label="Slug"><input name="slug" required className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Field>
-          <Field label="Subtitle"><input name="subtitle" className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Field>
+          <Field label="Title"><input name="title" required className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Field>
+          <Field label="Slug"><input name="slug" required className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Field>
+          <Field label="Subtitle"><input name="subtitle" className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Field>
           <Field label="Region / Destination">
-            <select name="destination_id" className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
+            <select name="destination_id" className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
               <option value="">—</option>
               {destinations.map(d => (
                 <option key={d.id} value={d.id}>{d.name}{d.region ? ` — ${d.region}` : ''}</option>
               ))}
             </select>
           </Field>
-          <Field label="Summary" full><textarea name="summary" rows={2} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Field>
-          <Field label="Description" full><textarea name="description" rows={6} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Field>
+          <Field label="Summary" full><textarea name="summary" rows={2} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Field>
+          <Field label="Description" full><textarea name="description" rows={6} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Field>
         </div>
       </section>
 
@@ -36,15 +36,15 @@ function ActivityForm({ destinations }: { destinations: Array<{ id: string; name
         <h2 className="mb-3 text-lg font-semibold text-ink">Pricing & Status</h2>
         <div className="grid gap-4 sm:grid-cols-3">
           <Field label="Base Currency">
-            <select name="base_currency" defaultValue="EUR" className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
+            <select name="base_currency" defaultValue="EUR" className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
               {['EUR','USD','GBP','MUR'].map(c => <option key={c} value={c}>{c}</option>)}
             </select>
           </Field>
           <Field label="Base Price">
-            <input name="base_price" type="number" step="0.01" min="0" className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" />
+            <input name="base_price" type="number" step="0.01" min="0" className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
           </Field>
           <Field label="Status">
-            <select name="status" defaultValue="draft" className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
+            <select name="status" defaultValue="draft" className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
               <option value="draft">Draft</option>
               <option value="published">Published</option>
               <option value="archived">Archived</option>
@@ -52,17 +52,17 @@ function ActivityForm({ destinations }: { destinations: Array<{ id: string; name
           </Field>
         </div>
         <div className="grid gap-4 sm:grid-cols-3 mt-3">
-          <Field label="Position"><input name="position" type="number" defaultValue={0} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Field>
-          <Field label="Featured"><input name="featured" type="checkbox" className="h-4 w-4 rounded border-sand-300" /></Field>
+          <Field label="Position"><input name="position" type="number" defaultValue={0} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Field>
+          <Field label="Featured"><input name="featured" type="checkbox" className="h-4 w-4 rounded border-gray-300" /></Field>
         </div>
       </section>
 
       <section className="rounded-2xl border border-sand-200 bg-white p-5 shadow-card">
         <h2 className="mb-3 text-lg font-semibold text-ink">Activity Details</h2>
         <div className="grid gap-4 sm:grid-cols-3">
-          <Field label="Duration (minutes)"><input name="duration_minutes" type="number" min="0" className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Field>
+          <Field label="Duration (minutes)"><input name="duration_minutes" type="number" min="0" className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Field>
           <Field label="Tour Type">
-            <select name="tour_type" className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
+            <select name="tour_type" className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
               <option value="">—</option>
               <option value="private">Private</option>
               <option value="group">Group</option>
@@ -70,24 +70,24 @@ function ActivityForm({ destinations }: { destinations: Array<{ id: string; name
             </select>
           </Field>
           <Field label="Difficulty">
-            <select name="difficulty_level" className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500">
+            <select name="difficulty_level" className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
               <option value="">—</option>
               <option value="easy">Easy</option>
               <option value="moderate">Moderate</option>
               <option value="challenging">Challenging</option>
             </select>
           </Field>
-          <Field label="Transportation"><input name="transportation" className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Field>
-          <Field label="Pickup Location"><input name="pickup_location" className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Field>
-          <Field label="Pickup Time"><input name="pickup_time" className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Field>
-          <Field label="Min Participants"><input name="min_participants" type="number" defaultValue={1} min={1} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Field>
-          <Field label="Max Participants"><input name="max_participants" type="number" min={1} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Field>
-          <Field label="Important Notes" full><textarea name="important_notes" rows={2} className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" /></Field>
+          <Field label="Transportation"><input name="transportation" className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Field>
+          <Field label="Pickup Location"><input name="pickup_location" className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Field>
+          <Field label="Pickup Time"><input name="pickup_time" className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Field>
+          <Field label="Min Participants"><input name="min_participants" type="number" defaultValue={1} min={1} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Field>
+          <Field label="Max Participants"><input name="max_participants" type="number" min={1} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Field>
+          <Field label="Important Notes" full><textarea name="important_notes" rows={2} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" /></Field>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 mt-3">
-          <Field label="Included (comma-separated)"><input name="included_items" placeholder="BBQ lunch, Snorkeling gear" className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500"/></Field>
-          <Field label="Excluded (comma-separated)"><input name="excluded_items" placeholder="Hotel pickup" className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500"/></Field>
-          <Field label="Highlights (comma-separated)" full><input name="highlights" placeholder="Crystal lagoon, White sand beaches" className="w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500"/></Field>
+          <Field label="Included (comma-separated)"><input name="included_items" placeholder="BBQ lunch, Snorkeling gear" className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"/></Field>
+          <Field label="Excluded (comma-separated)"><input name="excluded_items" placeholder="Hotel pickup" className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"/></Field>
+          <Field label="Highlights (comma-separated)" full><input name="highlights" placeholder="Crystal lagoon, White sand beaches" className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"/></Field>
         </div>
       </section>
 

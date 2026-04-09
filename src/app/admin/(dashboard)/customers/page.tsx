@@ -10,8 +10,8 @@ export default async function CustomersPage({ searchParams }: { searchParams: Pr
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold text-ink">Customers</h1>
         <form>
-          <input name="q" placeholder="Search email" defaultValue={resolvedSearchParams.q || ''} className="rounded-lg border-sand-300 text-sm shadow-sm focus:border-brand-500 focus:ring-brand-500" />
-          <button className="ml-2 rounded-lg border border-sand-300 px-3 py-2 text-sm">Search</button>
+          <input name="q" placeholder="Search email" defaultValue={resolvedSearchParams.q || ''} className="rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+          <button className="ml-2 rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50">Search</button>
         </form>
       </div>
       <div className="overflow-hidden rounded-2xl border border-sand-200 bg-white shadow-card">
