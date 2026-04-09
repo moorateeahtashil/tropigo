@@ -3,8 +3,9 @@ import { listTransfers, deleteTransfer } from './actions'
 
 export const dynamic = 'force-dynamic'
 
-export default async function TransfersList({ searchParams }: { searchParams: { q?: string } }) {
-  const q = searchParams.q || ''
+export default async function TransfersList({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
+  const resolvedSearchParams = await searchParams
+  const q = resolvedSearchParams.q || ''
   const rows = await listTransfers(q)
 
   return (

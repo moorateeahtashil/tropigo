@@ -3,8 +3,9 @@ import { listPackages, deletePackage } from './actions'
 
 export const dynamic = 'force-dynamic'
 
-export default async function PackagesList({ searchParams }: { searchParams: { q?: string } }) {
-  const q = searchParams.q || ''
+export default async function PackagesList({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
+  const resolvedSearchParams = await searchParams
+  const q = resolvedSearchParams.q || ''
   const rows = await listPackages(q)
 
   return (

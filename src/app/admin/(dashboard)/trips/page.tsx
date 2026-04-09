@@ -3,10 +3,11 @@ import { listTrips, deleteTrip } from './actions'
 
 export const dynamic = 'force-dynamic'
 
-export default async function TripsList({ searchParams }: { searchParams: { q?: string; toast?: string } }) {
-  const q = searchParams.q || ''
+export default async function TripsList({ searchParams }: { searchParams: Promise<{ q?: string; toast?: string }> }) {
+  const resolvedSearchParams = await searchParams
+  const q = resolvedSearchParams.q || ''
   const rows = await listTrips(q)
-  const toastType = searchParams.toast
+  const toastType = resolvedSearchParams.toast
 
   return (
     <div className="space-y-6">

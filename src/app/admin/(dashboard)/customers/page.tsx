@@ -2,14 +2,15 @@ import { listCustomers } from './actions'
 
 export const dynamic = 'force-dynamic'
 
-export default async function CustomersPage({ searchParams }: { searchParams: { q?: string } }) {
-  const rows = await listCustomers(searchParams.q)
+export default async function CustomersPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
+  const resolvedSearchParams = await searchParams
+  const rows = await listCustomers(resolvedSearchParams.q)
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold text-ink">Customers</h1>
         <form>
-          <input name="q" placeholder="Search email" defaultValue={searchParams.q || ''} className="rounded-lg border-sand-300 text-sm shadow-sm focus:border-brand-500 focus:ring-brand-500" />
+          <input name="q" placeholder="Search email" defaultValue={resolvedSearchParams.q || ''} className="rounded-lg border-sand-300 text-sm shadow-sm focus:border-brand-500 focus:ring-brand-500" />
           <button className="ml-2 rounded-lg border border-sand-300 px-3 py-2 text-sm">Search</button>
         </form>
       </div>

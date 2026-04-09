@@ -1,5 +1,7 @@
+'use client'
+
 import Link from 'next/link'
-import { getSettings } from '@/features/content/queries'
+import { useState, useEffect } from 'react'
 import { NewsletterSignup } from '@/components/marketing/NewsletterSignup'
 
 const FOOTER_LINKS = {
@@ -46,14 +48,32 @@ function SocialIcon({ name }: { name: string }) {
   return <>{icons[name] || null}</>
 }
 
-export async function Footer() {
-  const settings = await getSettings()
-  const socials = (settings as any)?.socials || {}
-  const brandName = (settings as any)?.brand_name || 'Tropigo'
-  const tagline = (settings as any)?.tagline || 'Discover Mauritius, Your Way'
-  const contactEmail = (settings as any)?.contact_email || 'hello@tropigo.mu'
-  const contactPhone = (settings as any)?.contact_phone || ''
-  const address = (settings as any)?.address || {}
+interface Settings {
+  brand_name?: string
+  tagline?: string
+  contact_email?: string
+  contact_phone?: string
+  address?: Record<string, string>
+  socials?: Record<string, string>
+}
+
+export function Footer() {
+  const [settings, setSettings] = useState<Settings>({})
+  const [loaded, setLoaded] = useState(false)
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then(r => r.json())
+      .then(d => { setSettings(d); setLoaded(true) })
+      .catch(() => setLoaded(true))
+  }, [])
+
+  const socials = settings.socials || {}
+  const brandName = settings.brand_name || 'Tropigo'
+  const tagline = settings.tagline || 'Discover Mauritius, Your Way'
+  const contactEmail = settings.contact_email || 'hello@tropigo.mu'
+  const contactPhone = settings.contact_phone || ''
+  const address = settings.address || {}
 
   const socialLinks = [
     { name: 'instagram', href: socials.instagram, label: 'Instagram' },
@@ -71,14 +91,12 @@ export async function Footer() {
             <p className="font-headline text-3xl font-light text-primary">{brandName.toUpperCase()}</p>
             <p className="mt-3 text-sm text-on-surface-variant">{tagline}</p>
 
-            {/* Address */}
             {address.street && (
               <address className="mt-4 not-italic text-sm text-on-surface-variant">
                 {[address.street, address.city, address.region, address.country].filter(Boolean).join(', ')}
               </address>
             )}
 
-            {/* Contact */}
             {(contactEmail || contactPhone) && (
               <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-on-surface-variant">
                 {contactEmail && (
@@ -94,8 +112,7 @@ export async function Footer() {
               </div>
             )}
 
-            {/* Social Links */}
-            {socialLinks.length > 0 && (
+            {loaded && socialLinks.length > 0 && (
               <div className="mt-6 flex gap-6">
                 {socialLinks.map(link => (
                   <a

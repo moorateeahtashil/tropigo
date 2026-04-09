@@ -2,14 +2,15 @@ import { listEnquiries, updateEnquiryStatus } from './actions'
 
 export const dynamic = 'force-dynamic'
 
-export default async function EnquiriesPage({ searchParams }: { searchParams: { status?: string } }) {
-  const rows = await listEnquiries(searchParams.status)
+export default async function EnquiriesPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
+  const resolvedSearchParams = await searchParams
+  const rows = await listEnquiries(resolvedSearchParams.status)
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold text-ink">Enquiries</h1>
         <form>
-          <select name="status" defaultValue={searchParams.status || ''} className="rounded-lg border-sand-300 text-sm shadow-sm focus:border-brand-500 focus:ring-brand-500">
+          <select name="status" defaultValue={resolvedSearchParams.status || ''} className="rounded-lg border-sand-300 text-sm shadow-sm focus:border-brand-500 focus:ring-brand-500">
             <option value="">All</option>
             <option value="new">New</option>
             <option value="in_progress">In Progress</option>
