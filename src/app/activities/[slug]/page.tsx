@@ -5,7 +5,6 @@ import { Footer } from '@/components/layout/Footer'
 import { getActivityBySlug } from '@/features/catalog/queries'
 import { cookies } from 'next/headers'
 import { ProductGallery } from '@/components/product/ProductGallery'
-import { AvailabilityCalendar } from '@/components/product/AvailabilityCalendar'
 import { Check, X, Clock, Users, MapPin } from 'lucide-react'
 import { ActivityBookingSection } from './ActivityBookingSection'
 
@@ -166,11 +165,15 @@ export default async function ActivityDetail({ params }: { params: Promise<{ slu
             )}
           </article>
 
-          <aside className="sticky top-24 h-max space-y-4">
+          <aside className="sticky top-24 h-max">
             <div className="rounded-2xl border border-sand-200 bg-white p-5 shadow-card">
-              <ActivityBookingSection productId={activity.id} minParticipants={activities?.min_participants} />
+              <ActivityBookingSection
+                productId={activity.id}
+                basePrice={activity.base_price ? Number(activity.base_price) : null}
+                baseCurrency={activity.base_currency}
+                minParticipants={activities?.min_participants}
+              />
             </div>
-            <AvailabilityCalendar productId={activity.id} className="w-full" />
           </aside>
         </section>
 

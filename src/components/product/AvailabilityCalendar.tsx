@@ -185,27 +185,35 @@ export function AvailabilityCalendar({
       <div className="grid grid-cols-7 gap-1">
         {calendarDays.map((dayInfo, index) => {
           const isSelected = dayInfo.date === selectedDate
-          const hasAvailability = availability[dayInfo.date]?.some((s) => s.available)
-          const isPastOrFuture = dayInfo.isPast
+          const slots = availability[dayInfo.date] || []
+          const hasAvailable = slots.some((s) => s.available)
+          const hasNoSlots = slots.length === 0
+          const isFullyBooked = slots.length > 0 && !hasAvailable
 
           return (
             <button
               key={index}
               onClick={() => handleDateClick(dayInfo.date, dayInfo.isPast)}
-              disabled={isPastOrFuture}
+              disabled={dayInfo.isPast || isFullyBooked || !dayInfo.isCurrentMonth}
               className={cn(
                 'relative flex h-9 w-full items-center justify-center rounded-lg text-sm transition-all',
-                !dayInfo.isCurrentMonth && 'text-on-surface-variant opacity-50',
-                dayInfo.isToday && 'ring-1 ring-secondary',
+                !dayInfo.isCurrentMonth && 'text-on-surface-variant opacity-30',
+                dayInfo.isToday && !isSelected && 'ring-1 ring-secondary',
                 isSelected && 'bg-secondary font-semibold text-white shadow-md',
-                isPastOrFuture && 'cursor-not-allowed opacity-40',
-                !isSelected && dayInfo.isCurrentMonth && !isPastOrFuture && 'hover:bg-surface-container',
-                hasAvailability && !isSelected && dayInfo.isCurrentMonth && 'text-green-700 font-medium',
+                (dayInfo.isPast || isFullyBooked) && 'cursor-not-allowed opacity-40',
+                !isSelected && dayInfo.isCurrentMonth && !dayInfo.isPast && !isFullyBooked && 'hover:bg-surface-container',
+                hasAvailable && !isSelected && dayInfo.isCurrentMonth && 'text-green-700 font-medium',
+                isFullyBooked && !isSelected && dayInfo.isCurrentMonth && 'text-red-500',
               )}
             >
               {dayInfo.day}
-              {hasAvailability && !isSelected && dayInfo.isCurrentMonth && (
-                <span className="absolute bottom-0.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-green-500" />
+              {/* Green dot for available */}
+              {hasAvailable && !isSelected && dayInfo.isCurrentMonth && (
+                <span className="absolute bottom-0.5 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-green-500" />
+              )}
+              {/* Red dot for fully booked */}
+              {isFullyBooked && dayInfo.isCurrentMonth && (
+                <span className="absolute bottom-0.5 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-red-500" />
               )}
             </button>
           )
@@ -213,37 +221,46 @@ export function AvailabilityCalendar({
       </div>
 
       {/* Legend */}
-      <div className="mt-3 flex items-center gap-3 text-xs text-ink-muted">
-        <div className="flex items-center gap-1">
-          <span className="h-2 w-2 rounded-full bg-green-500" />
+      <div className="mt-3 flex items-center gap-4 text-xs text-on-surface-variant">
+        <div className="flex items-center gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-full bg-green-500" />
           <span>Available</span>
         </div>
-        <div className="flex items-center gap-1">
-          <span className="h-2 w-2 rounded-full bg-brand-700" />
+        <div className="flex items-center gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-full bg-red-500" />
+          <span>Unavailable</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-full bg-secondary" />
           <span>Selected</span>
         </div>
       </div>
 
       {/* Time slots for selected date */}
       {selectedDate && availability[selectedDate] && availability[selectedDate].length > 0 && (
-        <div className="mt-4 border-t border-sand-200 pt-3">
-          <h4 className="mb-2 text-sm font-medium text-ink">Available Times</h4>
-          <div className="flex flex-wrap gap-2">
+        <div className="mt-4 border-t border-surface-container pt-4">
+          <h4 className="mb-3 text-sm font-semibold text-primary">Select Time</h4>
+          <div className="grid grid-cols-2 gap-2">
             {availability[selectedDate].map((slot) => (
               <button
                 key={slot.time}
                 onClick={() => onSelect?.(selectedDate, slot.time)}
                 disabled={!slot.available}
                 className={cn(
-                  'rounded-lg border px-3 py-1.5 text-xs font-medium transition-all',
+                  'rounded-xl border px-4 py-2.5 text-sm font-medium transition-all',
                   slot.time === selectedTime
                     ? 'border-secondary bg-secondary/10 text-secondary ring-1 ring-secondary'
                     : slot.available
-                    ? 'border-outline-variant text-on-surface hover:border-secondary hover:bg-secondary/5'
-                    : 'border-outline-variant/20 text-on-surface-variant opacity-50 cursor-not-allowed',
+                    ? 'border-outline-variant bg-white text-on-surface hover:border-secondary hover:bg-secondary/5'
+                    : 'border-outline-variant/20 bg-surface-container text-on-surface-variant opacity-50 cursor-not-allowed line-through',
                 )}
               >
-                {slot.time}
+                <div className="flex items-center justify-between">
+                  <span>{slot.time}</span>
+                  {!slot.available && (
+                    <span className="text-[10px] text-red-500">Full</span>
+                  )}
+                </div>
               </button>
             ))}
           </div>
