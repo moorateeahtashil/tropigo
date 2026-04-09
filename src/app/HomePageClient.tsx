@@ -149,7 +149,7 @@ export default function HomePageClient({ activities, destinations, testimonials 
             {destinations[0] && (
               <div className="group relative col-span-7 overflow-hidden rounded-3xl">
                 <Image
-                  src={destinations[0].hero_image_url || 'https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=1200&q=80'}
+                  src={destinations[0].hero_image_url || 'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=1200&q=80'}
                   alt={destinations[0].name}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"

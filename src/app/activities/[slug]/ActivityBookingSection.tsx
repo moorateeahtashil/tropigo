@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Calendar, Clock, Users, Minus, Plus, Check, X, ArrowRight } from 'lucide-react'
+import { useState } from 'react'
+import { Users, Minus, Plus, Check, X, ArrowRight } from 'lucide-react'
 import { AvailabilityCalendar } from '@/components/product/AvailabilityCalendar'
 import { IslandLoader } from '@/components/ui/IslandLoader'
 
@@ -10,7 +10,6 @@ interface ActivityBookingSectionProps {
   basePrice: number | null
   baseCurrency: string
   minParticipants?: number
-  availableTimes?: string[]
 }
 
 export function ActivityBookingSection({
@@ -18,7 +17,6 @@ export function ActivityBookingSection({
   basePrice,
   baseCurrency,
   minParticipants = 1,
-  availableTimes,
 }: ActivityBookingSectionProps) {
   const [selectedDate, setSelectedDate] = useState('')
   const [selectedTime, setSelectedTime] = useState('')
@@ -26,19 +24,13 @@ export function ActivityBookingSection({
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
-  const [step, setStep] = useState<'date' | 'time' | 'details'>('date')
 
-  // Calculate total price
   const currency = typeof window !== 'undefined' ? localStorage.getItem('tropigo_currency') || 'EUR' : 'EUR'
   const totalPrice = basePrice ? basePrice * quantity : null
 
   async function addToCart() {
-    if (!selectedDate) {
-      setError('Please select a date')
-      return
-    }
-    if (!selectedTime) {
-      setError('Please select a time')
+    if (!selectedDate || !selectedTime) {
+      setError('Please select both date and time')
       return
     }
 
@@ -97,14 +89,7 @@ export function ActivityBookingSection({
 
   const handleDateSelect = (date: string, time: string) => {
     setSelectedDate(date)
-    if (time) setSelectedTime(time)
-    setStep(time ? 'details' : 'time')
-    setError('')
-  }
-
-  const handleTimeSelect = (time: string) => {
     setSelectedTime(time)
-    setStep('details')
     setError('')
   }
 
@@ -155,112 +140,60 @@ export function ActivityBookingSection({
         </div>
       )}
 
-      {/* Step 1: Calendar */}
-      {step === 'date' && (
-        <div>
-          <div className="mb-3 flex items-center gap-2 font-label text-xs font-bold uppercase tracking-wider text-primary">
-            <Calendar className="h-4 w-4" />
-            Select Date
-          </div>
-          <AvailabilityCalendar
-            productId={productId}
-            selectedDate={selectedDate}
-            selectedTime={selectedTime}
-            onSelect={handleDateSelect}
-            className="w-full"
-          />
-        </div>
-      )}
+      {/* Calendar with inline time selection */}
+      <AvailabilityCalendar
+        productId={productId}
+        selectedDate={selectedDate}
+        selectedTime={selectedTime}
+        onSelect={handleDateSelect}
+        className="w-full"
+      />
 
-      {/* Step 2: Time Selection */}
-      {step === 'time' && selectedDate && (
-        <div>
-          <div className="mb-3 flex items-center justify-between">
-            <div className="flex items-center gap-2 font-label text-xs font-bold uppercase tracking-wider text-primary">
-              <Clock className="h-4 w-4" />
-              Select Time
-            </div>
-            <button
-              onClick={() => setStep('date')}
-              className="text-xs text-secondary hover:text-tertiary"
-            >
-              Change date
-            </button>
-          </div>
-          <div className="text-sm text-on-surface-variant mb-3">
-            {new Date(selectedDate).toLocaleDateString('en-US', {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })}
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            {(availableTimes || ['08:00', '09:00', '10:00', '13:00', '14:00', '15:00']).map(time => (
-              <button
-                key={time}
-                onClick={() => handleTimeSelect(time)}
-                className={`rounded-xl border px-4 py-3 text-sm font-medium transition-all ${
-                  selectedTime === time
-                    ? 'border-secondary bg-secondary/10 text-secondary ring-1 ring-secondary'
-                    : 'border-outline-variant bg-white text-on-surface hover:border-secondary hover:bg-secondary/5'
-                }`}
-              >
-                {time}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Step 3: Quantity & Add to Cart */}
-      {step === 'details' && (
-        <div className="space-y-4">
-          {/* Selected date & time summary */}
-          <div className="rounded-xl border border-outline-variant/20 bg-surface-container-low p-4">
+      {/* Quantity selector */}
+      {selectedDate && selectedTime && (
+        <div className="space-y-4 rounded-xl border border-outline-variant/20 bg-surface-container-low p-4">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-sm text-on-surface-variant">
-              <Calendar className="h-4 w-4" />
-              {new Date(selectedDate).toLocaleDateString('en-US', {
+              <span>📅</span>
+              {new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-US', {
                 weekday: 'short',
                 month: 'short',
                 day: 'numeric',
                 year: 'numeric',
               })}
             </div>
-            <div className="mt-2 flex items-center gap-2 text-sm text-on-surface-variant">
-              <Clock className="h-4 w-4" />
+            <div className="flex items-center gap-2 text-sm text-on-surface-variant">
+              <span>🕐</span>
               {selectedTime}
             </div>
           </div>
 
-          {/* Quantity selector */}
-          <div>
-            <label className="mb-2 flex items-center gap-2 font-label text-xs font-bold uppercase tracking-wider text-primary">
+          <div className="flex items-center justify-between">
+            <label className="flex items-center gap-2 text-sm font-medium text-primary">
               <Users className="h-4 w-4" />
-              Number of Participants
+              Participants
             </label>
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setQuantity(q => Math.max(minParticipants, q - 1))}
                 disabled={quantity <= minParticipants}
-                className="flex h-10 w-10 items-center justify-center rounded-xl border border-outline-variant bg-white transition-all hover:bg-surface-container disabled:cursor-not-allowed disabled:opacity-40"
+                className="flex h-8 w-8 items-center justify-center rounded-lg border border-outline-variant bg-white transition-all hover:bg-surface-container disabled:cursor-not-allowed disabled:opacity-40"
               >
-                <Minus className="h-4 w-4" />
+                <Minus className="h-3.5 w-3.5" />
               </button>
-              <span className="w-12 text-center text-lg font-semibold text-primary">{quantity}</span>
+              <span className="w-8 text-center text-base font-semibold text-primary">{quantity}</span>
               <button
                 onClick={() => setQuantity(q => q + 1)}
-                className="flex h-10 w-10 items-center justify-center rounded-xl border border-outline-variant bg-white transition-all hover:bg-surface-container"
+                className="flex h-8 w-8 items-center justify-center rounded-lg border border-outline-variant bg-white transition-all hover:bg-surface-container"
               >
-                <Plus className="h-4 w-4" />
+                <Plus className="h-3.5 w-3.5" />
               </button>
             </div>
           </div>
 
-          {/* Total price */}
           {totalPrice && (
-            <div className="flex items-center justify-between rounded-xl border border-outline-variant/20 bg-surface-container-low p-4">
-              <span className="text-sm font-medium text-on-surface-variant">Total Price</span>
+            <div className="flex items-center justify-between border-t border-outline-variant/20 pt-3">
+              <span className="text-sm font-medium text-on-surface-variant">Total</span>
               <span className="text-xl font-bold text-secondary">
                 {totalPrice.toFixed(2)} {currency}
               </span>
@@ -270,18 +203,10 @@ export function ActivityBookingSection({
           {/* Add to cart button */}
           <button
             onClick={addToCart}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-4 font-label text-sm font-bold uppercase tracking-widest text-on-primary transition-all hover:bg-on-primary-fixed active:scale-98"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3.5 font-label text-sm font-bold uppercase tracking-widest text-on-primary transition-all hover:bg-on-primary-fixed active:scale-98"
           >
             Add to Cart
             <ArrowRight className="h-4 w-4" />
-          </button>
-
-          {/* Back button */}
-          <button
-            onClick={() => setStep('time')}
-            className="w-full py-2 text-xs font-medium text-on-surface-variant transition-colors hover:text-on-surface"
-          >
-            ← Change time or date
           </button>
         </div>
       )}

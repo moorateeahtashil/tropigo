@@ -73,10 +73,8 @@ export default function CartPage() {
   async function removeItem(itemId: string) {
     setUpdating(itemId)
     try {
-      const res = await fetch('/api/booking/cart', {
+      const res = await fetch(`/api/booking/cart?itemId=${encodeURIComponent(itemId)}`, {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ itemId }),
       })
       if (!res.ok) throw new Error('Failed to remove item')
       await loadCart()

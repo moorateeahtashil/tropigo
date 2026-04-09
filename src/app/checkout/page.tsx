@@ -16,6 +16,9 @@ interface CartItem {
   }
 }
 
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+
 export default function CheckoutPage() {
   const [items, setItems] = useState<CartItem[]>([])
   const [loading, setLoading] = useState(true)
@@ -119,36 +122,66 @@ export default function CheckoutPage() {
       <main className="container-page pt-28 pb-16">
         <h1 className="heading-display text-3xl">Checkout</h1>
         <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_360px]">
-          <form onSubmit={pay} className="space-y-4">
+          <form onSubmit={pay} className="space-y-5">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div>
-                <label className="block text-sm font-medium text-ink">First name</label>
-                <input value={form.lead_first_name} onChange={e => setForm({ ...form, lead_first_name: e.target.value })} required className="mt-1 w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" />
+              <Input
+                label="First name"
+                value={form.lead_first_name}
+                onChange={e => setForm({ ...form, lead_first_name: e.target.value })}
+                required
+              />
+              <Input
+                label="Last name"
+                value={form.lead_last_name}
+                onChange={e => setForm({ ...form, lead_last_name: e.target.value })}
+                required
+              />
+            </div>
+            <Input
+              label="Email"
+              type="email"
+              value={form.lead_email}
+              onChange={e => setForm({ ...form, lead_email: e.target.value })}
+              required
+            />
+            <Input
+              label="Phone"
+              type="tel"
+              value={form.lead_phone}
+              onChange={e => setForm({ ...form, lead_phone: e.target.value })}
+            />
+            <Textarea
+              label="Special requests (optional)"
+              value={form.special_requirements}
+              onChange={e => setForm({ ...form, special_requirements: e.target.value })}
+              rows={4}
+            />
+            {error && (
+              <div className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                <span className="mt-0.5">⚠️</span>
+                {error}
               </div>
-              <div>
-                <label className="block text-sm font-medium text-ink">Last name</label>
-                <input value={form.lead_last_name} onChange={e => setForm({ ...form, lead_last_name: e.target.value })} required className="mt-1 w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" />
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-ink">Email</label>
-              <input type="email" value={form.lead_email} onChange={e => setForm({ ...form, lead_email: e.target.value })} required className="mt-1 w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-ink">Phone</label>
-              <input value={form.lead_phone} onChange={e => setForm({ ...form, lead_phone: e.target.value })} className="mt-1 w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-ink">Special requests</label>
-              <textarea value={form.special_requirements} onChange={e => setForm({ ...form, special_requirements: e.target.value })} rows={4} className="mt-1 w-full rounded-lg border-sand-300 shadow-sm focus:border-brand-500 focus:ring-brand-500" />
-            </div>
-            {error && <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>}
-            <button disabled={loading || items.length===0} className="rounded-xl bg-brand-700 px-4 py-2 text-white transition-colors hover:bg-brand-800 disabled:opacity-50">
-              {loading ? 'Loading…' : `Pay ${currency} ${total.toFixed(2)}`}
+            )}
+            <button
+              disabled={loading || items.length === 0}
+              className="w-full rounded-xl bg-primary px-6 py-4 font-label text-sm font-bold uppercase tracking-widest text-white shadow-sm transition-all hover:bg-on-primary-fixed disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                  Processing...
+                </span>
+              ) : (
+                `Pay ${currency} ${total.toFixed(2)}`
+              )}
             </button>
-            {/* PayPal button (creates order and redirects) — Alternative */}
-            {/* For simplicity of MVP, keep Stripe-first flow; PayPal support is exposed via a separate quick call below: */}
-            <button onClick={payWithPaypal} disabled={loading || items.length===0} className="ml-3 rounded-xl border border-sand-300 px-4 py-2 text-ink transition-colors hover:bg-sand-50 disabled:opacity-50">Pay with PayPal</button>
+            <button
+              onClick={payWithPaypal}
+              disabled={loading || items.length === 0}
+              className="w-full rounded-xl border border-outline-variant bg-white px-6 py-3.5 font-label text-sm font-medium text-on-surface transition-all hover:bg-surface-container disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Pay with PayPal
+            </button>
           </form>
 
           <aside className="h-max space-y-3 rounded-2xl border border-sand-200 bg-white p-5 shadow-card">

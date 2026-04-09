@@ -173,7 +173,7 @@ export default function ActivitiesPageClient({
         {/* Hero Section */}
         <section className="relative flex h-[400px] items-end overflow-hidden lg:h-[500px]">
           <Image
-            src="https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=1920&q=85"
+            src="https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=1920&q=85"
             alt="Mauritius Activities"
             fill
             className="object-cover"
