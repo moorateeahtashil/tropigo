@@ -31,7 +31,7 @@ export default function AdminDriverAvailabilityPage() {
   const [form, setForm] = useState({
     available_date: new Date().toISOString().split('T')[0],
     start_time: '09:00',
-    end_time: '17:00',
+    end_time: '' as string | null,
     product_id: '',
   })
 

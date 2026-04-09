@@ -4,9 +4,8 @@ import { NewsletterSignup } from '@/components/marketing/NewsletterSignup'
 const FOOTER_LINKS = {
   Services: [
     { href: '/transfers', label: 'Airport Transfers' },
-    { href: '/activities', label: 'Activities & Trips' },
+    { href: '/trips', label: 'Guided Trips' },
     { href: '/packages', label: 'Holiday Packages' },
-    { href: '/destinations', label: 'Destinations' },
   ],
   Support: [
     { href: '/faq', label: 'FAQ' },

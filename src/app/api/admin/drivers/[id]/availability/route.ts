@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params
   const supabase = createAdminClient()
-  const driverId = params.id
+  const driverId = resolvedParams.id
 
   const { data, error } = await supabase
     .from('driver_availability')
@@ -31,9 +32,10 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   return NextResponse.json(slots)
 }
 
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params
   const supabase = createAdminClient()
-  const driverId = params.id
+  const driverId = resolvedParams.id
   const body = await req.json()
 
   const { data, error } = await supabase
@@ -53,9 +55,10 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   return NextResponse.json(data)
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params
   const supabase = createAdminClient()
-  const driverId = params.id
+  const driverId = resolvedParams.id
   const { searchParams } = new URL(req.url)
   const slotId = searchParams.get('id')
 

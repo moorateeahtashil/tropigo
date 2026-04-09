@@ -4,26 +4,26 @@ import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { formatCurrency } from '@/lib/utils/format'
-import { Search, Filter, MapPin, Clock, Star, ArrowRight, Headphones, X } from 'lucide-react'
-import type { ActivityProduct } from '@/features/catalog/queries'
+import { Search, Filter, MapPin, Clock, Star, ArrowRight, Car, Users, Mountain, X } from 'lucide-react'
+import type { TripProduct, DestinationRow } from '@/features/catalog/queries'
 import type { ResolvedPrice } from '@/features/pricing/types'
 
-interface ActivitiesPageClientProps {
-  activities: ActivityProduct[]
-  destinations: Array<{ id: string; slug: string; name: string; region: string; hero_image_url: string | null }>
+interface TripsPageClientProps {
+  trips: TripProduct[]
+  destinations: DestinationRow[]
   priceMap: Map<string, ResolvedPrice>
   currency: string
 }
 
-export default function ActivitiesPageClient({
-  activities,
+export default function TripsPageClient({
+  trips,
   destinations,
   priceMap,
   currency,
-}: ActivitiesPageClientProps) {
+}: TripsPageClientProps) {
   const [filters, setFilters] = useState({
     destination: 'all',
-    tourType: 'all',
+    tripType: 'all',
     duration: 'all',
     priceRange: 'all',
     search: '',
@@ -31,45 +31,55 @@ export default function ActivitiesPageClient({
 
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
 
-  // Get unique tour types from activities
-  const tourTypes = useMemo(() => {
-    const types = new Set(activities.map(a => a.activities?.tour_type).filter(Boolean))
+  // Get unique trip types from trips
+  const tripTypes = useMemo(() => {
+    const types = new Set(trips.map(t => t.trips?.trip_type).filter(Boolean))
     return Array.from(types) as string[]
-  }, [activities])
+  }, [trips])
 
-  // Get unique destinations from activities
-  const activityDestinations = useMemo(() => {
-    const dests = activities
-      .map(a => a.destination)
+  // Get unique destinations from trips
+  const tripDestinations = useMemo(() => {
+    const dests = trips
+      .map(t => t.destination)
       .filter((d): d is { id: string; slug: string; name: string; region: string } => !!d)
     const unique = new Map(dests.map(d => [d.slug, d]))
     return Array.from(unique.values())
-  }, [activities])
+  }, [trips])
 
-  // Get price range info
-  const getActivityPrice = (activity: ActivityProduct) => {
-    const rp = priceMap.get(activity.id)
+  // Get price info
+  const getTripPrice = (trip: TripProduct) => {
+    const rp = priceMap.get(trip.id)
     if (rp) return rp.amount
-    if (activity.base_price) return Number(activity.base_price)
+    if (trip.base_price) return Number(trip.base_price)
     return null
   }
 
-  // Filtered activities
-  const filteredActivities = useMemo(() => {
-    return activities.filter(activity => {
+  // Format duration
+  const formatDuration = (minutes: number | null) => {
+    if (!minutes) return null
+    const hours = Math.floor(minutes / 60)
+    const mins = minutes % 60
+    if (hours === 0) return `${mins}m`
+    if (mins === 0) return `${hours}h`
+    return `${hours}h ${mins}m`
+  }
+
+  // Filtered trips
+  const filteredTrips = useMemo(() => {
+    return trips.filter(trip => {
       // Destination filter
-      if (filters.destination !== 'all' && activity.destination?.slug !== filters.destination) {
+      if (filters.destination !== 'all' && trip.destination?.slug !== filters.destination) {
         return false
       }
 
-      // Tour type filter
-      if (filters.tourType !== 'all' && activity.activities?.tour_type !== filters.tourType) {
+      // Trip type filter
+      if (filters.tripType !== 'all' && trip.trips?.trip_type !== filters.tripType) {
         return false
       }
 
       // Duration filter
       if (filters.duration !== 'all') {
-        const mins = activity.activities?.duration_minutes || 0
+        const mins = trip.trips?.duration_minutes || 0
         if (filters.duration === 'short' && mins >= 180) return false
         if (filters.duration === 'medium' && (mins < 180 || mins > 360)) return false
         if (filters.duration === 'long' && mins <= 360) return false
@@ -77,7 +87,7 @@ export default function ActivitiesPageClient({
 
       // Price range filter
       if (filters.priceRange !== 'all') {
-        const price = getActivityPrice(activity)
+        const price = getTripPrice(trip)
         if (!price) return false
         if (filters.priceRange === 'budget' && price >= 100) return false
         if (filters.priceRange === 'mid' && (price < 100 || price > 300)) return false
@@ -87,20 +97,21 @@ export default function ActivitiesPageClient({
       // Search filter
       if (filters.search) {
         const q = filters.search.toLowerCase()
-        const matchesTitle = activity.title.toLowerCase().includes(q)
-        const matchesSummary = activity.summary?.toLowerCase().includes(q) || false
-        const matchesDestination = activity.destination?.name.toLowerCase().includes(q) || false
-        if (!matchesTitle && !matchesSummary && !matchesDestination) return false
+        const matchesTitle = trip.title.toLowerCase().includes(q)
+        const matchesSummary = trip.summary?.toLowerCase().includes(q) || false
+        const matchesDestination = trip.destination?.name.toLowerCase().includes(q) || false
+        const matchesTripType = trip.trips?.trip_type?.toLowerCase().includes(q) || false
+        if (!matchesTitle && !matchesSummary && !matchesDestination && !matchesTripType) return false
       }
 
       return true
     })
-  }, [activities, filters, priceMap])
+  }, [trips, filters, priceMap])
 
   const activeFilterCount = Object.values(filters).filter(v => v !== 'all' && v !== '').length
 
   const resetFilters = () => {
-    setFilters({ destination: 'all', tourType: 'all', duration: 'all', priceRange: 'all', search: '' })
+    setFilters({ destination: 'all', tripType: 'all', duration: 'all', priceRange: 'all', search: '' })
   }
 
   return (
@@ -122,7 +133,7 @@ export default function ActivitiesPageClient({
               )}
             </button>
             <span className="text-xs text-on-surface-variant">
-              {filteredActivities.length} results
+              {filteredTrips.length} results
             </span>
           </div>
         </div>
@@ -142,8 +153,8 @@ export default function ActivitiesPageClient({
             <FilterContent
               filters={filters}
               setFilters={setFilters}
-              destinations={activityDestinations}
-              tourTypes={tourTypes}
+              destinations={tripDestinations}
+              tripTypes={tripTypes}
               resetFilters={resetFilters}
             />
           </div>
@@ -154,15 +165,15 @@ export default function ActivitiesPageClient({
       <aside className="sticky top-16 z-40 hidden h-[calc(100vh-4rem)] flex-col overflow-y-auto border-r border-outline-variant/30 bg-surface-container-low p-6 lg:flex">
         <div className="mt-4">
           <span className="font-label text-[10px] font-bold uppercase tracking-[0.3em] text-secondary">
-            Filter Activities
+            Filter Trips
           </span>
           <h2 className="heading-display mt-2 mb-6 text-2xl text-primary">Refine Your Search</h2>
-          
+
           <FilterContent
             filters={filters}
             setFilters={setFilters}
-            destinations={activityDestinations}
-            tourTypes={tourTypes}
+            destinations={tripDestinations}
+            tripTypes={tripTypes}
             resetFilters={resetFilters}
           />
         </div>
@@ -174,7 +185,7 @@ export default function ActivitiesPageClient({
         <section className="relative flex h-[400px] items-end overflow-hidden lg:h-[500px]">
           <Image
             src="https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=1920&q=85"
-            alt="Mauritius Activities"
+            alt="Mauritius Guided Trips"
             fill
             className="object-cover"
             sizes="100vw"
@@ -182,13 +193,13 @@ export default function ActivitiesPageClient({
           <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent" />
           <div className="relative z-10 max-w-4xl px-8 pb-10 lg:px-12">
             <span className="mb-3 block font-label text-[10px] font-bold uppercase tracking-[0.4em] text-secondary">
-              Premium Experiences
+              Guided Driving Tours
             </span>
             <h1 className="heading-display mb-4 text-4xl leading-tight text-white lg:text-6xl">
-              Discover Mauritius
+              Explore Mauritius
             </h1>
             <p className="max-w-xl text-sm font-light text-white/80 lg:text-lg">
-              Curated activities and adventures across the island.
+              Private guided tours with experienced local drivers. Hotel pickup, curated itineraries, and unforgettable experiences.
             </p>
           </div>
         </section>
@@ -197,9 +208,9 @@ export default function ActivitiesPageClient({
         <section className="border-b border-outline-variant/10 bg-white py-6">
           <div className="grid grid-cols-2 gap-6 px-8 lg:grid-cols-4 lg:px-12">
             <div className="flex items-center gap-3">
-              <Star className="h-5 w-5 text-secondary" />
+              <Car className="h-5 w-5 text-secondary" />
               <span className="font-label text-[11px] font-bold uppercase tracking-wider text-primary">
-                Top Experiences
+                Private Driver
               </span>
             </div>
             <div className="flex items-center gap-3">
@@ -209,15 +220,15 @@ export default function ActivitiesPageClient({
               </span>
             </div>
             <div className="flex items-center gap-3">
-              <Headphones className="h-5 w-5 text-secondary" />
+              <Users className="h-5 w-5 text-secondary" />
               <span className="font-label text-[11px] font-bold uppercase tracking-wider text-primary">
-                24/7 Support
+                Small Groups
               </span>
             </div>
             <div className="flex items-center gap-3">
-              <MapPin className="h-5 w-5 text-secondary" />
+              <Mountain className="h-5 w-5 text-secondary" />
               <span className="font-label text-[11px] font-bold uppercase tracking-wider text-primary">
-                Expert Verified
+                Curated Itineraries
               </span>
             </div>
           </div>
@@ -227,9 +238,9 @@ export default function ActivitiesPageClient({
         <section className="bg-white px-8 py-10 lg:px-12">
           <div className="mb-8 flex items-end justify-between">
             <div>
-              <h2 className="heading-display text-3xl text-primary">All Activities</h2>
+              <h2 className="heading-display text-3xl text-primary">All Trips</h2>
               <p className="mt-2 text-sm text-on-surface-variant">
-                {filteredActivities.length} experience{filteredActivities.length !== 1 ? 's' : ''} available
+                {filteredTrips.length} trip{filteredTrips.length !== 1 ? 's' : ''} available
                 {activeFilterCount > 0 && ' (filtered)'}
               </p>
             </div>
@@ -243,41 +254,69 @@ export default function ActivitiesPageClient({
             )}
           </div>
 
-          {filteredActivities.length > 0 ? (
+          {filteredTrips.length > 0 ? (
             <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-              {filteredActivities.map(activity => (
+              {filteredTrips.map(trip => (
                 <Link
-                  key={activity.id}
-                  href={`/activities/${activity.slug}`}
+                  key={trip.id}
+                  href={`/trips/${trip.slug}`}
                   className="group overflow-hidden rounded-2xl border border-outline-variant/20 bg-white shadow-card transition-all hover:-translate-y-0.5 hover:shadow-card-hover"
                 >
                   <div className="relative h-48 w-full lg:h-52">
-                    {activity.cover_image_url ? (
+                    {trip.cover_image_url ? (
                       <Image
-                        src={activity.cover_image_url}
-                        alt={activity.title}
+                        src={trip.cover_image_url}
+                        alt={trip.title}
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     ) : (
                       <div className="h-full w-full bg-surface-container" />
                     )}
-                    {activity.destination && (
+                    {trip.destination && (
                       <div className="absolute bottom-3 left-3">
                         <span className="flex items-center gap-1 rounded-full bg-black/50 px-2.5 py-1 text-xs font-medium text-white backdrop-blur-sm">
                           <MapPin className="h-3 w-3" />
-                          {activity.destination.name}
+                          {trip.destination.name}
+                        </span>
+                      </div>
+                    )}
+                    {trip.trips?.trip_type && (
+                      <div className="absolute top-3 right-3">
+                        <span className="rounded-full bg-brand-700/90 px-2.5 py-1 text-xs font-medium text-white backdrop-blur-sm">
+                          {trip.trips.trip_type.charAt(0).toUpperCase() + trip.trips.trip_type.slice(1)}
+                        </span>
+                      </div>
+                    )}
+                    {trip.trips?.trip_mode === 'single_dropoff' && (
+                      <div className="absolute top-3 left-3">
+                        <span className="rounded-full bg-blue-600/90 px-2.5 py-1 text-xs font-medium text-white backdrop-blur-sm">
+                          Drop-off
                         </span>
                       </div>
                     )}
                   </div>
                   <div className="p-5">
-                    <h3 className="font-semibold text-ink">{activity.title}</h3>
-                    <p className="mt-1 line-clamp-2 text-sm text-on-surface-variant">{activity.summary}</p>
+                    <h3 className="font-semibold text-ink">{trip.title}</h3>
+                    <p className="mt-1 line-clamp-2 text-sm text-on-surface-variant">{trip.summary}</p>
+                    <div className="mt-3 flex items-center gap-4 text-xs text-on-surface-variant">
+                      {trip.trips?.duration_minutes && (
+                        <span className="flex items-center gap-1">
+                          <Clock className="h-3.5 w-3.5" />
+                          {formatDuration(trip.trips.duration_minutes)}
+                        </span>
+                      )}
+                      {trip.trips?.vehicle_type && (
+                        <span className="flex items-center gap-1">
+                          <Car className="h-3.5 w-3.5" />
+                          {trip.trips.vehicle_type}
+                        </span>
+                      )}
+                    </div>
                     <div className="mt-3 flex items-center justify-between">
                       <div className="text-sm text-ink">
                         {(() => {
-                          const price = getActivityPrice(activity)
+                          const price = getTripPrice(trip)
                           if (!price) return <span className="text-on-surface-variant">Contact us</span>
                           return (
                             <>
@@ -298,7 +337,7 @@ export default function ActivitiesPageClient({
           ) : (
             <div className="py-20 text-center">
               <Search className="mx-auto mb-4 h-16 w-16 text-on-surface-variant/30" />
-              <h3 className="heading-display text-2xl text-primary">No activities found</h3>
+              <h3 className="heading-display text-2xl text-primary">No trips found</h3>
               <p className="mt-2 text-on-surface-variant">
                 Try adjusting your filters or search terms.
               </p>
@@ -320,13 +359,13 @@ function FilterContent({
   filters,
   setFilters,
   destinations,
-  tourTypes,
+  tripTypes,
   resetFilters,
 }: {
-  filters: { destination: string; tourType: string; duration: string; priceRange: string; search: string }
-  setFilters: React.Dispatch<React.SetStateAction<{ destination: string; tourType: string; duration: string; priceRange: string; search: string }>>
+  filters: { destination: string; tripType: string; duration: string; priceRange: string; search: string }
+  setFilters: React.Dispatch<React.SetStateAction<{ destination: string; tripType: string; duration: string; priceRange: string; search: string }>>
   destinations: Array<{ id: string; slug: string; name: string; region: string }>
-  tourTypes: string[]
+  tripTypes: string[]
   resetFilters: () => void
 }) {
   return (
@@ -342,7 +381,7 @@ function FilterContent({
             type="text"
             value={filters.search}
             onChange={e => setFilters(f => ({ ...f, search: e.target.value }))}
-            placeholder="Activities, destinations..."
+            placeholder="Trips, destinations..."
             className="w-full rounded-xl border border-outline-variant bg-white py-3 pl-10 pr-4 text-sm focus:border-secondary focus:outline-none focus:ring-1 focus:ring-secondary"
           />
         </div>
@@ -368,21 +407,21 @@ function FilterContent({
         </div>
       </div>
 
-      {/* Tour Type Filter */}
-      {tourTypes.length > 0 && (
+      {/* Trip Type Filter */}
+      {tripTypes.length > 0 && (
         <div className="space-y-2">
           <label className="font-label text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
-            Experience Type
+            Trip Type
           </label>
           <div className="relative">
             <select
-              value={filters.tourType}
-              onChange={e => setFilters(f => ({ ...f, tourType: e.target.value }))}
+              value={filters.tripType}
+              onChange={e => setFilters(f => ({ ...f, tripType: e.target.value }))}
               className="w-full appearance-none rounded-xl border border-outline-variant bg-white px-4 py-3 text-sm focus:border-secondary focus:outline-none focus:ring-1 focus:ring-secondary"
             >
               <option value="all">All Types</option>
-              {tourTypes.map(type => (
-                <option key={type} value={type}>{type.charAt(0).toUpperCase() + type.slice(1)} Tours</option>
+              {tripTypes.map(type => (
+                <option key={type} value={type}>{type.charAt(0).toUpperCase() + type.slice(1)}</option>
               ))}
             </select>
             <Filter className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-on-surface-variant" />

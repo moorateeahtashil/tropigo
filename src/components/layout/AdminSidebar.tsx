@@ -7,7 +7,7 @@ import {
   LayoutDashboard, MapPin, Waves, Package, Car, DollarSign,
   Calendar, Star, BookOpen, MessageSquare, Home, Menu,
   Link2, Users, FileText, HelpCircle, Gift, Settings,
-  ChevronDown, ChevronRight, Globe, UserCheck,
+  ChevronDown, ChevronRight, Globe, UserCheck, Route,
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -25,7 +25,8 @@ const NAV_ITEMS: NavItem[] = [
     label: 'Catalog',
     icon: <Globe className="h-4 w-4" />,
     children: [
-      { href: '/admin/activities', label: 'Activities', icon: <Waves className="h-4 w-4" /> },
+      { href: '/admin/trips', label: 'Trips', icon: <Route className="h-4 w-4" /> },
+      { href: '/admin/activities', label: 'Activities (Legacy)', icon: <Waves className="h-4 w-4" /> },
       { href: '/admin/transfers', label: 'Transfers', icon: <Car className="h-4 w-4" /> },
       { href: '/admin/packages', label: 'Packages', icon: <Package className="h-4 w-4" /> },
       { href: '/admin/destinations', label: 'Destinations', icon: <MapPin className="h-4 w-4" /> },

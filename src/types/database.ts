@@ -3,7 +3,7 @@
 // Hand-authored to match supabase/migrations/20260408000000_clean_rebuild.sql
 // =============================================================
 
-export type ProductType = 'airport_transfer' | 'activity' | 'package'
+export type ProductType = 'airport_transfer' | 'activity' | 'package' | 'trip'
 export type ProductStatus = 'draft' | 'published' | 'archived'
 export type BookingStatus = 'draft' | 'pending' | 'processing' | 'confirmed' | 'cancelled' | 'failed' | 'refunded'
 export type PaymentStatus = 'pending' | 'succeeded' | 'failed' | 'refunded'
@@ -14,6 +14,9 @@ export type VehicleType = 'sedan' | 'minivan' | 'bus' | 'luxury'
 export type LocationType = 'airport' | 'hotel' | 'address' | 'custom'
 export type ReviewStatus = 'pending' | 'approved' | 'rejected'
 export type MediaType = 'image' | 'video'
+export type TripType = 'north' | 'south' | 'east' | 'west' | 'island' | 'cultural' | 'adventure' | 'custom'
+export type TripMode = 'guided_tour' | 'single_dropoff'
+export type TripDifficulty = 'easy' | 'moderate' | 'challenging'
 
 // ---------------------------------------------------------------
 // Row types — exact schema match
@@ -104,6 +107,34 @@ export interface ItineraryStep {
   time: string
   title: string
   description: string
+  photo_url?: string | null
+  duration_minutes?: number | null
+}
+
+export interface TripRow {
+  product_id: string
+  trip_mode: TripMode
+  trip_type: string | null
+  duration_minutes: number | null
+  vehicle_type: string | null
+  driver_id: string | null
+  max_passengers: number
+  pickup_included: boolean
+  pickup_location: string | null
+  pickup_time: string | null
+  dropoff_location: string | null
+  dropoff_included: boolean
+  included_items: string[]
+  excluded_items: string[]
+  highlights: string[]
+  itinerary: ItineraryStep[]
+  important_notes: string | null
+  destination_id: string | null
+  difficulty_level: TripDifficulty | null
+  min_participants: number
+  max_participants: number | null
+  created_at: string
+  updated_at: string
 }
 
 export interface AirportTransferRow {
@@ -129,6 +160,9 @@ export interface PackageRow {
   duration_days: number | null
   highlights: string[]
   important_notes: string | null
+  own_price: number | null
+  start_time: string | null
+  own_availability: Record<string, unknown>
   created_at: string
   updated_at: string
 }

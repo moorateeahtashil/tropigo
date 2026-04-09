@@ -10,9 +10,8 @@ import { CurrencySwitcher } from '@/components/pricing/CurrencySwitcher'
 
 const NAV_LINKS = [
   { href: '/transfers', label: 'Transfers' },
-  { href: '/activities', label: 'Activities' },
+  { href: '/trips', label: 'Trips' },
   { href: '/packages', label: 'Packages' },
-  { href: '/destinations', label: 'Destinations' },
 ]
 
 function CartIcon({ scrolled, isHomepage }: { scrolled: boolean; isHomepage: boolean }) {
@@ -129,7 +128,7 @@ export function Header() {
               asChild
               className="rounded-full font-label text-xs uppercase tracking-widest"
             >
-              <Link href="/transfers">Book Now</Link>
+              <Link href="/trips">Book Now</Link>
             </Button>
           </div>
 
@@ -174,7 +173,7 @@ export function Header() {
               <CurrencySwitcher variant="pill" />
             </div>
             <Button asChild size="md" className="w-full">
-              <Link href="/transfers">Book Airport Transfer</Link>
+              <Link href="/trips">Book a Trip</Link>
             </Button>
           </div>
         </div>

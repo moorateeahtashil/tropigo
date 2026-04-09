@@ -1,22 +1,22 @@
 import type { Metadata } from 'next'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
-import { getPublishedActivities } from '@/features/catalog/queries'
+import { getPublishedTrips } from '@/features/catalog/queries'
 import { getPublishedDestinations } from '@/features/catalog/queries'
 import { getTestimonials } from '@/features/content/queries'
 import HomePageClient from './HomePageClient'
 
 export const metadata: Metadata = {
-  title: 'Tropigo — Curated Mauritius Excellence',
+  title: 'Tropigo — Mauritius Guided Trips, Transfers & Packages',
   description:
-    'Premium Mauritius experiences. Book private airport transfers, island day trips, activities, and curated holiday packages.',
+    'Premium Mauritius experiences. Book guided driving tours, private airport transfers, and curated holiday packages with experienced local drivers.',
 }
 
 export const revalidate = 3600
 
 export default async function HomePage() {
-  const [activities, destinations, testimonials] = await Promise.all([
-    getPublishedActivities({ featured: true, limit: 6 }),
+  const [trips, destinations, testimonials] = await Promise.all([
+    getPublishedTrips({ featured: true, limit: 6 }),
     getPublishedDestinations({ featured: true, limit: 3 }),
     getTestimonials({ limit: 4 }),
   ])
@@ -25,7 +25,7 @@ export default async function HomePage() {
     <>
       <Header />
       <HomePageClient
-        activities={activities}
+        trips={trips}
         destinations={destinations}
         testimonials={testimonials}
       />

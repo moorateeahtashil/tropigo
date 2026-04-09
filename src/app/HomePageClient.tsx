@@ -5,25 +5,11 @@ import Image from 'next/image'
 import { formatCurrency } from '@/lib/utils/format'
 import { Star, Shield, Headphones, Leaf, Gem, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import { PriceList } from '@/components/pricing/DynamicPrice'
+import type { TripProduct, DestinationRow } from '@/features/catalog/queries'
 
 interface HomePageClientProps {
-  activities: Array<{
-    id: string
-    title: string
-    summary: string | null
-    cover_image_url: string | null
-    base_price: number | null
-    base_currency: string
-    activities: { tour_type: string | null; duration_minutes: number | null } | null
-    destination: { name: string; region: string } | null
-  }>
-  destinations: Array<{
-    id: string
-    name: string
-    summary: string | null
-    region: string | null
-    hero_image_url: string | null
-  }>
+  trips: TripProduct[]
+  destinations: DestinationRow[]
   testimonials: Array<{
     id: string
     quote: string
@@ -33,7 +19,7 @@ interface HomePageClientProps {
   }>
 }
 
-export default function HomePageClient({ activities, destinations, testimonials }: HomePageClientProps) {
+export default function HomePageClient({ trips, destinations, testimonials }: HomePageClientProps) {
   return (
     <main>
       {/* ---- HERO SECTION ---- */}
@@ -60,10 +46,10 @@ export default function HomePageClient({ activities, destinations, testimonials 
           {/* Quick actions */}
           <div className="mb-16 mt-12 flex flex-wrap items-center justify-center gap-4">
             <Link
-              href="/activities"
+              href="/trips"
               className="rounded-full bg-secondary px-10 py-4 font-label text-sm uppercase tracking-widest text-on-secondary transition-all hover:brightness-110 active:scale-95"
             >
-              Explore Activities
+              Explore Trips
             </Link>
             <Link
               href="/transfers"
@@ -281,18 +267,18 @@ export default function HomePageClient({ activities, destinations, testimonials 
           <span className="font-label text-xs font-bold uppercase tracking-[0.3em] text-secondary">
             Island Rhythms
           </span>
-          <h2 className="heading-display mt-4 text-5xl text-primary">Unforgettable Experiences</h2>
+          <h2 className="heading-display mt-4 text-5xl text-primary">Unforgettable Trips</h2>
         </div>
-        <PriceList activities={activities}>
+        <PriceList activities={trips}>
           {(priceMap) => (
             <div className="mt-16 flex gap-8 overflow-x-auto px-8 pb-12 no-scrollbar snap-x">
-              {activities.map(activity => (
-                <div key={activity.id} className="min-w-[400px] snap-center group">
-                  <Link href={`/activities/${activity.slug}`} className="block">
+              {trips.map(trip => (
+                <div key={trip.id} className="min-w-[400px] snap-center group">
+                  <Link href={`/trips/${trip.slug}`} className="block">
                     <div className="relative mb-6 h-[500px] overflow-hidden rounded-[40px]">
                       <Image
-                        src={activity.cover_image_url || 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80'}
-                        alt={activity.title}
+                        src={trip.cover_image_url || 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80'}
+                        alt={trip.title}
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-110"
                         sizes="400px"
@@ -303,15 +289,15 @@ export default function HomePageClient({ activities, destinations, testimonials 
                         </div>
                       </div>
                     </div>
-                    <h4 className="heading-display mb-1 text-2xl text-primary">{activity.title}</h4>
+                    <h4 className="heading-display mb-1 text-2xl text-primary">{trip.title}</h4>
                     <p className="font-label text-[11px] font-bold uppercase tracking-widest text-secondary">
-                      {activity.activities?.tour_type} · {activity.activities?.duration_minutes ? `${Math.floor(activity.activities.duration_minutes / 60)}h` : 'Flexible'}
+                      {trip.trips?.trip_type || 'Custom'} · {trip.trips?.duration_minutes ? `${Math.floor(trip.trips.duration_minutes / 60)}h` : 'Flexible'}
                     </p>
                     <div className="mt-4 flex items-center justify-between">
-                      {priceMap.has(activity.id) && (
+                      {priceMap.has(trip.id) && (
                         <span className="font-bold text-secondary">
                           {(() => {
-                            const p = priceMap.get(activity.id)!
+                            const p = priceMap.get(trip.id)!
                             return `From ${formatCurrency(p.amount, p.currency)}`
                           })()}
                         </span>
@@ -331,11 +317,11 @@ export default function HomePageClient({ activities, destinations, testimonials 
       {/* ---- POPULAR EXPERIENCES GRID ---- */}
       <section className="bg-surface-container-low px-12 py-16">
         <div className="mx-auto max-w-screen-2xl">
-          <PriceList activities={activities}>
+          <PriceList activities={trips}>
             {(priceMap) => (
               <>
                 <div className="mb-8 flex items-center justify-between">
-                  <h2 className="heading-display text-3xl text-primary">Popular Experiences</h2>
+                  <h2 className="heading-display text-3xl text-primary">Popular Trips</h2>
                   <div className="flex gap-2">
                     <button className="flex h-10 w-10 items-center justify-center rounded-full border border-outline-variant transition-colors hover:bg-white">
                       <ChevronLeft className="h-5 w-5" />
@@ -346,26 +332,26 @@ export default function HomePageClient({ activities, destinations, testimonials 
                   </div>
                 </div>
                 <div className="flex gap-6 overflow-x-auto snap-x pb-4 no-scrollbar">
-                  {activities.slice(0, 4).map(activity => (
+                  {trips.slice(0, 4).map(trip => (
                     <div
-                      key={activity.id}
+                      key={trip.id}
                       className="min-w-[320px] snap-start rounded-2xl border border-outline-variant/20 bg-white p-4 transition-shadow hover:shadow-lg"
                     >
-                      <Link href={`/activities/${activity.slug}`}>
+                      <Link href={`/trips/${trip.slug}`}>
                         <Image
-                          src={activity.cover_image_url || 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&q=80'}
-                          alt={activity.title}
+                          src={trip.cover_image_url || 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&q=80'}
+                          alt={trip.title}
                           width={320}
                           height={192}
                           className="mb-4 h-48 w-full rounded-xl object-cover"
                         />
-                        <h4 className="text-lg font-bold text-primary">{activity.title}</h4>
+                        <h4 className="text-lg font-bold text-primary">{trip.title}</h4>
                         <p className="mt-1 text-xs text-on-surface-variant">
-                          {activity.activities?.duration_minutes ? `${Math.floor(activity.activities.duration_minutes / 60)}h` : 'Flexible'} · {activity.activities?.tour_type || 'Private Journey'}
+                          {trip.trips?.duration_minutes ? `${Math.floor(trip.trips.duration_minutes / 60)}h` : 'Flexible'} · {trip.trips?.trip_type || 'Custom Trip'}
                         </p>
                         <div className="mt-4 flex items-center justify-between">
                           <span className="text-sm font-bold text-secondary">
-                            {priceMap.has(activity.id) ? formatCurrency(priceMap.get(activity.id)!.amount, priceMap.get(activity.id)!.currency) : 'Contact us'}
+                            {priceMap.has(trip.id) ? formatCurrency(priceMap.get(trip.id)!.amount, priceMap.get(trip.id)!.currency) : 'Contact us'}
                           </span>
                           <span className="flex items-center gap-1 font-label text-[10px] font-bold uppercase tracking-widest text-primary">
                             Quick View <ArrowRight className="h-3.5 w-3.5" />

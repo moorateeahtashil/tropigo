@@ -1,5 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
-import type { ProductRow, ActivityRow, AirportTransferRow, PackageRow, ProductMediaRow, DestinationRow } from '@/types/database'
+import type { ProductRow, ActivityRow, TripRow, AirportTransferRow, PackageRow, ProductMediaRow, DestinationRow } from '@/types/database'
+
+// Re-export types for consumers
+export type { DestinationRow } from '@/types/database'
 
 // ---------------------------------------------------------------
 // Joined product type with extension data
@@ -11,6 +14,12 @@ export type ProductWithMedia = ProductRow & {
 
 export type ActivityProduct = ProductRow & {
   activities: ActivityRow
+  cover_image_url: string | null
+  destination: Pick<DestinationRow, 'id' | 'slug' | 'name' | 'region'> | null
+}
+
+export type TripProduct = ProductRow & {
+  trips: TripRow
   cover_image_url: string | null
   destination: Pick<DestinationRow, 'id' | 'slug' | 'name' | 'region'> | null
 }
@@ -118,6 +127,103 @@ export async function getActivityBySlug(slug: string): Promise<ActivityProduct |
     cover_image_url: coverMedia?.url ?? null,
     destination: firstDestination,
   } as ActivityProduct
+}
+
+// ---------------------------------------------------------------
+// Trips
+// ---------------------------------------------------------------
+
+export async function getPublishedTrips(options?: {
+  destinationSlug?: string
+  tripType?: string
+  featured?: boolean
+  limit?: number
+}): Promise<TripProduct[]> {
+  const supabase = await createClient()
+
+  let query = supabase
+    .from('products')
+    .select(`
+      *,
+      trips!inner(
+        product_id, trip_mode, trip_type, duration_minutes, vehicle_type,
+        max_passengers, pickup_included, pickup_location, pickup_time,
+        dropoff_location, dropoff_included, included_items, excluded_items,
+        highlights, itinerary, important_notes, destination_id,
+        difficulty_level, min_participants, max_participants
+      ),
+      product_media(url, is_cover, sort_order),
+      product_destinations(destination_id,
+        destinations(id, slug, name, region)
+      )
+    `)
+    .eq('status', 'published')
+    .eq('product_type', 'trip')
+    .order('position', { ascending: true })
+
+  if (options?.featured) query = query.eq('featured', true)
+  if (options?.limit) query = query.limit(options.limit)
+  if (options?.tripType) query = query.eq('trips.trip_type', options.tripType)
+  if (options?.destinationSlug) {
+    query = query.eq('product_destinations.destinations.slug', options.destinationSlug)
+  }
+
+  const { data, error } = await query
+
+  if (error) throw new Error(`Failed to fetch trips: ${error.message}`)
+
+  return (data ?? []).map(row => {
+    const coverMedia = (row.product_media as ProductMediaRow[]).find(m => m.is_cover)
+      ?? (row.product_media as ProductMediaRow[])[0]
+
+    const firstDestination = (row.product_destinations as Array<{
+      destination_id: string
+      destinations: Pick<DestinationRow, 'id' | 'slug' | 'name' | 'region'>
+    }>)[0]?.destinations ?? null
+
+    return {
+      ...row,
+      trips: row.trips as unknown as TripRow,
+      cover_image_url: coverMedia?.url ?? null,
+      destination: firstDestination,
+    }
+  }) as TripProduct[]
+}
+
+export async function getTripBySlug(slug: string): Promise<TripProduct | null> {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from('products')
+    .select(`
+      *,
+      trips!inner(*),
+      product_media(*, url, alt, is_cover, sort_order, media_type),
+      product_destinations(
+        destinations(id, slug, name, region, summary, hero_image_url)
+      ),
+      reviews(id, rating, author_name, title, body, created_at, verified_booking)
+    `)
+    .eq('slug', slug)
+    .eq('status', 'published')
+    .eq('product_type', 'trip')
+    .single()
+
+  if (error || !data) return null
+
+  const coverMedia = (data.product_media as ProductMediaRow[]).find(m => m.is_cover)
+    ?? (data.product_media as ProductMediaRow[])[0]
+
+  const firstDestination = (data.product_destinations as Array<{
+    destinations: Pick<DestinationRow, 'id' | 'slug' | 'name' | 'region' | 'summary' | 'hero_image_url'>
+  }>)[0]?.destinations ?? null
+
+  return {
+    ...data,
+    trips: data.trips as unknown as TripRow,
+    cover_image_url: coverMedia?.url ?? null,
+    destination: firstDestination,
+  } as TripProduct
 }
 
 // ---------------------------------------------------------------
@@ -240,8 +346,10 @@ export async function getPackageBySlug(slug: string) {
       package_items!package_items_package_id_fkey(
         id, sort_order, is_optional, is_default_selected, quantity, price_override, notes,
         product:products!package_items_product_id_fkey(
-          id, slug, title, summary, base_price, base_currency, product_type,
-          product_media(url, is_cover)
+          id, slug, title, subtitle, summary, base_price, base_currency, product_type,
+          product_media(url, is_cover),
+          trips(trip_type, duration_minutes, vehicle_type, pickup_included, pickup_location, pickup_time, highlights, itinerary),
+          activities(duration_minutes, tour_type, transportation, pickup_location, highlights)
         )
       )
     `)
