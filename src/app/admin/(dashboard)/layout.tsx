@@ -1,10 +1,13 @@
 import { AdminSidebar } from '@/components/layout/AdminSidebar'
 import { Toaster } from '@/components/ui/Toaster'
 import { ToastReader } from '@/components/ui/ToastReader'
+import { requireAdmin } from '@/features/admin/guards'
 
 export const dynamic = 'force-dynamic'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  await requireAdmin()
+
   return (
     <div className="flex h-screen bg-gray-100" style={{ fontFamily: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
       <AdminSidebar />

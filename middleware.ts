@@ -20,7 +20,18 @@ export async function middleware(req: NextRequest) {
       },
     },
   )
-  await supabase.auth.getUser()
+
+  const { data: { user } } = await supabase.auth.getUser()
+
+  const path = req.nextUrl.pathname
+
+  // Protect all /admin/* routes except the login page itself
+  if (path.startsWith('/admin') && !path.startsWith('/admin/login')) {
+    if (!user) {
+      const loginUrl = new URL('/admin/login', req.url)
+      return NextResponse.redirect(loginUrl)
+    }
+  }
 
   // Currency cookie — set default if not present
   if (!req.cookies.get('tropigo_currency')) {
