@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { deleteTrip, getTripProduct, listDestinationsOptions, updateTrip } from '../actions'
 import { PhotoManager } from '@/components/admin/PhotoManager'
 import { TripScheduleManager } from '@/components/admin/TripScheduleManager'
+import { ItineraryBuilder } from '@/components/admin/ItineraryBuilder'
 import { createAdminClient } from '@/lib/supabase/admin'
 
 export default async function EditTrip({ params }: { params: Promise<{ id: string }> }) {
@@ -47,8 +48,43 @@ export default async function EditTrip({ params }: { params: Promise<{ id: strin
 
   const productMedia = trip.product_media ?? []
 
+  // Supabase returns 1:1 joins as an array with one item, not the object directly
+  const tripsRaw = (trip as any).trips
+  const tripData = Array.isArray(tripsRaw)
+    ? (tripsRaw.length > 0 ? tripsRaw[0] : {})
+    : (tripsRaw || {})
+  const hasTripData = Object.keys(tripData).length > 0
+
+  // Extract destination_id from the product_destinations join
+  const destArr = (trip as any).product_destinations || []
+  const destinationId = destArr.length > 0
+    ? (destArr[0].destination_id || destArr[0]?.destinations?.id || '')
+    : ''
+
+  // Log for debugging
+  if (process.env.NODE_ENV === 'development') {
+    console.log('=== EDIT TRIP DEBUG ===')
+    console.log('trip.id:', trip.id)
+    console.log('trip.title:', trip.title)
+    console.log('trip.trips type:', typeof tripsRaw, Array.isArray(tripsRaw))
+    console.log('trip.trips:', tripsRaw)
+    console.log('tripData:', tripData)
+    console.log('hasTripData:', hasTripData)
+    console.log('destinationId:', destinationId)
+    console.log('product_destinations:', (trip as any).product_destinations)
+    console.log('=======================')
+  }
+
   return (
     <div className="mx-auto max-w-4xl space-y-6">
+      {!hasTripData && (
+        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
+          <p className="text-sm font-medium text-amber-800">Trip data not loaded</p>
+          <p className="mt-1 text-sm text-amber-600">
+            The trip details aren't available yet. Run <code className="bg-amber-100 px-1 rounded">npx supabase db push</code> to fix this.
+          </p>
+        </div>
+      )}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Edit Trip</h1>
@@ -59,13 +95,15 @@ export default async function EditTrip({ params }: { params: Promise<{ id: strin
 
       <TripForm
         trip={trip}
+        tripData={tripData}
+        destinationId={destinationId}
         destinations={destinations}
       />
 
       {/* Photos */}
-      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-base font-semibold text-gray-900">Photos</h2>
-        <p className="mb-4 text-sm text-gray-500">Upload photos for this trip. The first image will be the cover.</p>
+      <div className="rounded-2xl border border-sand-200 bg-white p-6 shadow-card">
+        <h2 className="mb-4 text-lg font-semibold text-ink">Photos</h2>
+        <p className="mb-4 text-sm text-ink-secondary">Upload photos for this trip. The first image will be the cover.</p>
         <PhotoManager
           productId={trip.id}
           initialMedia={productMedia as any}
@@ -73,9 +111,9 @@ export default async function EditTrip({ params }: { params: Promise<{ id: strin
       </div>
 
       {/* Availability Schedule */}
-      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-2 text-base font-semibold text-gray-900">Departure Schedule</h2>
-        <p className="mb-4 text-sm text-gray-500">Set which days and times this trip runs. Customers can only book available slots.</p>
+      <div className="rounded-2xl border border-sand-200 bg-white p-6 shadow-card">
+        <h2 className="mb-2 text-lg font-semibold text-ink">Departure Schedule</h2>
+        <p className="mb-4 text-sm text-ink-secondary">Set which days and times this trip runs. Customers can only book available slots.</p>
         <TripScheduleManager
           tripId={trip.id}
           initialSchedules={schedules as any}
@@ -94,19 +132,22 @@ export default async function EditTrip({ params }: { params: Promise<{ id: strin
 
 function TripForm({
   trip,
+  tripData,
+  destinationId,
   destinations,
 }: {
   trip: any
+  tripData: any
+  destinationId: string
   destinations: Array<{ id: string; name: string; region: string | null }>
 }) {
   const product = trip
-  const tripData = trip.trips
 
   return (
     <form action={updateAction.bind(null, product.id)} className="space-y-6">
       {/* Basic Info */}
-      <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-base font-semibold text-gray-900">Basic Info</h2>
+      <section className="rounded-2xl border border-sand-200 bg-white p-6 shadow-card">
+        <h2 className="mb-4 text-lg font-semibold text-ink">Basic Info</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Title">
             <input name="title" required defaultValue={product.title} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
@@ -118,7 +159,7 @@ function TripForm({
             <input name="subtitle" defaultValue={product.subtitle ?? ''} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
           </Field>
           <Field label="Region / Destination">
-            <select name="destination_id" defaultValue={product.destination_id ?? ''} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+            <select name="destination_id" defaultValue={destinationId} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
               <option value="">—</option>
               {destinations.map(d => (
                 <option key={d.id} value={d.id}>{d.name}{d.region ? ` — ${d.region}` : ''}</option>
@@ -135,8 +176,8 @@ function TripForm({
       </section>
 
       {/* Pricing & Status */}
-      <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-base font-semibold text-gray-900">Pricing & Status</h2>
+      <section className="rounded-2xl border border-sand-200 bg-white p-6 shadow-card">
+        <h2 className="mb-4 text-lg font-semibold text-ink">Pricing & Status</h2>
         <div className="grid gap-4 sm:grid-cols-3">
           <Field label="Base Currency">
             <select name="base_currency" defaultValue={product.base_currency} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
@@ -165,8 +206,8 @@ function TripForm({
       </section>
 
       {/* Trip Details */}
-      <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-base font-semibold text-gray-900">Trip Details</h2>
+      <section className="rounded-2xl border border-sand-200 bg-white p-6 shadow-card">
+        <h2 className="mb-4 text-lg font-semibold text-ink">Trip Details</h2>
         <div className="grid gap-4 sm:grid-cols-3">
           <Field label="Trip Mode">
             <select name="trip_mode" defaultValue={tripData?.trip_mode ?? 'guided_tour'} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
@@ -214,8 +255,8 @@ function TripForm({
       </section>
 
       {/* Pickup & Dropoff */}
-      <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-base font-semibold text-gray-900">Pickup & Dropoff</h2>
+      <section className="rounded-2xl border border-sand-200 bg-white p-6 shadow-card">
+        <h2 className="mb-4 text-lg font-semibold text-ink">Pickup & Dropoff</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Pickup Included">
             <input name="pickup_included" type="checkbox" defaultChecked={tripData?.pickup_included} className="h-4 w-4 rounded border-gray-300" />
@@ -244,45 +285,41 @@ function TripForm({
       </section>
 
       {/* Included / Excluded / Highlights */}
-      <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-base font-semibold text-gray-900">Included, Excluded & Highlights</h2>
+      <section className="rounded-2xl border border-sand-200 bg-white p-6 shadow-card">
+        <h2 className="mb-4 text-lg font-semibold text-ink">Included, Excluded & Highlights</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Included (comma-separated)" full>
-            <input name="included_items" defaultValue={(tripData?.included_items || []).join(', ')} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+            <input name="included_items" defaultValue={(tripData?.included_items || []).join(', ')} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
           </Field>
           <Field label="Excluded (comma-separated)" full>
-            <input name="excluded_items" defaultValue={(tripData?.excluded_items || []).join(', ')} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+            <input name="excluded_items" defaultValue={(tripData?.excluded_items || []).join(', ')} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
           </Field>
           <Field label="Highlights (comma-separated)" full>
-            <input name="highlights" defaultValue={(tripData?.highlights || []).join(', ')} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+            <input name="highlights" defaultValue={(tripData?.highlights || []).join(', ')} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
           </Field>
         </div>
       </section>
 
       {/* Itinerary */}
-      <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-2 text-base font-semibold text-gray-900">Itinerary (JSON)</h2>
-        <p className="mb-3 text-sm text-gray-500">JSON array of stops: {"[{ time, title, description, photo_url }]"}</p>
-        <Field label="" full>
-          <textarea
-            name="itinerary"
-            rows={6}
-            defaultValue={JSON.stringify(tripData?.itinerary ?? [], null, 2)}
-            className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 font-mono text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-          />
-        </Field>
+      <section className="rounded-2xl border border-sand-200 bg-white p-6 shadow-card">
+        <h2 className="mb-2 text-lg font-semibold text-ink">Itinerary</h2>
+        <p className="mb-4 text-sm text-ink-secondary">Add each stop on the trip. Drag to reorder.</p>
+        <ItineraryBuilder
+          initialValue={JSON.stringify(tripData?.itinerary || [])}
+          name="itinerary"
+        />
       </section>
 
       {/* Important Notes */}
-      <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-2 text-base font-semibold text-gray-900">Important Notes</h2>
+      <section className="rounded-2xl border border-sand-200 bg-white p-6 shadow-card">
+        <h2 className="mb-2 text-lg font-semibold text-ink">Important Notes</h2>
         <Field label="" full>
           <textarea name="important_notes" rows={3} defaultValue={tripData?.important_notes ?? ''} className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
         </Field>
       </section>
 
       <div className="flex justify-end">
-        <button className="rounded-lg bg-indigo-600 px-6 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-indigo-700">Save Changes</button>
+        <button className="rounded-xl bg-brand-700 px-6 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-brand-800">Save Changes</button>
       </div>
     </form>
   )

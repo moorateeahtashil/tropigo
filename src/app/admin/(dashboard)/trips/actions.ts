@@ -67,23 +67,59 @@ export async function listTrips(q?: string) {
 
 export async function getTripProduct(id: string) {
   const supabase = createAdminClient()
+
+  // First try with the trips join
   const { data, error } = await supabase
     .from('products')
     .select(`*, trips(*), product_media(*), product_destinations(destination_id), product_pricing(*), availability_rules(*)`)
     .eq('id', id)
     .eq('product_type','trip')
     .single()
-  if (error) {
-    // If trips table doesn't exist yet (migration not pushed), try without the join
-    const { data: product, error: pErr } = await supabase
+
+  if (!error && data) {
+    // If the join returned no trips row, fetch it separately
+    const tripsArr = (data as any).trips
+    const hasTripRow = Array.isArray(tripsArr) ? tripsArr.length > 0 : !!tripsArr
+    if (!hasTripRow) {
+      const { data: tripRow } = await supabase
+        .from('trips')
+        .select('*')
+        .eq('product_id', id)
+        .single()
+      if (tripRow) {
+        return { ...data, trips: [tripRow] }
+      }
+    }
+    return data
+  }
+
+  // Fallback: get product without trips join
+  const { data: product, error: pErr } = await supabase
+    .from('products')
+    .select(`*, product_media(*), product_destinations(destination_id), product_pricing(*), availability_rules(*)`)
+    .eq('id', id)
+    .single()
+
+  if (pErr) {
+    // Try without product_type filter (maybe it's saved as wrong type)
+    const { data: fallback, error: fErr } = await supabase
       .from('products')
-      .select(`*, product_media(*), product_destinations(destination_id), product_pricing(*), availability_rules(*)`)
+      .select(`*, trips(*), product_media(*), product_destinations(destination_id), product_pricing(*), availability_rules(*)`)
       .eq('id', id)
       .single()
-    if (pErr) throw new Error(error.message)
-    return { ...product, trips: null }
+
+    if (fErr) throw new Error(fErr.message)
+    return fallback
   }
-  return data
+
+  // Also fetch the trips data separately
+  const { data: tripData } = await supabase
+    .from('trips')
+    .select('*')
+    .eq('product_id', id)
+    .single()
+
+  return { ...product, trips: tripData ? [tripData] : [] }
 }
 
 export async function listDestinationsOptions() {
@@ -185,7 +221,8 @@ export async function updateTrip(id: string, productInput: ProductInput, tripInp
 
   const { error: tErr } = await supabase
     .from('trips')
-    .update({
+    .upsert({
+      product_id: id,
       trip_mode: t.trip_mode,
       trip_type: t.trip_type ?? null,
       duration_minutes: t.duration_minutes ?? null,
@@ -205,8 +242,7 @@ export async function updateTrip(id: string, productInput: ProductInput, tripInp
       itinerary: t.itinerary,
       important_notes: t.important_notes ?? null,
       destination_id: p.destination_id ?? null,
-    })
-    .eq('product_id', id)
+    }, { onConflict: 'product_id' })
   if (tErr) throw new Error(tErr.message)
 
   // Sync product_destinations (single mapping)

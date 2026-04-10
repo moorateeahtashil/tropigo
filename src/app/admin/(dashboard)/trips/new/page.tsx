@@ -1,5 +1,6 @@
 import { createTrip, listDestinationsOptions } from '../actions'
 import { redirect } from 'next/navigation'
+import { ItineraryBuilder } from '@/components/admin/ItineraryBuilder'
 
 export default async function NewTrip() {
   const destinations = await listDestinationsOptions()
@@ -133,23 +134,9 @@ function TripForm({ destinations }: { destinations: Array<{ id: string; name: st
 
       {/* Itinerary */}
       <section className="rounded-2xl border border-sand-200 bg-white p-5 shadow-card">
-        <h2 className="mb-3 text-lg font-semibold text-ink">Itinerary (JSON) — <span className="text-gray-500 font-normal">Required for Guided Tour, optional for Single Drop-off</span></h2>
-        <p className="mb-2 text-sm text-ink-secondary">Enter itinerary as JSON array of objects. Each object: {"{ time, title, description, photo_url, duration_minutes }"}</p>
-        <Field label="" full>
-          <textarea
-            name="itinerary"
-            rows={8}
-            defaultValue={JSON.stringify([
-              { time: '08:00', title: 'Hotel Pickup', description: 'Pickup from your hotel lobby' },
-              { time: '09:00', title: 'Grand Bassin', description: 'Visit the sacred lake and Ganga Talao temple' },
-              { time: '11:00', title: 'Chamarel Waterfall', description: 'View the stunning 100m waterfall' },
-              { time: '13:00', title: 'Lunch Break', description: 'Lunch at a local restaurant (included)' },
-              { time: '14:30', title: 'Seven Colored Earths', description: 'Explore the unique geological formation' },
-              { time: '16:30', title: 'Return to Hotel', description: 'Dropoff at your hotel' },
-            ], null, 2)}
-            className="w-full rounded-lg border border-gray-300 bg-white px-3.5 py-2.5 font-mono text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-          />
-        </Field>
+        <h2 className="mb-2 text-lg font-semibold text-ink">Itinerary</h2>
+        <p className="mb-4 text-sm text-ink-secondary">Add each stop on the trip. Drag to reorder.</p>
+        <ItineraryBuilder />
       </section>
 
       {/* Important Notes */}
@@ -209,11 +196,13 @@ async function createAction(formData: FormData) {
     seo_description: null,
   }
 
-  // Parse itinerary JSON
+  // Parse itinerary JSON from ItineraryBuilder
   let itinerary = []
   try {
     const raw = formData.get('itinerary')
-    if (raw) itinerary = JSON.parse(String(raw))
+    if (raw) {
+      itinerary = JSON.parse(String(raw))
+    }
   } catch {
     itinerary = []
   }
