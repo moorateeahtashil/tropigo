@@ -1,8 +1,9 @@
 import { getTransferProduct, listZonesOptions, updateTransfer, upsertZonePrice, deleteZonePrice, uploadTransferImage, setTransferCoverImage, deleteTransferMedia, moveTransferMedia, updateTransferMediaAlt, reorderTransferMedia, addTransferPriceOverride, deleteTransferPriceOverride } from '../actions'
 
-export default async function EditTransfer({ params }: { params: { id: string } }) {
+export default async function EditTransfer({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const [row, zones] = await Promise.all([
-    getTransferProduct(params.id),
+    getTransferProduct(id),
     listZonesOptions(),
   ])
 

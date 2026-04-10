@@ -14,7 +14,7 @@ export default async function HomepageSections() {
         </div>
         <Link href="/admin/content/homepage/new" className="rounded-xl bg-brand-700 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-brand-800">New Section</Link>
       </div>
-      <form action={reorderAction} className="overflow-hidden rounded-2xl border border-sand-200 bg-white shadow-card">
+      <div className="overflow-hidden rounded-2xl border border-sand-200 bg-white shadow-card">
         <table className="w-full text-left text-sm" data-sortable>
           <thead className="bg-sand-50 text-ink-muted">
             <tr>
@@ -43,11 +43,11 @@ export default async function HomepageSections() {
             ))}
           </tbody>
         </table>
-        <input type="hidden" id="ordered_ids" name="ordered_ids" />
-        <div className="p-3">
+        <form action={reorderAction} className="p-3">
+          <input type="hidden" id="ordered_ids" name="ordered_ids" />
           <button id="save-order" disabled className="rounded-lg border border-sand-300 px-3 py-2 text-sm disabled:opacity-50">Save order</button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   )
 }
