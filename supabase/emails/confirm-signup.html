@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Confirm your Tropigo account</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f5f0eb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f0eb;padding:40px 16px;">
+    <tr>
+      <td align="center">
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;">
+
+          <!-- Logo / Brand -->
+          <tr>
+            <td align="center" style="padding-bottom:32px;">
+              <p style="margin:0;font-size:22px;font-weight:800;letter-spacing:0.18em;color:#1a3a2a;text-transform:uppercase;">
+                TROPIGO
+              </p>
+              <p style="margin:4px 0 0;font-size:12px;color:#7a6f65;letter-spacing:0.06em;">
+                Mauritius Island Experiences
+              </p>
+            </td>
+          </tr>
+
+          <!-- Card -->
+          <tr>
+            <td style="background:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.07);">
+
+              <!-- Hero band -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="background:linear-gradient(135deg,#1a4d35 0%,#2d7a56 100%);padding:40px 40px 36px;text-align:center;">
+                    <!-- Icon -->
+                    <div style="display:inline-block;background:rgba(255,255,255,0.15);border-radius:50%;width:56px;height:56px;line-height:56px;text-align:center;margin-bottom:16px;">
+                      <span style="font-size:26px;">✉️</span>
+                    </div>
+                    <h1 style="margin:0;font-size:24px;font-weight:700;color:#ffffff;line-height:1.3;">
+                      Confirm your email
+                    </h1>
+                    <p style="margin:10px 0 0;font-size:15px;color:rgba(255,255,255,0.75);line-height:1.5;">
+                      One click and you're all set.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Body -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="padding:36px 40px 16px;">
+                    <p style="margin:0 0 24px;font-size:15px;color:#3d3530;line-height:1.7;">
+                      Welcome to Tropigo! Click the button below to verify your email address and activate your account. You'll then be able to view booking history, manage your trips and more.
+                    </p>
+
+                    <!-- CTA Button -->
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td align="center" style="padding-bottom:28px;">
+                          <a href="{{ .ConfirmationURL }}"
+                            style="display:inline-block;background:linear-gradient(135deg,#1a4d35,#2d7a56);color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;padding:15px 40px;border-radius:12px;letter-spacing:0.02em;">
+                            Confirm Email Address
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+
+                    <!-- Expiry note -->
+                    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f9f6f2;border-radius:10px;margin-bottom:28px;">
+                      <tr>
+                        <td style="padding:14px 18px;">
+                          <p style="margin:0;font-size:13px;color:#7a6f65;line-height:1.6;">
+                            ⏱ This link expires in <strong style="color:#3d3530;">24 hours</strong>. If you didn't create an account, you can safely ignore this email.
+                          </p>
+                        </td>
+                      </tr>
+                    </table>
+
+                    <!-- Fallback link -->
+                    <p style="margin:0 0 4px;font-size:12px;color:#a09488;">
+                      Button not working? Copy and paste this URL into your browser:
+                    </p>
+                    <p style="margin:0 0 28px;font-size:12px;color:#2d7a56;word-break:break-all;">
+                      {{ .ConfirmationURL }}
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Divider -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="padding:0 40px;">
+                    <hr style="border:none;border-top:1px solid #f0ebe4;margin:0;" />
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Footer inside card -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="padding:20px 40px 32px;">
+                    <p style="margin:0;font-size:12px;color:#a09488;line-height:1.7;">
+                      You're receiving this because someone signed up for a Tropigo account using this email address.
+                      Need help? Reply to this email or visit
+                      <a href="https://tropigo.mu/contact" style="color:#2d7a56;text-decoration:none;">tropigo.mu/contact</a>.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- Bottom footer -->
+          <tr>
+            <td align="center" style="padding-top:28px;">
+              <p style="margin:0;font-size:12px;color:#a09488;">
+                © 2025 Tropigo &nbsp;·&nbsp;
+                <a href="https://tropigo.mu/legal/privacy" style="color:#7a6f65;text-decoration:none;">Privacy</a>
+                &nbsp;·&nbsp;
+                <a href="https://tropigo.mu/legal/terms" style="color:#7a6f65;text-decoration:none;">Terms</a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
