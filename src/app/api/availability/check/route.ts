@@ -14,7 +14,6 @@ export async function GET(request: NextRequest) {
 
   if (!productId) return NextResponse.json({ error: 'Missing productId' }, { status: 400 })
 
-  // Check if this is a trip
   const supabase = createAdminClient()
   const { data: product } = await supabase
     .from('products')
@@ -24,12 +23,13 @@ export async function GET(request: NextRequest) {
 
   const isTrip = product?.product_type === 'trip'
 
-  // If checking a range (for calendar display)
   if (startDate && endDate) {
-    return await checkDateRange(productId, startDate, endDate, isTrip)
+    return isTrip
+      ? checkTripRange(productId, startDate, endDate)
+      : checkActivityRange(productId, startDate, endDate)
   }
 
-  // If checking specific date/time
+  // Single-date check
   try {
     if (isTrip) {
       await assertTripAvailable(productId, date)
@@ -42,207 +42,124 @@ export async function GET(request: NextRequest) {
   }
 }
 
-/**
- * Check if a trip has any available departure for the given date.
- */
+// ---------------------------------------------------------------
+// Validate a specific date for a trip (used at cart-add time)
+// ---------------------------------------------------------------
 async function assertTripAvailable(productId: string, date?: string) {
   if (!date) return
   const supabase = createAdminClient()
-  const dow = new Date(date).getUTCDay()
+  const dow = new Date(date + 'T00:00:00').getDay()
 
   const { data: schedules } = await supabase
     .from('trip_schedules')
-    .select('*')
+    .select('id, start_time, max_capacity')
     .eq('trip_id', productId)
     .eq('day_of_week', dow)
     .eq('is_active', true)
 
   if (!schedules || schedules.length === 0) {
     const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-    throw new Error(`No departures scheduled on ${dayNames[dow]}.`)
+    throw new Error(`This trip doesn't run on ${dayNames[dow]}.`)
   }
 
-  // Check booking slots — ensure not overbooked
-  const { data: slots } = await supabase
+  // Check booking capacity
+  const { data: bookingSlots } = await supabase
     .from('booking_slots')
     .select('start_time, booked_count, max_capacity')
     .eq('trip_id', productId)
     .eq('departure_date', date)
 
+  // Check driver availability (if any drivers are configured)
+  const driverDow = await getAvailableDriversForDow(supabase, dow)
+  const hasDriverSystem = driverDow !== null
+
   for (const schedule of schedules) {
-    const bookedSlot = slots?.find(s => s.start_time === schedule.start_time)
-    if (!bookedSlot || bookedSlot.booked_count < schedule.max_capacity) {
-      return // This departure has space
+    const bookedSlot = bookingSlots?.find(s => s.start_time === schedule.start_time)
+    const bookedCount = bookedSlot?.booked_count ?? 0
+    if (bookedCount >= schedule.max_capacity) continue // slot full
+
+    if (hasDriverSystem) {
+      const driverAvailable = driverDow.some(d => coversTime(d.start_time, d.end_time, schedule.start_time))
+      if (!driverAvailable) continue // no driver for this slot
     }
+
+    return // found at least one available slot
   }
-  throw new Error('All departures for this date are fully booked.')
+
+  throw new Error('No available departures for this date.')
 }
 
-async function checkDateRange(productId: string, start: string, end: string, isTrip: boolean) {
+// ---------------------------------------------------------------
+// Range check for calendar display — trips
+// ---------------------------------------------------------------
+async function checkTripRange(productId: string, start: string, end: string) {
   const supabase = createAdminClient()
 
-  if (isTrip) {
-    return await checkTripSlots(productId, start, end)
-  }
+  const [{ data: schedules }, { data: bookingSlots }] = await Promise.all([
+    supabase
+      .from('trip_schedules')
+      .select('id, day_of_week, start_time, max_capacity')
+      .eq('trip_id', productId)
+      .eq('is_active', true),
+    supabase
+      .from('booking_slots')
+      .select('departure_date, start_time, booked_count, max_capacity')
+      .eq('trip_id', productId)
+      .gte('departure_date', start)
+      .lte('departure_date', end),
+  ])
 
-  // Original non-trip availability check
+  // Fetch driver weekly availability (all active drivers)
+  const { data: driverSlots } = await supabase
+    .from('driver_availability')
+    .select('day_of_week, start_time, end_time')
+    .eq('is_available', true)
+    .in(
+      'driver_id',
+      await getActiveDriverIds(supabase),
+    )
 
-  // Get all availability rules for this product
-  const { data: rules } = await supabase
-    .from('availability_rules')
-    .select('*')
-    .eq('product_id', productId)
+  const hasDriverSystem = (driverSlots?.length ?? 0) > 0
 
-  // Check driver availability for this product/date range
-  // Gracefully falls back if driver system not set up yet
-  let driverSlots: any = null
-  try {
-    const { data } = await supabase
-      .rpc('get_driver_availability_for_range', {
-        p_product_id: productId,
-        p_start_date: start,
-        p_end_date: end,
-      })
-    driverSlots = data
-  } catch {
-    // Driver functions don't exist yet - fall back to rules-only mode
-    driverSlots = null
-  }
+  const result: Record<string, Array<{
+    time: string
+    available: boolean
+    max_capacity: number
+    booked_count: number
+  }>> = {}
 
-  const hasDriverSystem = driverSlots !== null
-
-  if (!rules || rules.length === 0) {
-    // No rules = use driver availability only (or default if no drivers)
-    const slots: Record<string, Array<{ time: string; available: boolean }>> = {}
-    const current = new Date(start)
-    const endDt = new Date(end)
-    while (current <= endDt) {
-      const dateStr = current.toISOString().split('T')[0]
-      
-      if (hasDriverSystem && driverSlots.length > 0) {
-        const driverTimes = driverSlots.filter((d: any) => d.available_date === dateStr)
-        if (driverTimes.length > 0) {
-          slots[dateStr] = driverTimes.map((d: any) => ({
-            time: d.start_time,
-            available: d.available_count > 0,
-          }))
-        } else {
-          slots[dateStr] = []
-        }
-      } else {
-        // No driver system or no drivers = all dates available by default
-        slots[dateStr] = [
-          { time: '09:00', available: true },
-          { time: '13:00', available: true },
-        ]
-      }
-      current.setDate(current.getDate() + 1)
-    }
-    return NextResponse.json({ slots })
-  }
-
-  // Build slots from rules, constrained by driver availability if available
-  const slots: Record<string, Array<{ time: string; available: boolean }>> = {}
-  const current = new Date(start)
-  const endDt = new Date(end)
+  const current = new Date(start + 'T00:00:00')
+  const endDt = new Date(end + 'T00:00:00')
 
   while (current <= endDt) {
     const dateStr = current.toISOString().split('T')[0]
-    const dateRules = rules.filter(r => {
-      if (!r.start_date && !r.end_date) return true
-      if (r.start_date && r.end_date) return dateStr >= r.start_date && dateStr <= r.end_date
-      if (r.start_date) return dateStr >= r.start_date
-      if (r.end_date) return dateStr <= r.end_date
-      return false
-    })
+    const dow = current.getDay()
 
-    const driverTimes = hasDriverSystem ? driverSlots.filter((d: any) => d.available_date === dateStr) : []
-    const isBlackout = dateRules.some(r => r.rule_type === 'blackout')
-    const scheduleRules = dateRules.filter(r => r.rule_type === 'schedule')
-
-    if (isBlackout) {
-      slots[dateStr] = []
-    } else if (scheduleRules.length > 0) {
-      slots[dateStr] = scheduleRules.map(r => {
-        const notes = typeof r.notes === 'string' ? JSON.parse(r.notes) : r.notes || {}
-        const time = notes.time || '09:00'
-        
-        if (hasDriverSystem && driverTimes.length > 0) {
-          const driverForTime = driverTimes.find((d: any) => d.start_time === time)
-          const driverAvailable = !driverForTime || driverForTime.available_count > 0
-          return { time, available: driverAvailable }
-        }
-        
-        // No driver system = use rules only
-        return { time, available: true }
-      })
-    } else {
-      if (hasDriverSystem && driverTimes.length > 0) {
-        slots[dateStr] = driverTimes.map((d: any) => ({
-          time: d.start_time,
-          available: d.available_count > 0,
-        }))
-      } else {
-        slots[dateStr] = [
-          { time: '09:00', available: true },
-          { time: '13:00', available: true },
-        ]
-      }
-    }
-
-    current.setDate(current.getDate() + 1)
-  }
-
-  return NextResponse.json({ slots })
-}
-
-/**
- * Return available departure slots for a trip across a date range.
- * Uses trip_schedules table to determine which days/times the trip runs.
- */
-async function checkTripSlots(productId: string, start: string, end: string) {
-  const supabase = createAdminClient()
-
-  // Fetch all active schedules for this trip
-  const { data: schedules } = await supabase
-    .from('trip_schedules')
-    .select('*')
-    .eq('trip_id', productId)
-    .eq('is_active', true)
-
-  // Fetch booking slots to check capacity
-  const { data: bookingSlots } = await supabase
-    .from('booking_slots')
-    .select('*')
-    .eq('trip_id', productId)
-    .gte('departure_date', start)
-    .lte('departure_date', end)
-
-  const slots: Record<string, Array<{ time: string; available: boolean; max_capacity: number; booked_count: number }>> = {}
-  const current = new Date(start)
-  const endDt = new Date(end)
-
-  while (current <= endDt) {
-    const dateStr = current.toISOString().split('T')[0]
-    const dow = current.getUTCDay()
-
-    // Filter schedules for this day of week
-    const daySchedules = schedules?.filter(s => s.day_of_week === dow) || []
+    const daySchedules = schedules?.filter(s => s.day_of_week === dow) ?? []
 
     if (daySchedules.length === 0) {
-      slots[dateStr] = []
+      result[dateStr] = [] // trip doesn't run this day
     } else {
-      slots[dateStr] = daySchedules.map(schedule => {
-        const bookedSlot = bookingSlots?.find(
-          s => s.start_time === schedule.start_time && s.departure_date === dateStr
+      result[dateStr] = daySchedules.map(schedule => {
+        const booked = bookingSlots?.find(
+          b => b.departure_date === dateStr && b.start_time === schedule.start_time,
         )
-        const bookedCount = bookedSlot?.booked_count || 0
-        const maxCap = schedule.max_capacity
+        const bookedCount = booked?.booked_count ?? 0
+        const capacityOk = bookedCount < schedule.max_capacity
+
+        // Check driver availability for this day/time
+        let driverOk = true
+        if (hasDriverSystem) {
+          const driversThisDow = driverSlots!.filter(d => d.day_of_week === dow)
+          driverOk = driversThisDow.some(d =>
+            coversTime(d.start_time, d.end_time, schedule.start_time),
+          )
+        }
 
         return {
           time: schedule.start_time,
-          available: bookedCount < maxCap,
-          max_capacity: maxCap,
+          available: capacityOk && driverOk,
+          max_capacity: schedule.max_capacity,
           booked_count: bookedCount,
         }
       })
@@ -251,6 +168,106 @@ async function checkTripSlots(productId: string, start: string, end: string) {
     current.setDate(current.getDate() + 1)
   }
 
+  return NextResponse.json({ slots: result })
+}
+
+// ---------------------------------------------------------------
+// Range check for calendar display — activities / transfers
+// ---------------------------------------------------------------
+async function checkActivityRange(productId: string, start: string, end: string) {
+  const supabase = createAdminClient()
+
+  const { data: rules } = await supabase
+    .from('availability_rules')
+    .select('*')
+    .eq('product_id', productId)
+
+  const slots: Record<string, Array<{ time: string; available: boolean }>> = {}
+  const current = new Date(start + 'T00:00:00')
+  const endDt = new Date(end + 'T00:00:00')
+
+  while (current <= endDt) {
+    const dateStr = current.toISOString().split('T')[0]
+    const dow = current.getDay() // 0=Sun
+
+    if (!rules || rules.length === 0) {
+      // No rules = always available with default slots
+      slots[dateStr] = [{ time: '09:00', available: true }, { time: '13:00', available: true }]
+      current.setDate(current.getDate() + 1)
+      continue
+    }
+
+    const applicable = rules.filter(r => {
+      if (r.start_date && dateStr < r.start_date) return false
+      if (r.end_date && dateStr > r.end_date) return false
+      return true
+    })
+
+    const isBlackout = applicable.some(r => r.rule_type === 'blackout')
+    if (isBlackout) {
+      slots[dateStr] = []
+      current.setDate(current.getDate() + 1)
+      continue
+    }
+
+    const scheduleRules = applicable.filter(r => r.rule_type === 'schedule')
+    if (scheduleRules.length > 0) {
+      const daySchedules = scheduleRules.filter(r =>
+        !r.days_of_week?.length || r.days_of_week.includes(dow),
+      )
+      slots[dateStr] = daySchedules.length > 0
+        ? [{ time: '09:00', available: true }]
+        : []
+    } else {
+      slots[dateStr] = [{ time: '09:00', available: true }, { time: '13:00', available: true }]
+    }
+
+    current.setDate(current.getDate() + 1)
+  }
+
   return NextResponse.json({ slots })
 }
 
+// ---------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------
+
+/**
+ * Returns true if a driver's availability window covers the given departure time.
+ * Both times are "HH:MM" strings — lexicographic comparison works for 24h format.
+ */
+function coversTime(start: string, end: string | null, departure: string): boolean {
+  if (departure < start) return false
+  if (end && departure >= end) return false
+  return true
+}
+
+/** Fetch IDs of all active drivers. Returns [] if none. */
+async function getActiveDriverIds(supabase: ReturnType<typeof createAdminClient>): Promise<string[]> {
+  const { data } = await supabase
+    .from('drivers')
+    .select('id')
+    .eq('is_active', true)
+  return (data ?? []).map(d => d.id)
+}
+
+/**
+ * Get all driver_availability rows for a given day-of-week, across active drivers.
+ * Returns null if no drivers exist (system not configured).
+ */
+async function getAvailableDriversForDow(
+  supabase: ReturnType<typeof createAdminClient>,
+  dow: number,
+): Promise<Array<{ start_time: string; end_time: string | null }> | null> {
+  const activeIds = await getActiveDriverIds(supabase)
+  if (activeIds.length === 0) return null // no driver system
+
+  const { data } = await supabase
+    .from('driver_availability')
+    .select('start_time, end_time')
+    .in('driver_id', activeIds)
+    .eq('day_of_week', dow)
+    .eq('is_available', true)
+
+  return data ?? []
+}

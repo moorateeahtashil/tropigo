@@ -14,19 +14,18 @@ export async function POST(req: NextRequest) {
     // Delete all existing schedules for this trip
     await supabase.from('trip_schedules').delete().eq('trip_id', tripId)
 
-    // Insert new schedules (filter out temp IDs)
-    const newSchedules = schedules
-      .filter(s => !s.id.startsWith('new-'))
-      .map(s => ({
-        trip_id: tripId,
-        day_of_week: s.day_of_week,
-        start_time: s.start_time,
-        max_capacity: s.max_capacity,
-        is_active: s.is_active,
-      }))
+    // Insert all current schedules — including newly added ones (temp IDs are irrelevant, we don't use them)
+    const rows = schedules.map(s => ({
+      trip_id: tripId,
+      day_of_week: s.day_of_week,
+      start_time: s.start_time,
+      max_capacity: s.max_capacity,
+      is_active: s.is_active,
+    }))
 
-    if (newSchedules.length > 0) {
-      await supabase.from('trip_schedules').insert(newSchedules)
+    if (rows.length > 0) {
+      const { error } = await supabase.from('trip_schedules').insert(rows)
+      if (error) return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
     return NextResponse.json({ success: true })
@@ -49,6 +48,7 @@ export async function GET(req: NextRequest) {
     .select('*')
     .eq('trip_id', tripId)
     .order('day_of_week', { ascending: true })
+    .order('start_time', { ascending: true })
 
   return NextResponse.json(data || [])
 }
