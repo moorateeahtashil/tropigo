@@ -1,9 +1,8 @@
 "use client"
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@/lib/supabase/client'
 
+// Re-export the singleton from client.ts to ensure there's only one
+// browser client instance across the entire app.
 export function getBrowserSupabase() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  return createClient(url, key)
+  return createClient()
 }
-

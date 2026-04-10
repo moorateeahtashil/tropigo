@@ -2,13 +2,14 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { getBrowserSupabase } from '@/lib/supabase/browser'
 import { Mail, Lock, Eye, EyeOff, LogIn } from 'lucide-react'
 
 export default function LoginPage() {
-  const supabase = getBrowserSupabase()
+  const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -19,13 +20,19 @@ export default function LoginPage() {
     e.preventDefault()
     setLoading(true)
     setError(null)
+
+    const supabase = getBrowserSupabase()
     const { error } = await supabase.auth.signInWithPassword({ email, password })
+
     if (error) {
       setError(error.message === 'Invalid login credentials' ? 'Invalid email or password.' : error.message)
       setLoading(false)
       return
     }
-    window.location.href = '/account'
+
+    // Refresh server-side session then navigate
+    router.refresh()
+    router.push('/account')
   }
 
   return (

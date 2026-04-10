@@ -21,6 +21,7 @@ export async function middleware(req: NextRequest) {
     },
   )
 
+  // Important: getUser() will refresh the session if it's close to expiring
   const { data: { user } } = await supabase.auth.getUser()
 
   const path = req.nextUrl.pathname
@@ -29,6 +30,16 @@ export async function middleware(req: NextRequest) {
   if (path.startsWith('/admin') && !path.startsWith('/admin/login')) {
     if (!user) {
       const loginUrl = new URL('/admin/login', req.url)
+      return NextResponse.redirect(loginUrl)
+    }
+    // If user exists, verify admin access to prevent server-side loop
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('is_admin')
+      .eq('id', user.id)
+      .single()
+    if (!profile?.is_admin) {
+      const loginUrl = new URL('/admin/login?error=unauthorized', req.url)
       return NextResponse.redirect(loginUrl)
     }
   }
@@ -47,6 +58,12 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico, sitemap.xml, robots.txt (asset files)
+     */
     '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }

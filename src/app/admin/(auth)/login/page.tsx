@@ -1,14 +1,35 @@
 "use client"
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { getBrowserSupabase } from '@/lib/supabase/browser'
 import { Lock, Mail, Eye, EyeOff, Shield } from 'lucide-react'
 
 export default function AdminLogin() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Check if already authenticated on mount
+  useEffect(() => {
+    const supabase = getBrowserSupabase()
+    const unauthorized = searchParams.get('error') === 'unauthorized'
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (!session || unauthorized) return
+      // Only redirect if the logged-in user has admin rights
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('is_admin')
+        .eq('id', session.user.id)
+        .single()
+      if (profile?.is_admin) {
+        router.replace('/admin')
+      }
+    })
+  }, [router, searchParams])
 
   async function signIn(e: React.FormEvent) {
     e.preventDefault()
@@ -28,7 +49,25 @@ export default function AdminLogin() {
       return
     }
 
-    window.location.href = '/admin'
+    // Auth succeeded — verify admin profile client-side to avoid redirect loops
+    const { data: auth } = await supabase.auth.getUser()
+    if (auth?.user) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('is_admin')
+        .eq('id', auth.user.id)
+        .single()
+      if (profile?.is_admin) {
+        router.replace('/admin')
+        return
+      }
+    }
+
+    // Not an admin — keep user on login and show error
+    setError("Your account doesn't have admin access.")
+    // Optional: sign out to avoid having a logged-in non-admin on this page
+    await supabase.auth.signOut()
+    setLoading(false)
   }
 
   return (
