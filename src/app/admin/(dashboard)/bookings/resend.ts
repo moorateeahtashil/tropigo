@@ -1,6 +1,6 @@
 "use server"
 
-import { resend, EMAIL_FROM, EMAIL_REPLY_TO } from '@/lib/resend/resend'
+import { getResend, EMAIL_FROM, EMAIL_REPLY_TO } from '@/lib/resend/resend'
 import { createAdminClient } from '@/lib/supabase/admin'
 
 export async function resendBookingEmail(bookingId: string) {
@@ -11,7 +11,7 @@ export async function resendBookingEmail(bookingId: string) {
     .eq('id', bookingId)
     .single()
   if (!booking?.customers?.[0]?.email) return
-  await resend.emails.send({
+  await getResend().emails.send({
     from: EMAIL_FROM,
     to: booking.customers[0].email,
     replyTo: EMAIL_REPLY_TO,

@@ -1,7 +1,7 @@
 import { stripe, toStripeCurrency, toStripeAmount, STRIPE_WEBHOOK_SECRET } from '@/lib/stripe/stripe'
 import { createAdminClient } from '@/lib/supabase/admin'
 import type Stripe from 'stripe'
-import { resend, EMAIL_FROM, EMAIL_REPLY_TO } from '@/lib/resend/resend'
+import { getResend, EMAIL_FROM, EMAIL_REPLY_TO } from '@/lib/resend/resend'
 
 // ---------------------------------------------------------------
 // Create a Stripe Checkout Session for a pending booking
@@ -129,7 +129,7 @@ export async function processStripeWebhook(
           .eq('id', bookingId)
           .single()
         if (booking?.customers?.[0]?.email) {
-          await resend.emails.send({
+          await getResend().emails.send({
             from: EMAIL_FROM,
             to: booking.customers[0].email,
             replyTo: EMAIL_REPLY_TO,

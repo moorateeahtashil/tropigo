@@ -6,7 +6,11 @@
       "Bash(npx next:*)",
       "Bash(NEXT_TELEMETRY_DISABLED=1 npx next build)",
       "Bash(git remote:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(git checkout:*)",
+      "Bash(git merge:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }
